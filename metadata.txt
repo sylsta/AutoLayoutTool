@@ -3,7 +3,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=createLayout
+name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=Creates a layout with the current map canvas extent
 version=0.1
@@ -12,8 +12,8 @@ email=sylvain.thery@cnrs.fr
 
 about=Creates a layout with the current map canvas extent
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/sylsta/AutoLayoutTool
+repository=https://github.com/sylsta/AutoLayoutTool
 # End of mandatory metadata
 
 # Recommended items:
@@ -23,11 +23,11 @@ hasProcessingProvider=no
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=python
+tags=Layout creation, automation
 
-homepage=http://homepage
+homepage=https://github.com/sylsta/AutoLayoutTool
 category=Plugins
-icon=icon.png
+icon=layout.png
 # experimental flag
 experimental=False
 
