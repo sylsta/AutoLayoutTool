@@ -190,6 +190,7 @@ class AutoLayoutTool:
     def run(self):
 
         e = self.iface.mapCanvas().extent()
+
         project = QgsProject.instance()
         manager = project.layoutManager()
         layoutname = 'Automatic layout'
@@ -199,7 +200,8 @@ class AutoLayoutTool:
             if layout.name() == layoutname:
                 reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
                                              self.tr(
-                                                 u"There's already a layout named '%s'\nDo you want to delete it?") % layoutname,
+                                                 u"There's already a layout named '%s'\nDo you want to delete it?")
+                                             % layoutname,
                                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
@@ -215,7 +217,8 @@ class AutoLayoutTool:
         # Add map
         print("Adding map")
         map = QgsLayoutItemMap(layout)
-        map.setRect(0, 0, 297, 210)
+        map.setRect(0, 0, layout.pageCollection().page(0).pageSize().width(),
+                    layout.pageCollection().page(0).pageSize().height())
         map.setExtent(e)
         map.setBackgroundColor(QColor(255, 255, 255, 0))
         map.setFrameEnabled(True)
@@ -237,8 +240,10 @@ class AutoLayoutTool:
                     subgroup.addLayer(c)
             elif l.nodeType() == 1:
                 group.addLayer(l.layer())
+
         layout.addItem(legend)
         legend.adjustBoxSize()
+        legend.setFrameEnabled(True)
         legend.refresh()
 
         # Add scale bar
