@@ -2,7 +2,7 @@
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=Quick and dirty layout creator
-version=0.2
+version=0.3
 author=Sylvain Théry (UMR 5281 ART-Dev)
 email=sylvain.thery@cnrs.fr
 
