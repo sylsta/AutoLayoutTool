@@ -32,7 +32,7 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
-from .AutoLayoutTool_dialog import AutoLayoutToolDialog
+
 import os.path
 
 
@@ -188,28 +188,8 @@ class AutoLayoutTool:
             self.iface.removeToolBarIcon(action)
 
     def run(self):
-        """Run method that performs all the real work"""
 
-        # Create the dialog with elements (after translation) and keep reference
-        # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        # if self.first_start == True:
-        #     self.first_start = False
-        #     self.dlg = AutoLayoutToolDialog()
-        #
-        # # show the dialog
-        # self.dlg.show()
-        # # Run the dialog event loop
-        # result = self.dlg.exec_()
-        # # See if OK was pressed
-        # if result:
-        # Do something useful here - delete the line containing pass and
-        # substitute with your code.
         e = self.iface.mapCanvas().extent()
-        e.xMaximum()
-        e.yMaximum()
-        e.xMinimum()
-        e.yMinimum()
-        print(e)
         project = QgsProject.instance()
         manager = project.layoutManager()
         layoutname = 'Automatic layout'
@@ -229,8 +209,9 @@ class AutoLayoutTool:
 
         layout = QgsPrintLayout(project)
         layout.initializeDefaults()
-        manager.addLayout(layout)
+        # manager.addLayout(layout)
         layout.setName(layoutname)
+
         # Add map
         print("Adding map")
         map = QgsLayoutItemMap(layout)
@@ -240,7 +221,7 @@ class AutoLayoutTool:
         map.setFrameEnabled(True)
         layout.addLayoutItem(map)
 
-        ## Add legend
+        # Add legend
         print(self.tr(u"Adding legend"))
         lyrs_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
@@ -260,7 +241,7 @@ class AutoLayoutTool:
         legend.adjustBoxSize()
         legend.refresh()
 
-        ## Add scale bar
+        # Add scale bar
         print(self.tr(u"Adding scale bar"))
         scalebar = QgsLayoutItemScaleBar(layout)
         scalebar.setStyle('Single Box')
@@ -274,13 +255,15 @@ class AutoLayoutTool:
         layout.addLayoutItem(scalebar)
         scalebar.attemptMove(QgsLayoutPoint(220, 190, QgsUnitTypes.LayoutMillimeters))
 
-        ## Add north arrow
+        # Add north arrow
         print(self.tr(u"Add north arrow"))
         north = QgsLayoutItemPicture(layout)
         north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
         layout.addLayoutItem(north)
         north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
         north.attemptMove(QgsLayoutPoint(3, 190, QgsUnitTypes.LayoutMillimeters))
+
+        # Finally add layout to the project via its manager
         manager.addLayout(layout)
 
         self.iface.openLayoutDesigner(layout)

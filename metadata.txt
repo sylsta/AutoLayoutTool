@@ -6,7 +6,9 @@ version=0.2
 author=Sylvain Théry (UMR 5281 ART-Dev)
 email=sylvain.thery@cnrs.fr
 
-about=This plugin creates a layout with the current map canvas extent. It also add legend, scale and north arrow to the layout.
+about=This plugin creates a layout with the current map canvas extent. It also adds a legend, a scalebar and a north arrow to the layout.
+
+    Ce plugin créé en un clic une mise en page dotée d'une carte, d'une échelle, d'une légende et d'une flêche nord.
 
 tags=Layout creation, automation
 
