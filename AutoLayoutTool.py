@@ -27,8 +27,7 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon, QColor, QFont
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
-    QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
-    QgsMapSettings
+    QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -192,85 +191,72 @@ class AutoLayoutTool:
 
         e = self.iface.mapCanvas().extent()
 
+
         project = QgsProject.instance()
         manager = project.layoutManager()
-        layoutname = 'Automatic layout'
+        layout_name = 'Automatic layout'
         layouts_list = manager.printLayouts()
+        # Just 4 debug
         # remove any duplicate layouts
         for layout in layouts_list:
-            if layout.name() == layoutname:
-                reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                                             self.tr(
-                                                 u"There's already a layout named '%s'\nDo you want to delete it?")
-                                             % layoutname,
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if reply == QMessageBox.No:
-                    return
-                else:
-                    manager.removeLayout(layout)
-                    print(self.tr(u"Previous layout names '%s' removed... ") % layoutname)
+            manager.removeLayout(layout)
+            # if layout.name() == layout_name:
+            #     reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
+            #                                  self.tr(
+            #                                      u"There's already a layout named '%s'\nDo you want to delete it?")
+            #                                  % layout_name,
+            #                                  QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            #     if reply == QMessageBox.No:
+            #         return
+            #     else:
+            #         manager.removeLayout(layout)
+            #         print(self.tr(u"Previous layout names '%s' removed... ") % layout_name)
 
         layout = QgsPrintLayout(project)
         layout.initializeDefaults()
-        manager.addLayout(layout)
-        layout.setName(layoutname)
+        # manager.addLayout(layout)
+        layout.setName(layout_name)
 
         # Determine and set best layout orientation
-        xy_ratio = (e.xMaximum() - e.xMinimum()) / (e.yMaximum() - e.yMinimum())
+        map_width = e.xMaximum() - e.xMinimum()
+        map_height = e.yMaximum() - e.yMinimum()
+        map_ratio = map_width / map_height
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
-        layout_ratio =  layout_width / layout_height
-        # print("avant : width_map=%r y=%r r=%r" %(layout_width, layout_height, layout_ratio))
+        layout_ratio = layout_width / layout_height
         page_size = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
-
-
-        if xy_ratio <= layout_ratio:
+        landscape = False
+        if map_ratio <= layout_ratio:
             # portrait
             layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Portrait)
         else:
             # landscape
             layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Landscape)
+            landscape = True
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
-        layout_ratio =  layout_width / layout_height
-        print("après : width_map=%r height_map=%r r=%r" % (layout_width, layout_height, layout_ratio))
+        scale_ratio = (layout_width / map_width)
+        if map_height * scale_ratio > layout_height:
+            scale_ratio = map_height / layout_height
+        print("width %r" % (map_width / scale_ratio))
+        print("height %r" % (map_height / scale_ratio))
+
+        # print("avant : width_map=%r y=%r r=%r" %(layout_width, layout_height, layout_ratio))
+
+        print(type(layout.pageCollection().page(0).pageSize().width()))
+        print(type((map_width / scale_ratio)))
+
         # Add map
         print("Adding map")
         map = QgsLayoutItemMap(layout)
-        # print("x_y ratio: {0}".format(xy_ratio))
-        offset_x = 0
-        offset_y = 0
-        if xy_ratio <= layout_ratio:
-            height_map = layout_height
-            width_map = layout_height * xy_ratio
-            offset_x = (layout_width-width_map)/2
-            print(layout_width)
-            print(width_map)
-            print(xy_ratio)
+        print("mapw: %r / maph: %r" % (map_width / scale_ratio, map_height / scale_ratio))
+        print("mapw: %r / maph: %r" % (round(map_width / scale_ratio, 3), round(map_height / scale_ratio, 3)))
+
+        if landscape:
+            map.setRect(0, 0, round(map_width * scale_ratio, 3), round(map_height * scale_ratio, 3))
         else:
-            #landscape
-            height_map = layout_width / xy_ratio
-            width_map = layout_width
-            # print("layout_width")
-            # print(layout_width)
-            # print('height_map')
-            # print(height_map)
-            # print('xy_ratio')
-            # print(xy_ratio)
-            offset_y = (layout_height-height_map) / 2
-        print("offsets")
-        print(offset_x)
-        print(offset_y)
-        #QRect.setRect(width_map, y, w, h)¶
-
-        # map.setRect(offset_x, offset_y, width_map, height_map)
-        ms = QgsMapSettings()
-        ms.setExtent(e)
-
-        map.setRect(0, 0, width_map, height_map)
+            map.setRect(0, 0, round(map_width / scale_ratio, 3), round(map_height / scale_ratio, 3))
         map.setExtent(e)
-
-        # map.setExtent(e)
         map.setBackgroundColor(QColor(255, 255, 255, 0))
         map.setFrameEnabled(True)
         layout.addLayoutItem(map)
@@ -320,7 +306,7 @@ class AutoLayoutTool:
         north.attemptMove(QgsLayoutPoint(3, 190, QgsUnitTypes.LayoutMillimeters))
 
         # Finally add layout to the project via its manager
-        # manager.addLayout(layout)
+        manager.addLayout(layout)
 
         self.iface.openLayoutDesigner(layout)
         # new_rect=my_map.get
