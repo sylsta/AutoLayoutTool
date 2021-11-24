@@ -170,7 +170,7 @@ class AutoLayoutTool:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         icon_path = ':/plugins/create_layout/layout.png'
-        self.add_action(
+        action =self.add_action(
             icon_path,
             text=self.tr(u'Create a new layout based on current extent '),
             callback=self.run,
@@ -178,6 +178,7 @@ class AutoLayoutTool:
 
         # will be set False in run()
         self.first_start = True
+        self.iface.registerMainWindowAction(action, "Ctrl+F4")
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -187,8 +188,9 @@ class AutoLayoutTool:
                 action)
             self.iface.removeToolBarIcon(action)
 
-    def run(self):
 
+    def run(self):
+        margin = 10
         e = self.iface.mapCanvas().extent()
 
 
@@ -233,15 +235,16 @@ class AutoLayoutTool:
             # landscape
             layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Landscape)
             landscape = True
+
+        # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
         scale_ratio = (layout_width / map_width)
         if map_height * scale_ratio > layout_height:
+            # Landscape
+            print("scale_ratio = map_height / layout_height")
             scale_ratio = map_height / layout_height
-        print("width %r" % (map_width / scale_ratio))
-        print("height %r" % (map_height / scale_ratio))
 
-        # print("avant : width_map=%r y=%r r=%r" %(layout_width, layout_height, layout_ratio))
 
         print(type(layout.pageCollection().page(0).pageSize().width()))
         print(type((map_width / scale_ratio)))
@@ -249,16 +252,27 @@ class AutoLayoutTool:
         # Add map
         print("Adding map")
         map = QgsLayoutItemMap(layout)
-        print("mapw: %r / maph: %r" % (map_width / scale_ratio, map_height / scale_ratio))
-        print("mapw: %r / maph: %r" % (round(map_width / scale_ratio, 3), round(map_height / scale_ratio, 3)))
 
+        print("mapw: %r / maph: %r" % (map_width, map_height))
+        print(scale_ratio)
         if landscape:
-            map.setRect(0, 0, round(map_width * scale_ratio, 3), round(map_height * scale_ratio, 3))
+            map_width = layout_width
+            map_height = round(map_height * scale_ratio, 3)
         else:
-            map.setRect(0, 0, round(map_width / scale_ratio, 3), round(map_height / scale_ratio, 3))
+            map_width = round(map_width / scale_ratio, 3)
+            map_height = layout_height
+        # map_width = map_width-(margin)
+        # map_height = map_height-(margin*2)
+        x_offset = (layout_width - map_width)/2
+        y_offset = (layout_height - map_height)/2
+        print("x: %r / y: %r" % (x_offset, y_offset))
+        print("mapw: %r / maph: %r" % (map_width, map_height))
+
+        map.setRect(0, 0, map_width, map_height)
         map.setExtent(e)
         map.setBackgroundColor(QColor(255, 255, 255, 0))
         map.setFrameEnabled(True)
+        map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         layout.addLayoutItem(map)
 
         # Add legend
@@ -281,7 +295,10 @@ class AutoLayoutTool:
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
+        legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         legend.refresh()
+
+        print(legend.sizeWithUnits())
 
         # Add scale bar
         print(self.tr(u"Adding scale bar"))
