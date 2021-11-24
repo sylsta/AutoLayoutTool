@@ -23,9 +23,9 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
-from qgis.PyQt.QtGui import QIcon, QColor, QFont
-from qgis.PyQt.QtWidgets import QAction, QMessageBox
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QDir, Qt
+from qgis.PyQt.QtGui import QIcon, QColor, QFont, QKeySequence
+from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
 
@@ -34,8 +34,11 @@ from .resources import *
 # Import the code for the dialog
 
 import os.path
-
-
+try:
+    import pydevd_pycharm
+    pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+except:
+    pass
 class AutoLayoutTool:
     """QGIS Plugin Implementation."""
 
@@ -170,7 +173,7 @@ class AutoLayoutTool:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         icon_path = ':/plugins/create_layout/layout.png'
-        action =self.add_action(
+        self.my_action = self.add_action(
             icon_path,
             text=self.tr(u'Create a new layout based on current extent '),
             callback=self.run,
@@ -178,8 +181,11 @@ class AutoLayoutTool:
 
         # will be set False in run()
         self.first_start = True
-        self.iface.registerMainWindowAction(action, "Ctrl+F4")
+        # self.iface.registerMainWindowAction(self.my_action, "Ctrl+F4")
 
+        shortcut = QShortcut(QKeySequence('Ctrl+F4'), self.iface.mainWindow())
+        shortcut.setContext(Qt.ApplicationShortcut)
+        shortcut.activated.connect(self.run)
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
@@ -187,22 +193,23 @@ class AutoLayoutTool:
                 self.tr(u'&AutoLayoutTool'),
                 action)
             self.iface.removeToolBarIcon(action)
+        self.iface.unregisterMainWindowAction(self.my_action)
 
 
     def run(self):
         margin = 10
+        layout_name = 'Automatic layout'
+        print("-------")
         e = self.iface.mapCanvas().extent()
-
-
         project = QgsProject.instance()
         manager = project.layoutManager()
-        layout_name = 'Automatic layout'
+
         layouts_list = manager.printLayouts()
         # Just 4 debug
         # remove any duplicate layouts
         for layout in layouts_list:
-            manager.removeLayout(layout)
-            # if layout.name() == layout_name:
+            if layout.name() == layout_name:
+                manager.removeLayout(layout)
             #     reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
             #                                  self.tr(
             #                                      u"There's already a layout named '%s'\nDo you want to delete it?")
@@ -222,17 +229,17 @@ class AutoLayoutTool:
         # Determine and set best layout orientation
         map_width = e.xMaximum() - e.xMinimum()
         map_height = e.yMaximum() - e.yMinimum()
-        map_ratio = map_width / map_height
-        layout_width = layout.pageCollection().page(0).pageSize().width()
-        layout_height = layout.pageCollection().page(0).pageSize().height()
-        layout_ratio = layout_width / layout_height
+
         page_size = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
         landscape = False
-        if map_ratio <= layout_ratio:
+
+        if map_width <= map_height:
             # portrait
+            print("Portrait")
             layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Portrait)
         else:
             # landscape
+            print("Landscape")
             layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Landscape)
             landscape = True
 
@@ -246,27 +253,47 @@ class AutoLayoutTool:
             scale_ratio = map_height / layout_height
 
 
-        print(type(layout.pageCollection().page(0).pageSize().width()))
-        print(type((map_width / scale_ratio)))
-
         # Add map
         print("Adding map")
         map = QgsLayoutItemMap(layout)
 
         print("mapw: %r / maph: %r" % (map_width, map_height))
         print(scale_ratio)
+        previous_height = map_height
+        previous_width = map_width
+
         if landscape:
+            print("Landscape")
+
             map_width = layout_width
             map_height = round(map_height * scale_ratio, 3)
+            print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
+            # workaround don't now why in special case it has to be changed !:#
+            if map_height > layout_height:
+                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
+                map_height = layout_height
+                map_width = round(previous_width / scale_ratio, 3)
         else:
+
+            print("Portrait")
             map_width = round(map_width / scale_ratio, 3)
             map_height = layout_height
-        # map_width = map_width-(margin)
-        # map_height = map_height-(margin*2)
+            # workaround don't now why in special case it has to be changed !:#
+            if map_width > map_height :
+                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
+                map_width = layout_width
+                map_height = round(previous_height * scale_ratio, 3)
+                # print('correction')
+                # map_width = round(previous_width * scale_ratio, 3)
+                pass
+
+
+        map_width = map_width-(margin)
+        map_height = map_height-(margin)
         x_offset = (layout_width - map_width)/2
         y_offset = (layout_height - map_height)/2
         print("x: %r / y: %r" % (x_offset, y_offset))
-        print("mapw: %r / maph: %r" % (map_width, map_height))
+        print("final_mapw: %r / final_maph: %r" % (map_width, map_height))
 
         map.setRect(0, 0, map_width, map_height)
         map.setExtent(e)
@@ -276,6 +303,23 @@ class AutoLayoutTool:
         layout.addLayoutItem(map)
 
         # Add legend
+        self.add_legend(layout, x_offset, y_offset)
+
+        # Add scale bar
+        self.add_scale_bar(layout, map)
+
+        # Add north arrow
+        self.add_north_arrow(layout)
+
+        # Finally add layout to the project via its manager
+        manager.addLayout(layout)
+
+        self.iface.openLayoutDesigner(layout)
+        print("♪♪ This is the end, my friend. ♪♪")
+        # new_rect=my_map.get
+        # pass
+
+    def add_legend(self, layout, x_offset, y_offset):
         print(self.tr(u"Adding legend"))
         lyrs_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
@@ -291,16 +335,21 @@ class AutoLayoutTool:
                     subgroup.addLayer(c)
             elif l.nodeType() == 1:
                 group.addLayer(l.layer())
-
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
         legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         legend.refresh()
 
-        print(legend.sizeWithUnits())
+    def add_north_arrow(self, layout):
+        print(self.tr(u"Add north arrow"))
+        north = QgsLayoutItemPicture(layout)
+        north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
+        layout.addLayoutItem(north)
+        north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
+        north.attemptMove(QgsLayoutPoint(3, 190, QgsUnitTypes.LayoutMillimeters))
 
-        # Add scale bar
+    def add_scale_bar(self, layout, map):
         print(self.tr(u"Adding scale bar"))
         scalebar = QgsLayoutItemScaleBar(layout)
         scalebar.setStyle('Single Box')
@@ -313,18 +362,3 @@ class AutoLayoutTool:
         scalebar.update()
         layout.addLayoutItem(scalebar)
         scalebar.attemptMove(QgsLayoutPoint(220, 190, QgsUnitTypes.LayoutMillimeters))
-
-        # Add north arrow
-        print(self.tr(u"Add north arrow"))
-        north = QgsLayoutItemPicture(layout)
-        north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
-        layout.addLayoutItem(north)
-        north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
-        north.attemptMove(QgsLayoutPoint(3, 190, QgsUnitTypes.LayoutMillimeters))
-
-        # Finally add layout to the project via its manager
-        manager.addLayout(layout)
-
-        self.iface.openLayoutDesigner(layout)
-        # new_rect=my_map.get
-        # pass
