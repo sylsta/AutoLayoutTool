@@ -198,12 +198,13 @@ class AutoLayoutTool:
 
     def run(self):
         margin = 10
-        layout_name = 'Automatic layout'
         print("-------")
         e = self.iface.mapCanvas().extent()
+
+
         project = QgsProject.instance()
         manager = project.layoutManager()
-
+        layout_name = 'Automatic layout'
         layouts_list = manager.printLayouts()
         # Just 4 debug
         # remove any duplicate layouts
@@ -229,7 +230,10 @@ class AutoLayoutTool:
         # Determine and set best layout orientation
         map_width = e.xMaximum() - e.xMinimum()
         map_height = e.yMaximum() - e.yMinimum()
-
+        # # map_ratio = map_width / map_height
+        # layout_width = layout.pageCollection().page(0).pageSize().width()
+        # layout_height = layout.pageCollection().page(0).pageSize().height()
+        # # layout_ratio = layout_width / layout_height
         page_size = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
         landscape = False
 
@@ -246,16 +250,20 @@ class AutoLayoutTool:
         # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
-        scale_ratio = (layout_width / map_width)
-        if map_height * scale_ratio > layout_height:
-            # Landscape
-            print("scale_ratio = map_height / layout_height")
-            scale_ratio = map_height / layout_height
+        if landscape:
+            scale_ratio = (layout_width / map_width)
+            if map_height * scale_ratio > layout_height:
+                scale_ratio = map_height / layout_height
+        else:
+            scale_ratio = layout_height / map_height
+            if map_width * scale_ratio > layout_width:
+                scale_ratio = map_height / layout_height
 
 
-        # Add map
+
+        # Calculate scale
         print("Adding map")
-        map = QgsLayoutItemMap(layout)
+        my_map = QgsLayoutItemMap(layout)
 
         print("mapw: %r / maph: %r" % (map_width, map_height))
         print(scale_ratio)
@@ -270,56 +278,44 @@ class AutoLayoutTool:
             print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
             # workaround don't now why in special case it has to be changed !:#
             if map_height > layout_height:
-                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
                 map_height = layout_height
                 map_width = round(previous_width / scale_ratio, 3)
+                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
         else:
 
             print("Portrait")
-            map_width = round(map_width / scale_ratio, 3)
+            map_width = round(map_width * scale_ratio, 3)
             map_height = layout_height
+            print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
             # workaround don't now why in special case it has to be changed !:#
             if map_width > map_height :
-                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
                 map_width = layout_width
-                map_height = round(previous_height * scale_ratio, 3)
+                map_height = round(previous_height / scale_ratio, 3)
+                print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
                 # print('correction')
                 # map_width = round(previous_width * scale_ratio, 3)
                 pass
-
-
-        map_width = map_width-(margin)
-        map_height = map_height-(margin)
-        x_offset = (layout_width - map_width)/2
-        y_offset = (layout_height - map_height)/2
-        print("x: %r / y: %r" % (x_offset, y_offset))
         print("final_mapw: %r / final_maph: %r" % (map_width, map_height))
+        # Add map
+        map_width = map_width - margin
+        map_height = map_height - margin
+        my_map.setRect(0, 0, map_width, map_height)
+        my_map.setExtent(e)
+        layout.addLayoutItem(my_map)
+        my_map.refresh()
+        map_real_width = my_map.rect().size().width()
+        map_real_height = my_map.rect().size().height()
+        x_offset = (layout_width - map_real_width) / 2
+        y_offset = (layout_height - map_real_height) / 2
 
-        map.setRect(0, 0, map_width, map_height)
-        map.setExtent(e)
-        map.setBackgroundColor(QColor(255, 255, 255, 0))
-        map.setFrameEnabled(True)
-        map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
-        layout.addLayoutItem(map)
+        print("x: %r / y: %r" % (x_offset, y_offset))
+        print("real_mapw: %r / real_maph: %r" % (map_real_width, map_real_height))
+        my_map.setBackgroundColor(QColor(255, 255, 255, 0))
+        my_map.setFrameEnabled(True)
+        my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+        layout.addLayoutItem(my_map)
 
         # Add legend
-        self.add_legend(layout, x_offset, y_offset)
-
-        # Add scale bar
-        self.add_scale_bar(layout, map)
-
-        # Add north arrow
-        self.add_north_arrow(layout)
-
-        # Finally add layout to the project via its manager
-        manager.addLayout(layout)
-
-        self.iface.openLayoutDesigner(layout)
-        print("♪♪ This is the end, my friend. ♪♪")
-        # new_rect=my_map.get
-        # pass
-
-    def add_legend(self, layout, x_offset, y_offset):
         print(self.tr(u"Adding legend"))
         lyrs_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
@@ -335,25 +331,19 @@ class AutoLayoutTool:
                     subgroup.addLayer(c)
             elif l.nodeType() == 1:
                 group.addLayer(l.layer())
+
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
         legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         legend.refresh()
 
-    def add_north_arrow(self, layout):
-        print(self.tr(u"Add north arrow"))
-        north = QgsLayoutItemPicture(layout)
-        north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
-        layout.addLayoutItem(north)
-        north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
-        north.attemptMove(QgsLayoutPoint(3, 190, QgsUnitTypes.LayoutMillimeters))
-
-    def add_scale_bar(self, layout, map):
+        print(legend.sizeWithUnits())
+        # Add scale bar
         print(self.tr(u"Adding scale bar"))
         scalebar = QgsLayoutItemScaleBar(layout)
         scalebar.setStyle('Single Box')
-        scalebar.setLinkedMap(map)
+        scalebar.setLinkedMap(my_map)
         scalebar.applyDefaultSize()
         scalebar.applyDefaultSettings()
         scalebar.setUnits(QgsUnitTypes.DistanceKilometers)
@@ -361,4 +351,20 @@ class AutoLayoutTool:
         scalebar.setUnitLabel('km')
         scalebar.update()
         layout.addLayoutItem(scalebar)
-        scalebar.attemptMove(QgsLayoutPoint(220, 190, QgsUnitTypes.LayoutMillimeters))
+        scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
+                                            map_real_height + y_offset - scalebar.rect().size().height() - 5,
+                                            QgsUnitTypes.LayoutMillimeters))
+
+        # Add north arrow
+        print(self.tr(u"Add north arrow"))
+        north = QgsLayoutItemPicture(layout)
+        north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
+        layout.addLayoutItem(north)
+        north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
+        north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
+
+        # Finally add layout to the project via its manager
+        manager.addLayout(layout)
+
+        self.iface.openLayoutDesigner(layout)
+        print("♪♪ This is the end, my friend ♪♪")
