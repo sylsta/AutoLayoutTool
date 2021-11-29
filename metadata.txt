@@ -1,14 +1,14 @@
 [general]
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
-description=Quick and dirty layout creator
+description=One-click print layout creator
 version=1.0
 author=Sylvain Théry (UMR 5281 ART-Dev)
 email=sylvain.thery@cnrs.fr
 
-about=This plugin creates a layout with the current map canvas extent. It also adds a legend, a scalebar and a north arrow to the layout.
+about=This plugin creates in one click a layout based on the extent of a QGIS project main window. It also adds a legend, a scale bar and a north arrow to the layout. The size of the map is calculated to occupy the maximum space on the page and the orientation of the page is determined by the extent of the map.
 
-    Ce plugin créé en un clic une mise en page basée sur l'étendue d'un projet qgis. Celle-ci est dotée d'une carte, d'une échelle, d'une légende et d'une flêche nord.
+    Ce plugin crée en un clic une mise en page basée sur l'étendue de la fenêtre principale d'un projet QGIS. Il ajoute également une légende, une barre d'échelle et une flèche du nord à la mise en page. La taille de la carte est calculée pour occuper l'espace maximum sur la page et l'orientation de la page est déterminée par l'étendue de la carte.
 
 tags=layout, print manager, automation, automatisation, mise en page, composeur d'impression
 
@@ -19,8 +19,8 @@ category=Plugins
 icon=layout.png
 
 changelog=
-    0.9 (2021-11-26):
-        - beta tester release
+    1.0 (2021-11-29)
+        - public release
         - fix positioning issue (margin, north arrow, scale)
     0.3 (2021-11-22):
         - internationalization : add french language

@@ -48,7 +48,7 @@ class AutoLayoutTool:
         :type iface: QgsInterface
         """
         # debug state for pycharm (pro version only :-() python debug server
-        self.debug = True
+        self.debug = False
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -185,11 +185,6 @@ class AutoLayoutTool:
 
         # will be set False in run()
         self.first_start = True
-        # self.iface.registerMainWindowAction(self.my_action, "Ctrl+F4")
-
-        # shortcut = QShortcut(QKeySequence(Qt.ControlModifier + Qt.ShiftModifier + Qt.Key_2), self.iface.mainWindow())
-        # shortcut.setContext(Qt.ApplicationShortcut)
-        # shortcut.activated.connect(self.run)
         self.my_action = QAction("Test Plugin", self.iface.mainWindow())
         self.iface.registerMainWindowAction(self.my_action, "Ctrl+I")  # action triggered by Ctrl+I
 
