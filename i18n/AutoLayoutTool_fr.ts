@@ -58,7 +58,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="422"/>
         <source>AutoLayoutTool starts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lancement de AutoLayoutTool</translation>
     </message>
 </context>
 </TS>

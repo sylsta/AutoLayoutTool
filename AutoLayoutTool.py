@@ -32,6 +32,9 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
 
 import os.path
+# Initialize Qt resources from file resources.py
+from .resources import *
+
 
 class AutoLayoutTool:
     """QGIS Plugin Implementation."""
@@ -45,7 +48,7 @@ class AutoLayoutTool:
         :type iface: QgsInterface
         """
         # debug state for pycharm (pro version only :-() python debug server
-        self.debug = False
+        self.debug = True
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -84,6 +87,7 @@ class AutoLayoutTool:
                 pass
 
     # noinspection PyMethodMayBeStatic
+
     def tr(self, message):
         """
         Get the translation for a string using Qt translation API.
@@ -183,9 +187,11 @@ class AutoLayoutTool:
         self.first_start = True
         # self.iface.registerMainWindowAction(self.my_action, "Ctrl+F4")
 
-        shortcut = QShortcut(QKeySequence('Ctrl+F4'), self.iface.mainWindow())
-        shortcut.setContext(Qt.ApplicationShortcut)
-        shortcut.activated.connect(self.run)
+        # shortcut = QShortcut(QKeySequence(Qt.ControlModifier + Qt.ShiftModifier + Qt.Key_2), self.iface.mainWindow())
+        # shortcut.setContext(Qt.ApplicationShortcut)
+        # shortcut.activated.connect(self.run)
+        self.my_action = QAction("Test Plugin", self.iface.mainWindow())
+        self.iface.registerMainWindowAction(self.my_action, "Ctrl+I")  # action triggered by Ctrl+I
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -409,6 +415,14 @@ class AutoLayoutTool:
         Creates a layout with a map of the current interface extent, with legend, scalebar and north arrow
         :return: None
         """
+        if self.first_start == True:
+            self.first_start = False
+            shortcut = QShortcut(QKeySequence(Qt.ControlModifier + Qt.ShiftModifier + Qt.Key_1),
+                                 self.iface.mainWindow())
+            shortcut.setContext(Qt.ApplicationShortcut)
+            shortcut.activated.connect(self.run)
+
+
         margin = 10
         layout_name = self.tr('Automatic layout')
         print('--------------------------------')
