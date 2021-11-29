@@ -7,4 +7,5 @@ Allez sur l'onglet "Installer depuis un zip" et sélectionnez le fichier AutoLay
 ![](img/install-fr_2.png)
 Acceptez d'installer l'extension
 ![](img/install-fr_3.png)
-![](../layout.png =25x25)
+L'icone ci-dessous apparait ainsi qu'une nouvelle entrée dans le menu 'Extension'
+![](../layout.png)
