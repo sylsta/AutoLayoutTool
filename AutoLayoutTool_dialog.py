@@ -27,6 +27,7 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
+
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'AutoLayoutTool_dialog_base.ui'))
@@ -42,3 +43,26 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        # if self.debug:
+        try:
+            chkb = QtWidgets.QCheckBox()
+            chkb.setChecked(True)
+            combo = QtWidgets.QComboBox()
+            combo.setCurrentIndex()
+        except:
+            pass
+
+        le_legend_title = QtWidgets.QLineEdit
+
+        for cb in [self.cb_north, self.cb_scalebar, self.cb_legend]:
+            cb.addItems([self.tr(u'Top left corner'), self.tr(u'Top right corner'), self.tr(u'Bottom left corner'),
+                    self.tr(u'Bottom right corner')])
+        self.cb_north.setCurrentIndex(3)
+        self.cb_scalebar.setCurrentIndex(4)
+        self.cb_legend.setCurrentIndex(1)
+        for chkb in [self.chkb_north_arrow, self.chkb_scalebar, self.chkb_legend, self.chkb_margin]:
+            chkb.setChecked(True)
+        self.le_legend_title.setText(self.tr(u'Legend'))
+        self.le_margin.setText(self.tr(u'10'))
+
+

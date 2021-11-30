@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
+    <width>419</width>
     <height>265</height>
    </rect>
   </property>
@@ -46,12 +46,12 @@
     <string>North arrow</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QComboBox" name="cb_north">
    <property name="geometry">
     <rect>
      <x>170</x>
      <y>10</y>
-     <width>87</width>
+     <width>221</width>
      <height>32</height>
     </rect>
    </property>
@@ -62,12 +62,12 @@
     <locale language="Estonian" country="Estonia"/>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_2">
+  <widget class="QComboBox" name="cb_scalebar">
    <property name="geometry">
     <rect>
      <x>170</x>
      <y>50</y>
-     <width>87</width>
+     <width>221</width>
      <height>32</height>
     </rect>
    </property>
@@ -78,7 +78,7 @@
     <locale language="Estonian" country="Estonia"/>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chkb_north_arrow_2">
+  <widget class="QCheckBox" name="chkb_scalebar">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -94,7 +94,7 @@
     <string>Scalebar</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chkb_north_arrow_3">
+  <widget class="QCheckBox" name="chkb_legend">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -110,12 +110,12 @@
     <string>Legend</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_3">
+  <widget class="QComboBox" name="cb_legend">
    <property name="geometry">
     <rect>
      <x>170</x>
      <y>90</y>
-     <width>87</width>
+     <width>221</width>
      <height>32</height>
     </rect>
    </property>
@@ -126,30 +126,7 @@
     <locale language="Estonian" country="Estonia"/>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>170</x>
-     <y>130</y>
-     <width>134</width>
-     <height>32</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>140</y>
-     <width>90</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Legend title</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="le_marginvalue">
+  <widget class="QLineEdit" name="le_margin_value">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -174,6 +151,25 @@
    <property name="text">
     <string>Margin (mm)</string>
    </property>
+  </widget>
+  <widget class="QSplitter" name="splitter">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>130</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="text">
+     <string>Legend title</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_legend_title"/>
   </widget>
  </widget>
  <resources/>

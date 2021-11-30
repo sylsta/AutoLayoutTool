@@ -19,6 +19,8 @@ category=Plugins
 icon=layout.png
 
 changelog=
+    1.1 (2021-11-29)
+        - bug fix
     1.0 (2021-11-29)
         - public release
         - fix positioning issue (margin, north arrow, scale)
