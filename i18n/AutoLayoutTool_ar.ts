@@ -1,79 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<!DOCTYPE TS><TS version="2.0" language="ar" sourcelanguage="">
 <context>
     <name>AutoLayoutTool</name>
     <message>
         <location filename="../AutoLayoutTool.py" line="151"/>
         <source>&amp;AutoLayoutTool</source>
-        <translation></translation>
+        <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="126"/>
         <source>Create a new layout based on current extent </source>
-        <translation>Création d&apos;une mise en page basée sur l&apos;extension courante du projet </translation>
+        <translation>إنشاء تصميم جديد بناء على الرّقعة الحاليّة</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="138"/>
+        <source>AutoLayoutTool configuration</source>
+        <translation>إعدادات AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="169"/>
         <source>Delete layout...</source>
-        <translation>Suppression de la mise en page...</translation>
+        <translation>حذف التصميم...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="169"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation>Une mise en page nommée &apos;%s&apos; existe déjà
-Souhaitez-vous la supprimer ?</translation>
+        <translation>يوجد بالفعل تصميم تحت اسم &apos;s%&apos;. هل تريد حذفه؟</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="179"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>La précédente mise en page nommée &apos;%s&apos; a été supprimée... </translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="306"/>
-        <source>Adding legend</source>
-        <translation>Ajout de la légende</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="338"/>
-        <source>Adding scale bar</source>
-        <translation>Ajout de l&apos;échelle</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="403"/>
-        <source>Add north arrow</source>
-        <translation type="obsolete">Ajout de la flêche Nord</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation>Légende</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="363"/>
-        <source>Adding north arrow</source>
-        <translation>Ajout de la flêche Nord</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="396"/>
-        <source>AutoLayoutTool starts</source>
-        <translation>Lancement de AutoLayoutTool</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation>Configuration de AutoLayoutTool</translation>
+        <translation>تمّ حذف التصميم المسمّى &apos;s%&apos;...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="236"/>
         <source>Calculating scale</source>
-        <translation>Calcul de l&apos;échelle</translation>
+        <translation>المقياس في طور الحساب</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="306"/>
+        <source>Adding legend</source>
+        <translation>تتمّ الآن إضافة مفتاح الخريطة</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="309"/>
+        <source>Legend</source>
+        <translation>مفتاح الخريطة</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="338"/>
+        <source>Adding scale bar</source>
+        <translation>تتمّ الآن إضافة المقياس</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="363"/>
+        <source>Adding north arrow</source>
+        <translation>تتمّ الآن إضافة الاتّجاه</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="396"/>
+        <source>AutoLayoutTool starts</source>
+        <translation>الأداة AutoLayoutTool في طور التّشغيل</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="439"/>
         <source>Automatic layout</source>
-        <translation>Mise en page automatique</translation>
+        <translation>تصميم أوتوماتيكيّ</translation>
     </message>
 </context>
 <context>
@@ -81,37 +74,37 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="62"/>
         <source>Top left corner</source>
-        <translation>Coin supérieur gauche</translation>
+        <translation>الرّكن أعلى اليسار</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="62"/>
         <source>Top right corner</source>
-        <translation>Coin supérieur droit</translation>
+        <translation>الرّكن أعلى اليمين</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="62"/>
         <source>Bottom left corner</source>
-        <translation>Coin inférieur gauche</translation>
+        <translation>الرّكن أسفل اليسار</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="62"/>
         <source>Bottom right corner</source>
-        <translation>Coin inférieur droit</translation>
+        <translation>الرّكن أسفل اليمين</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="62"/>
         <source>None</source>
-        <translation>Aucune</translation>
+        <translation>لاشيء</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="72"/>
         <source>Legend</source>
-        <translation>Légende</translation>
+        <translation>مفتاح الخريطة</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog.py" line="74"/>
         <source>Automatic Layout</source>
-        <translation>Mise en page automatique</translation>
+        <translation>تصميم أوتوماتيكيّ</translation>
     </message>
 </context>
 <context>
@@ -119,52 +112,52 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="15"/>
         <source>AutoLayoutTool configuration</source>
-        <translation>Configuration de AutoLayoutTool</translation>
+        <translation>إعدادات AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="81"/>
         <source>Select placement</source>
-        <translation>Choisir l&apos;emplacement</translation>
+        <translation>اختيار الموضع</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="100"/>
         <source>North arrow</source>
-        <translation>Flèche nord</translation>
+        <translation>الاتّجاه</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="116"/>
         <source>Scale bar</source>
-        <translation>Échelle</translation>
+        <translation>المقياس</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="132"/>
         <source>Legend</source>
-        <translation>Légende</translation>
+        <translation>مفتاح الخريطة</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="148"/>
         <source>Margin (mm)</source>
-        <translation>Marge (mm)</translation>
+        <translation>الهامش (ملمتر)</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="191"/>
         <source>Restore default values</source>
-        <translation>Restaurer les valeurs par défaut</translation>
+        <translation>استعادة الإعدادات الأوّليّة</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="207"/>
         <source>Legend title</source>
-        <translation>Titre de la légende</translation>
+        <translation>عنوان مفتاح الخريطة</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="220"/>
         <source>Layout name</source>
-        <translation>Nom de la mise en page</translation>
+        <translation>اسم التّصميم</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_base.ui" line="233"/>
         <source>Save values</source>
-        <translation>Enregistrer les valeurs</translation>
+        <translation>حفظ البيانات</translation>
     </message>
 </context>
 </TS>

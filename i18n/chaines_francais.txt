@@ -1,0 +1,142 @@
+Ce plugin crée en un clic une mise en page basée sur l'étendue de la fenêtre principale d'un projet QGIS. Il ajoute également une légende, une barre d'échelle et une flèche du nord à la mise en page. La taille de la carte est calculée pour occuper l'espace maximum sur la page et l'orientation de la page est déterminée par l'étendue de la carte.
+
+
+
+Création d'une mise en page basée sur l'extension courante du projet 
+
+
+
+Suppression de la mise en page...
+
+
+
+Une mise en page nommée '%s' existe déjà
+Souhaitez-vous la supprimer ?
+
+
+
+
+La précédente mise en page nommée '%s' a été supprimée... 
+
+
+
+
+Ajout de la légende
+
+
+
+
+Ajout de l'échelle
+
+
+
+
+Ajout de la flêche Nord
+
+
+
+
+Légende
+
+
+
+
+Lancement de AutoLayoutTool
+
+
+
+
+Configuration de AutoLayoutTool
+
+
+
+
+Calcul de l'échelle
+
+
+
+
+Mise en page automatique
+
+
+
+---------------------------
+Coin supérieur gauche
+
+
+
+
+Coin supérieur droit
+
+
+
+
+Coin inférieur gauche
+
+
+
+
+Coin inférieur droit
+
+
+
+Aucune
+
+
+
+
+Légende
+
+
+
+
+Mise en page automatique
+
+
+
+----------------------------
+Configuration de AutoLayoutTool 
+
+
+
+
+Choisir l'emplacement
+
+
+
+Flèche nord
+
+
+
+
+Échelle
+
+
+
+Légende
+
+
+
+Marge (mm)
+
+
+
+Restaurer les valeurs par défaut
+
+
+
+
+Titre de la légende
+
+
+
+
+
+Nom de la mise en page
+
+
+
+
+
+Enregistrer les valeurs
+
