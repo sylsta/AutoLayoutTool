@@ -389,6 +389,7 @@ class AutoLayoutTool:
         :return: None
         """
 
+
         margin = 10
         layout_name = self.tr('Automatic layout')
         print('--------------------------------')
