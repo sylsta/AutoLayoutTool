@@ -48,21 +48,34 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
             chkb = QtWidgets.QCheckBox()
             chkb.setChecked(True)
             combo = QtWidgets.QComboBox()
-            combo.setCurrentIndex()
+            combo.currentText()
+            qsp = QtWidgets.QSpinBox()
+
         except:
             pass
 
         le_legend_title = QtWidgets.QLineEdit
 
-        for cb in [self.cb_north, self.cb_scalebar, self.cb_legend]:
-            cb.addItems([self.tr(u'Top left corner'), self.tr(u'Top right corner'), self.tr(u'Bottom left corner'),
-                    self.tr(u'Bottom right corner')])
-        self.cb_north.setCurrentIndex(3)
-        self.cb_scalebar.setCurrentIndex(4)
-        self.cb_legend.setCurrentIndex(1)
-        for chkb in [self.chkb_north_arrow, self.chkb_scalebar, self.chkb_legend, self.chkb_margin]:
-            chkb.setChecked(True)
+        comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
+
+        for comboBox in comboBox_list:
+            comboBox.addItems([self.tr(u'Top left corner'), self.tr(u'Top right corner'),
+                               self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')])
+            comboBox.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, comboBox))
+        self.set_default()
+
+
+    def set_default(self):
+        self.cbb_north.setCurrentIndex(2)
+        self.cbb_scalebar.setCurrentIndex(3)
+        self.cbb_legend.setCurrentIndex(0)
         self.le_legend_title.setText(self.tr(u'Legend'))
-        self.le_margin.setText(self.tr(u'10'))
+        self.sb_margin_value.setValue(10)
+        self.le_layout_name.setText(self.tr(u'Automatic Layout'))
 
-
+    def cbb_state_changed(self, index, comboBox):
+        print('____')
+        print(type(index))
+        print(index)
+        print(type(comboBox))
+        print(comboBox.currentText())

@@ -62,7 +62,7 @@ class AutoLayoutTool:
         :type iface: QgsInterface
         """
         # debug state for pycharm (pro version only :-() python debug server
-        self.debug = False
+        self.debug = True
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -101,7 +101,7 @@ class AutoLayoutTool:
                 pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
             except:
                 pass
-
+        self.default_values()
 
 
     def tr(self, message):
@@ -133,7 +133,7 @@ class AutoLayoutTool:
         self.iface.addToolBarIcon(action)
         self.actions.append(action)
 
-        # # Config entry menu
+        # Config entry menu
         text = self.tr("AutoLayoutTool configuration")
         action = QAction(QIcon(':/plugins/create_layout/layout.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
@@ -141,6 +141,7 @@ class AutoLayoutTool:
         action.triggered.connect(self.config)
         self.actions.append(action)
 
+        self.default_values()
 
 
     def unload(self):
@@ -390,15 +391,14 @@ class AutoLayoutTool:
         """
 
 
-        margin = 10
-        layout_name = self.tr('Automatic layout')
+
         print('--------------------------------')
         print(self.tr(u'AutoLayoutTool starts'))
         print('--------------------------------')
 
         # Create layout
         try:
-            layout, manager = self.create_layout(layout_name)
+            layout, manager = self.create_layout(self.layout_name)
         except:
             # Quick and dirty. In case people decide not to replace previous layout
             return
@@ -414,7 +414,7 @@ class AutoLayoutTool:
         # Add map
         map_real_height, map_real_width, x_offset, y_offset = self.add_map(self.iface.mapCanvas().extent(), layout,
                                                                            layout_height, layout_width, map_height,
-                                                                           map_width, margin, my_map)
+                                                                           map_width, self.margin, my_map)
 
         # Add legend
         self.add_legend(layout, x_offset, y_offset)
@@ -431,3 +431,9 @@ class AutoLayoutTool:
         print('--------------------------------')
         print("♪♪ This is the end, my friend ♪♪")
         print('--------------------------------')
+
+
+    def default_values(self):
+        # default values for parameters
+        self.margin = 10
+        self.layout_name = self.tr('Automatic layout')
