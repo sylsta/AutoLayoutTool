@@ -395,24 +395,34 @@ class AutoLayoutTool:
         print('--------------------------------')
         print(self.tr(u'AutoLayoutTool starts'))
         print('--------------------------------')
+        e = self.iface.mapCanvas().extent()
+        map_width = e.xMaximum() - e.xMinimum()
+        map_height = e.yMaximum() - e.yMinimum()
+        if (map_height==0) or (map_width==0):
+            print(self.tr(u'No loaded data - aborting'))
+            print('--------------------------------')
+            return
+
 
         # Create layout
         try:
             layout, manager = self.create_layout(self.layout_name)
         except:
             # Quick and dirty. In case people decide not to replace previous layout
+            print(self.tr(u'Cancelled by user'))
+            print('--------------------------------')
             return
 
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
-                                                                             self.iface.mapCanvas().extent(), layout)
+                                                                            e, layout)
 
         # Calculate scale
         map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
                                                                  map_height, map_width, scale_ratio)
 
         # Add map
-        map_real_height, map_real_width, x_offset, y_offset = self.add_map(self.iface.mapCanvas().extent(), layout,
+        map_real_height, map_real_width, x_offset, y_offset = self.add_map(e, layout,
                                                                            layout_height, layout_width, map_height,
                                                                            map_width, self.margin, my_map)
 
