@@ -66,7 +66,7 @@ else:
 
 # Add map
 print("Adding map")
-map = QgsLayoutItemMap(layout)
+my_map = QgsLayoutItemMap(layout)
 
 print("mapw: %r / maph: %r" % (map_width, map_height))
 print(scale_ratio)
@@ -100,31 +100,22 @@ else:
         # map_width = round(previous_width * scale_ratio, 3)
         pass
 
-previous_map_width = map_width
-map_height = map_height-margin
-if not landscape:
-    tmp = ((map_width-margin)/margin)*map_height
-    map_width = map_width-margin
-else:
-    map_width = map_width-margin
-
-x_offset = (layout_width - map_width)/2
-y_offset = (layout_height - map_height)/2
-
-
-
-
-
-print("x: %r / y: %r" % (x_offset, y_offset))
-print("final_mapw: %r / final_maph: %r" % (map_width, map_height))
-
-map.setRect(0, 0, map_width, map_height)
-map.setExtent(e)
-map.setBackgroundColor(QColor(255, 255, 255, 0))
-map.setFrameEnabled(True)
-map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
-layout.addLayoutItem(map)
-
+map_width = map_width - margin
+map_height = map_height - margin
+my_map.setRect(0, 0, map_width, map_height)
+my_map.setExtent(e)
+layout.addLayoutItem(my_map)
+my_map.refresh()
+map_real_width = my_map.rect().size().width()
+map_real_height = my_map.rect().size().height()
+x_offset = (layout_width - map_real_width) / 2
+y_offset = (layout_height - map_real_height) / 2
+print("x_offset: %r / y_offset: %r" % (x_offset, y_offset))
+print("real_mapw: %r / real_maph: %r" % (map_real_width, map_real_height))
+my_map.setBackgroundColor(QColor(255, 255, 255, 255))
+my_map.setFrameEnabled(True)
+my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+layout.addLayoutItem(my_map)
 # Add legend
 print((u"Adding legend"))
 lyrs_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
@@ -153,7 +144,7 @@ print(legend.sizeWithUnits())
 print((u"Adding scale bar"))
 scalebar = QgsLayoutItemScaleBar(layout)
 scalebar.setStyle('Single Box')
-scalebar.setLinkedMap(map)
+scalebar.setLinkedMap(my_map)
 scalebar.applyDefaultSize()
 scalebar.applyDefaultSettings()
 scalebar.setUnits(QgsUnitTypes.DistanceKilometers)
@@ -161,22 +152,17 @@ scalebar.setUnitsPerSegment(scalebar.unitsPerSegment() / 1000)
 scalebar.setUnitLabel('km')
 scalebar.update()
 layout.addLayoutItem(scalebar)
-if landscape:
-    scalebar.attemptMove(QgsLayoutPoint(layout_width-80, map_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
-else:
-    scalebar.attemptMove(
-        QgsLayoutPoint(map_width - 50 + x_offset, map_height - 15, QgsUnitTypes.LayoutMillimeters))
+scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
+                                    map_real_height + y_offset - scalebar.rect().size().height() - 5,
+                                    QgsUnitTypes.LayoutMillimeters))
 
 # Add north arrow
 print((u"Add north arrow"))
 north = QgsLayoutItemPicture(layout)
-north.setPicturePath("/home/sylvain/Cloud/github.com/AutoLayoutTool/north-arrow.svg")
+north.setPicturePath("/home/sylvain/Cloud/github.com/AutoLayoutTool/images/north-arrow.svg")
 layout.addLayoutItem(north)
 north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
-if landscape:
-    north.attemptMove(QgsLayoutPoint(3 + x_offset, map_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
-else:
-    north.attemptMove(QgsLayoutPoint(3 + x_offset, map_height - 15, QgsUnitTypes.LayoutMillimeters))
+north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
 
 # Finally add layout to the project via its manager
 manager.addLayout(layout)

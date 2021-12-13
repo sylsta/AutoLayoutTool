@@ -149,7 +149,6 @@ class AutoLayoutTool:
 
         self.params_from_dialog = False
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
@@ -157,7 +156,6 @@ class AutoLayoutTool:
                 self.tr(u'&AutoLayoutTool'),
                 action)
             self.iface.removeToolBarIcon(action)
-
 
     def create_layout(self, layout_name):
         """
@@ -300,7 +298,7 @@ class AutoLayoutTool:
         layout.addLayoutItem(my_map)
         return map_real_height, map_real_width, x_offset, y_offset
 
-    def add_legend(self, layout, x_offset, y_offset):
+    def add_legend(self, layout, x_offset, y_offset, legend_title, legend_placement):
         """
         Add legend to the layout
         :param layout: QgsLayout
@@ -311,7 +309,7 @@ class AutoLayoutTool:
         print(self.tr(u"Adding legend"))
         layers_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
-        legend.setTitle(self.tr(u'Legend'))
+        legend.setTitle(self.tr(legend_title))
         legend.setAutoUpdateModel(False)
         group = legend.model().rootGroup()
         group.clear()
@@ -326,10 +324,18 @@ class AutoLayoutTool:
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
-        legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+        if legend_placement == 0:
+            legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+        elif legend_placement == 1:
+            pass
+        elif legend_placement == 2:
+            pass
+        elif legend_placement == 3:
+            pass
+
         legend.refresh()
 
-    def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset):
+    def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """
         Add scalebar to the layout
         :param layout: QgsLayout
@@ -351,11 +357,20 @@ class AutoLayoutTool:
         scalebar.setUnitLabel('km')
         scalebar.update()
         layout.addLayoutItem(scalebar)
-        scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
-                                            map_real_height + y_offset - scalebar.rect().size().height() - 5,
-                                            QgsUnitTypes.LayoutMillimeters))
+        if scalebar_placement == 0:
+            pass
+        elif scalebar_placement == 1:
+            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
+                                                y_offset - scalebar.rect().size().height() + 15,
+                                                QgsUnitTypes.LayoutMillimeters))
+        elif scalebar_placement == 2:
+            pass
+        elif scalebar_placement == 3:
+            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
+                                                map_real_height + y_offset - scalebar.rect().size().height() - 5,
+                                                QgsUnitTypes.LayoutMillimeters))
 
-    def add_north_arrow(self, layout, manager, map_real_height, x_offset, y_offset):
+    def add_north_arrow(self, layout, manager, map_real_height, x_offset, y_offset, north_placement):
         """
         Adds north arrow to the layout
         :param layout: QgsLayout
@@ -370,7 +385,14 @@ class AutoLayoutTool:
         north.setPicturePath(self.plugin_dir + "/images/north-arrow.svg")
         layout.addLayoutItem(north)
         north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
-        north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
+        if north_placement == 0:
+            north.attemptMove(QgsLayoutPoint(3 + x_offset,y_offset + 5, QgsUnitTypes.LayoutMillimeters))
+        elif north_placement == 1:
+            pass
+        elif north_placement == 2:
+            north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
+        elif north_placement == 3:
+            pass
 
     def config(self):
         # Create the dialog with elements (after translation) and keep reference
@@ -399,7 +421,7 @@ class AutoLayoutTool:
 
     def param_from_file(self):
         """
-        
+        Load default or custom params from file
         :return: 
         """
         config_object = ConfigParser()
@@ -459,14 +481,20 @@ class AutoLayoutTool:
                                                                            layout_height, layout_width, map_height,
                                                                            map_width, self.margin, my_map)
 
-        # Add legend
-        self.add_legend(layout, x_offset, y_offset)
 
-        # Add scale bar
-        self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset)
+        if self.legend_placement != 4:
+            # Add legend
+            self.add_legend(layout, x_offset, y_offset, self.legend_title, self.legend_placement)
 
-        # Add north arrow
-        self.add_north_arrow(layout, manager, map_real_height, x_offset, y_offset)
+
+        if self.scalebar_placement != 4:
+            # Add scale bar
+            self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset, self.scalebar_placement)
+
+
+        if self.north_placement != 4:
+            # Add north arrow
+            self.add_north_arrow(layout, manager, map_real_height, x_offset, y_offset, self.north_placement)
 
         # Finally add layout to the project via its manager
         manager.addLayout(layout)
