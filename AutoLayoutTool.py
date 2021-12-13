@@ -44,7 +44,12 @@ from qgis.PyQt.QtGui import QIcon, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
+from configparser import ConfigParser
 
+def param_from_file(self):
+    # default values for parameters
+    self.margin = 10
+    self.layout_name = self.tr('Automatic layout')
 import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -103,7 +108,6 @@ class AutoLayoutTool:
                 pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
             except:
                 pass
-        self.default_values()
 
 
     def tr(self, message):
@@ -143,7 +147,7 @@ class AutoLayoutTool:
         action.triggered.connect(self.config)
         self.actions.append(action)
 
-        self.default_values()
+        self.params_from_dialog = False
 
 
     def unload(self):
@@ -363,7 +367,7 @@ class AutoLayoutTool:
         """
         print(self.tr(u"Adding north arrow"))
         north = QgsLayoutItemPicture(layout)
-        north.setPicturePath(os.path.dirname(__file__) + "/images/north-arrow.svg")
+        north.setPicturePath(self.plugin_dir + "/images/north-arrow.svg")
         layout.addLayoutItem(north)
         north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
         north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
@@ -381,18 +385,45 @@ class AutoLayoutTool:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            pass
-
+            self.params_from_dialog = True
+            self.north_placement = int(self.dlg.cbb_north.currentIndex())
+            self.scalebar_placement = int(self.dlg.cbb_scalebar.currentIndex())
+            self.legend_placement = int(self.dlg.cbb_legend.currentIndex())
+            self.legend_title = self.dlg.le_legend_title.text()
+            self.margin = int(self.dlg.sb_margin_value.value())
+            self.layout_name = self.dlg.le_layout_name.text()
+        else:
+            self.params_from_dialog = False
         # Do something useful here - delete the line containing pass and
         # substitute with your code.
+
+    def param_from_file(self):
+        """
+        
+        :return: 
+        """
+        config_object = ConfigParser()
+        if os.path.isfile(self.plugin_dir + '/config/custom.ini'):
+            config_object.read(self.plugin_dir + '/config/custom.ini')
+        else:
+            config_object.read(self.plugin_dir + '/config/default.ini')
+
+        # read values for parameters
+        file_values = config_object["ITEMS_PLACEMENT"]
+        self.north_placement = int(file_values["cbb_north_value"])
+        self.scalebar_placement = int(file_values["cbb_scalebar_value"])
+        self.legend_placement = int(file_values["cbb_legend_value_value"])
+        self.legend_title = self.tr(file_values["le_legend_title_value"])
+        self.margin = int(file_values["sb_margin_value_value"])
+        self.layout_name = self.tr(file_values["le_layout_name_value"])
 
     def run(self):
         """
         Creates a layout with a map of the current interface extent, with legend, scalebar and north arrow
         :return: None
         """
-
-
+        if not self.params_from_dialog:
+            self.param_from_file()
 
         print('--------------------------------')
         print(self.tr(u'AutoLayoutTool starts'))
@@ -445,7 +476,4 @@ class AutoLayoutTool:
         print('--------------------------------')
 
 
-    def default_values(self):
-        # default values for parameters
-        self.margin = 10
-        self.layout_name = self.tr('Automatic layout')
+
