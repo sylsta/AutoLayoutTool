@@ -157,6 +157,9 @@
      <height>32</height>
     </rect>
    </property>
+   <property name="maximum">
+    <number>200</number>
+   </property>
   </widget>
   <widget class="QLineEdit" name="le_layout_name">
    <property name="geometry">

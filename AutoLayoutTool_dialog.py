@@ -26,6 +26,8 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
+from configparser import ConfigParser
+
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -42,23 +44,13 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        # if self.debug:
-        try:
-            chkb = QtWidgets.QCheckBox()
-            chkb.setChecked(True)
-            combo = QtWidgets.QComboBox()
-            combo.currentText()
-            qsp = QtWidgets.QSpinBox()
-            combo.currentText()
+        self.plugin_dir = os.path.dirname(__file__)
 
-        except:
-            pass
         # combobox management
         self.comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
         self.comboBox_value = [self.tr(u'Top left corner'), self.tr(u'Top right corner'),
                                self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')]
         for i in range(len(self.comboBox_list)):
-            print(i)
             self.comboBox_list[i].addItems(self.comboBox_value)
             # Cant understand why this do not work
             # comboBox.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, i))
@@ -68,47 +60,84 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
 
         # buttons action
-        self.pb_restore.clicked.connect(self.set_default)
+        self.pb_restore.clicked.connect(self.load_default)
+        self.pb_save.clicked.connect(self.write_custom_values)
 
-        # final init (will be change to false when saved config will be implemented
-        self.set_default(True)
+        # other staff signals
+        self.le_layout_name.editingFinished.connect(self.items_changed)
+        self.le_legend_title.editingFinished.connect(self.items_changed)
+        self.sb_margin_value.editingFinished.connect(self.items_changed)
+        self.set_form_values(False)
 
-    def set_default(self, force=True):
-        if force: # reset to default vlues via button
-            self.cbb_north.setCurrentIndex(2)
-            self.cbb_scalebar.setCurrentIndex(3)
-            self.cbb_legend.setCurrentIndex(0)
-            self.le_legend_title.setText(self.tr(u'Legend'))
-            self.sb_margin_value.setValue(10)
-            self.le_layout_name.setText(self.tr(u'Automatic Layout'))
-        else: # form init (defaults values might have overwritten)
-            pass
+
+
+    def write_custom_values(self):
+        config_object = ConfigParser()
+        config_object["ITEMS_PLACEMENT"] = {
+            "cbb_north_value": self.cbb_north.currentIndex(),
+            "cbb_scalebar_value": self.cbb_scalebar.currentIndex(),
+            "cbb_legend_value_value": self.cbb_legend.currentIndex(),
+            "le_legend_title_value": self.le_legend_title.text(),
+            "sb_margin_value_value": self.sb_margin_value.value(),
+            "le_layout_name_value": self.le_layout_name.text()
+        }
+        with open(self.plugin_dir + '/config/custom.ini', 'w') as conf:
+            config_object.write(conf)
+
+    def load_default(self, value):
+        """
+
+        """
+        self.set_form_values(True)
+
+    def set_form_values(self, default):
+
+        config_object = ConfigParser()
+        if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
+            config_object.read(self.plugin_dir + '/config/custom.ini')
+            self.pb_restore.setEnabled(True)
+            self.pb_save.setEnabled(False)
+        else:
+            config_object.read(self.plugin_dir + '/config/default.ini')
+            self.pb_restore.setEnabled(False)
+            self.pb_save.setEnabled(False)
+            try:
+                os.remove(self.plugin_dir + '/config/custom.ini')
+            except:
+                pass
+
+        file_values = config_object["ITEMS_PLACEMENT"]
+        self.cbb_north.setCurrentIndex(int(file_values["cbb_north_value"]))
+        self.cbb_scalebar.setCurrentIndex(int(file_values["cbb_scalebar_value"]))
+        self.cbb_legend.setCurrentIndex(int(file_values["cbb_legend_value_value"]))
+        self.le_legend_title.setText(self.tr(file_values["le_legend_title_value"]))
+        self.sb_margin_value.setValue(int(file_values["sb_margin_value_value"]))
+        self.le_layout_name.setText(self.tr(file_values["le_layout_name_value"]))
+
+        if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
+            self.pb_restore.setEnabled(True)
+            self.pb_save.setEnabled(False)
+        else:
+            self.pb_restore.setEnabled(False)
+            self.pb_save.setEnabled(False)
+
 
     def cbb_state_changed(self, text, i):
+        """
+
+        """
         nb_of_cbb = len(self.comboBox_list)
-        nb_of_cbbox_values = len(self.comboBox_value)-1
-        if text != self.comboBox_value[nb_of_cbbox_values]: # value "None"
-            # print("Not None")
-            # print(i)
+        nb_of_cbbox_values = len(self.comboBox_value) - 1
+        if text != self.comboBox_value[nb_of_cbbox_values]:  # value "None"
             list_id_combobox_tocheck = set(range(nb_of_cbb)) - set([i])
-            print("list_id_combobox_tocheck")
-            print(list_id_combobox_tocheck)
-            print("-------")
-
             for j in list_id_combobox_tocheck:
-
                 if self.comboBox_list[j].currentText() == text:
-                    print("modif box")
-                    print(self.comboBox_list[j].currentText())
-                    print(j)
                     self.comboBox_list[j].setCurrentIndex(nb_of_cbbox_values)
-                    print(self.comboBox_list[j].currentText())
+        self.items_changed()
 
-            # determine
+    def items_changed(self):
+        """
 
-
-
-        # print(type(text))
-
-        # print(type(self.comboBox_list[i]))
-        # print(self.comboBox_list[i].currentText())
+        """
+        self.pb_restore.setEnabled(True)
+        self.pb_save.setEnabled(True)
