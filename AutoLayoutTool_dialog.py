@@ -68,20 +68,20 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
 
         # buttons action
-
+        self.pb_restore.clicked.connect(self.set_default)
 
         # final init (will be change to false when saved config will be implemented
         self.set_default(True)
 
-    def set_default(self, force):
-        if force: # reset to default button
+    def set_default(self, force=True):
+        if force: # reset to default vlues via button
             self.cbb_north.setCurrentIndex(2)
             self.cbb_scalebar.setCurrentIndex(3)
             self.cbb_legend.setCurrentIndex(0)
             self.le_legend_title.setText(self.tr(u'Legend'))
             self.sb_margin_value.setValue(10)
             self.le_layout_name.setText(self.tr(u'Automatic Layout'))
-        else: # form init (defaults values might have overwritten
+        else: # form init (defaults values might have overwritten)
             pass
 
     def cbb_state_changed(self, text, i):
@@ -101,7 +101,7 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
                     print("modif box")
                     print(self.comboBox_list[j].currentText())
                     print(j)
-                    self.comboBox_list[j].setCurrentIndex(nb_of_cbb)
+                    self.comboBox_list[j].setCurrentIndex(nb_of_cbbox_values)
                     print(self.comboBox_list[j].currentText())
 
             # determine
