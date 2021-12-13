@@ -425,8 +425,11 @@ class AutoLayoutTool:
         print('--------------------------------')
 
         # Create layout
-        layout, manager = self.create_layout(layout_name)
-
+        try:
+            layout, manager = self.create_layout(layout_name)
+        except:
+            # Quick and dirty. In case people decide not to replace previous layout
+            return
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
                                                                              self.iface.mapCanvas().extent(), layout)

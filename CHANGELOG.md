@@ -1,5 +1,8 @@
 Change Log 
 ==========
+* __1.1__ (2021-11-30):
+  * fix bug
+
 * __1.0__ (2021-11-29):
   * public release
   * fix positioning issue (margin, north arrow, scale)

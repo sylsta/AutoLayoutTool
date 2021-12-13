@@ -2,7 +2,7 @@
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=One-click print layout creator
-version=1.0
+version=1.1
 author=Sylvain Théry (UMR 5281 ART-Dev)
 email=sylvain.thery@cnrs.fr
 
@@ -19,6 +19,8 @@ category=Plugins
 icon=layout.png
 
 changelog=
+    1.1 (2021-11-29)
+        - bug fix
     1.0 (2021-11-29)
         - public release
         - fix positioning issue (margin, north arrow, scale)
