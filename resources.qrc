@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/plugins/create_layout" >
-        <file>layout.png</file>
+    <qresource prefix="/plugins/AutoLayoutTool" >
+        <file>images/layout.png</file>
+        <file>images/config.png</file>
     </qresource>
 </RCC>

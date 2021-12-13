@@ -15,4 +15,4 @@ Acceptez d'installer l'extension
 
 L'icone ci-dessous apparait ainsi qu'une nouvelle entrée dans le menu 'Extension'
 
-![](../layout.png)
+![](../images/layout.png)

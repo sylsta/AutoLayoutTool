@@ -53,7 +53,7 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
         except:
             pass
-
+        # combobox management
         self.comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
         self.comboBox_value = [self.tr(u'Top left corner'), self.tr(u'Top right corner'),
                                self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')]
@@ -66,33 +66,43 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cbb_north.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 0))
         self.cbb_scalebar.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 1))
         self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
-        self.set_default()
 
-    def set_default(self):
-        self.cbb_north.setCurrentIndex(2)
-        self.cbb_scalebar.setCurrentIndex(3)
-        self.cbb_legend.setCurrentIndex(0)
-        self.le_legend_title.setText(self.tr(u'Legend'))
-        self.sb_margin_value.setValue(10)
-        self.le_layout_name.setText(self.tr(u'Automatic Layout'))
+        # buttons action
+
+
+        # final init (will be change to false when saved config will be implemented
+        self.set_default(True)
+
+    def set_default(self, force):
+        if force: # reset to default button
+            self.cbb_north.setCurrentIndex(2)
+            self.cbb_scalebar.setCurrentIndex(3)
+            self.cbb_legend.setCurrentIndex(0)
+            self.le_legend_title.setText(self.tr(u'Legend'))
+            self.sb_margin_value.setValue(10)
+            self.le_layout_name.setText(self.tr(u'Automatic Layout'))
+        else: # form init (defaults values might have overwritten
+            pass
 
     def cbb_state_changed(self, text, i):
         nb_of_cbb = len(self.comboBox_list)
-        if text != self.comboBox_value[nb_of_cbb]: # value "None"
+        nb_of_cbbox_values = len(self.comboBox_value)-1
+        if text != self.comboBox_value[nb_of_cbbox_values]: # value "None"
             # print("Not None")
             # print(i)
             list_id_combobox_tocheck = set(range(nb_of_cbb)) - set([i])
+            print("list_id_combobox_tocheck")
             print(list_id_combobox_tocheck)
             print("-------")
 
             for j in list_id_combobox_tocheck:
-                print(self.comboBox_list[j].currentText())
-                print(j)
+
                 if self.comboBox_list[j].currentText() == text:
                     print("modif box")
+                    print(self.comboBox_list[j].currentText())
                     print(j)
-                #     self.comboBox_list[j].setCurrentIndex(nb_of_cbb)
-                #     print(self.comboBox_list[j].currentText())
+                    self.comboBox_list[j].setCurrentIndex(nb_of_cbb)
+                    print(self.comboBox_list[j].currentText())
 
             # determine
 
