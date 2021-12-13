@@ -72,6 +72,10 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
 
     def write_custom_values(self):
+        """
+        Write custom ini file if button pressed
+        :return:
+        """
         config_object = ConfigParser()
         config_object["ITEMS_PLACEMENT"] = {
             "cbb_north_value": self.cbb_north.currentIndex(),
@@ -86,12 +90,18 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def load_default(self, value):
         """
-
+        Workaround. Action launched by restore button click
+        :param value: boolean. True to load from default config file
+        :return:
         """
         self.set_form_values(True)
 
     def set_form_values(self, default):
-
+        """
+        Either load default or custom values from file and feed form components
+        :param default:
+        :return:
+        """
         config_object = ConfigParser()
         if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
             config_object.read(self.plugin_dir + '/config/custom.ini')
@@ -124,7 +134,10 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def cbb_state_changed(self, text, i):
         """
-
+        Check if other comboxbox index has  to be changed, since placements have to be différents.
+        :param text: string, combobox current text
+        :param i: int, combobox id
+        :return:
         """
         nb_of_cbb = len(self.comboBox_list)
         nb_of_cbbox_values = len(self.comboBox_value) - 1
@@ -137,7 +150,7 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def items_changed(self):
         """
-
+        Enable saving/restoring default values
         """
         self.pb_restore.setEnabled(True)
         self.pb_save.setEnabled(True)
