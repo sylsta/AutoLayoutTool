@@ -27,7 +27,6 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
-
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'AutoLayoutTool_dialog_base.ui'))
@@ -50,20 +49,24 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
             combo = QtWidgets.QComboBox()
             combo.currentText()
             qsp = QtWidgets.QSpinBox()
+            combo.currentText()
 
         except:
             pass
 
-        le_legend_title = QtWidgets.QLineEdit
-
-        comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
-
-        for comboBox in comboBox_list:
-            comboBox.addItems([self.tr(u'Top left corner'), self.tr(u'Top right corner'),
-                               self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')])
-            comboBox.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, comboBox))
+        self.comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
+        self.comboBox_value = [self.tr(u'Top left corner'), self.tr(u'Top right corner'),
+                               self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')]
+        for i in range(len(self.comboBox_list)):
+            print(i)
+            self.comboBox_list[i].addItems(self.comboBox_value)
+            # Cant understand why this do not work
+            # comboBox.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, i))
+            # self.comboBox_list[i].currentTextChanged.connect(lambda x: self.cbb_state_changed(x, i))
+        self.cbb_north.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 0))
+        self.cbb_scalebar.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 1))
+        self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
         self.set_default()
-
 
     def set_default(self):
         self.cbb_north.setCurrentIndex(2)
@@ -73,9 +76,29 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.sb_margin_value.setValue(10)
         self.le_layout_name.setText(self.tr(u'Automatic Layout'))
 
-    def cbb_state_changed(self, index, comboBox):
-        print('____')
-        print(type(index))
-        print(index)
-        print(type(comboBox))
-        print(comboBox.currentText())
+    def cbb_state_changed(self, text, i):
+        nb_of_cbb = len(self.comboBox_list)
+        if text != self.comboBox_value[nb_of_cbb]: # value "None"
+            # print("Not None")
+            # print(i)
+            list_id_combobox_tocheck = set(range(nb_of_cbb)) - set([i])
+            print(list_id_combobox_tocheck)
+            print("-------")
+
+            for j in list_id_combobox_tocheck:
+                print(self.comboBox_list[j].currentText())
+                print(j)
+                if self.comboBox_list[j].currentText() == text:
+                    print("modif box")
+                    print(j)
+                #     self.comboBox_list[j].setCurrentIndex(nb_of_cbb)
+                #     print(self.comboBox_list[j].currentText())
+
+            # determine
+
+
+
+        # print(type(text))
+
+        # print(type(self.comboBox_list[i]))
+        # print(self.comboBox_list[i].currentText())

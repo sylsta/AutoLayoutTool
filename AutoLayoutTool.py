@@ -98,7 +98,8 @@ class AutoLayoutTool:
         if self.debug:
             try:
                 import pydevd_pycharm
-                pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+                #pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+                pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
             except:
                 pass
         self.default_values()
