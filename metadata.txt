@@ -19,6 +19,8 @@ category=Plugins
 icon=layout.png
 
 changelog=
+    1.1.0.1 (2021-12-13)
+        - Darlea Andrei version (added background color 4 scalebar and north arrow)
     1.1 (2021-11-29)
         - bug fix
     1.0 (2021-11-29)

@@ -327,7 +327,8 @@ class AutoLayoutTool:
         y_offset = (layout_height - map_real_height) / 2
         if self.debug: print("x_offset: %r / y_offset: %r" % (x_offset, y_offset))
         if self.debug: print("real_mapw: %r / real_maph: %r" % (map_real_width, map_real_height))
-        my_map.setBackgroundColor(QColor(255, 255, 255, 0))
+        my_map.setBackgroundColor(QColor(255, 255, 255, 255))
+        my_map.setBackgroundEnabled(True)
         my_map.setFrameEnabled(True)
         my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         layout.addLayoutItem(my_map)
@@ -382,6 +383,9 @@ class AutoLayoutTool:
         scalebar.setUnits(QgsUnitTypes.DistanceKilometers)
         scalebar.setUnitsPerSegment(scalebar.unitsPerSegment() / 1000)
         scalebar.setUnitLabel('km')
+        # scalebar.setFrameEnabled(True)
+        scalebar.setBackgroundColor(QColor(255, 255, 255, 255))
+        scalebar.setBackgroundEnabled(True)
         scalebar.update()
         layout.addLayoutItem(scalebar)
         scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
@@ -401,6 +405,9 @@ class AutoLayoutTool:
         print(self.tr(u"Adding north arrow"))
         north = QgsLayoutItemPicture(layout)
         north.setPicturePath(os.path.dirname(__file__) + "/north-arrow.svg")
+        # north.setFrameEnabled(True)
+        north.setBackgroundColor(QColor(255, 255, 255, 255))
+        north.setBackgroundEnabled(True)
         layout.addLayoutItem(north)
         north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
         north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
@@ -418,7 +425,7 @@ class AutoLayoutTool:
             shortcut.activated.connect(self.run)
 
 
-        margin = 10
+        margin = 0
         layout_name = self.tr('Automatic layout')
         print('--------------------------------')
         print(self.tr(u'AutoLayoutTool starts'))
