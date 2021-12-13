@@ -289,7 +289,7 @@ class AutoLayoutTool:
         y_offset = (layout_height - map_real_height) / 2
         if self.debug: print("x_offset: %r / y_offset: %r" % (x_offset, y_offset))
         if self.debug: print("real_mapw: %r / real_maph: %r" % (map_real_width, map_real_height))
-        my_map.setBackgroundColor(QColor(255, 255, 255, 0))
+        my_map.setBackgroundColor(QColor(255, 255, 255, 255))
         my_map.setFrameEnabled(True)
         my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         layout.addLayoutItem(my_map)
