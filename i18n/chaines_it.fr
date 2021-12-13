@@ -1,0 +1,115 @@
+
+Ce plugin crée en un clic une mise en page basée sur l'étendue de la fenêtre principale d'un projet QGIS. Il ajoute également une légende, une barre d'échelle et une flèche du nord à la mise en page. La taille de la carte est calculée pour occuper l'espace maximum sur la page et l'orientation de la page est déterminée par l'étendue de la carte.
+Questo plugin permette di creare un'impaginazione basata sulla dimensione della finestra principale di un progetto QGIS. Il plugin permette anche di aggiungere la legenda, la scala et la direzione del Nord. La dimensione della mappa è prevista per occupare lo spazio massimo disponibile, l'orientamento della pagina è funzione della dimensione della mappa.
+
+
+Création d'une mise en page basée sur l'extension courante du projet 
+Creare un'impaginazione basata sulle dimensioni attuali del progetto
+
+
+
+Suppression de la mise en page...
+Sopprimere l'impaginazione
+
+
+Une mise en page nommée '%s' existe déjà
+Souhaitez-vous la supprimer ?
+Un'impaginazione denominata '%s' è già attiva.
+Volete sopprimerla ?
+
+
+
+La précédente mise en page nommée '%s' a été supprimée... 
+L'impaginazione denominata '%s' è stata soppressa.
+
+
+
+Ajout de la légende
+Aggiungere legenda
+
+
+
+
+Ajout de l'échelle
+Aggiungere la scala
+
+
+
+
+Ajout de la flêche Nord
+Aggiungere il Nord
+
+
+
+
+Légende
+Legenda
+
+
+
+
+Lancement de AutoLayoutTool
+Lanciare AutoLayoutTool
+
+
+
+
+Configuration de AutoLayoutTool
+Configurare AutoLayoutTool
+
+
+
+Calcul de l'échelle
+Calcolo della scala
+
+
+
+Mise en page automatique
+Impaginazione automatica
+
+
+
+---------------------------
+Coin supérieur gauche
+Angolo superiore sinistro
+
+
+
+
+Coin supérieur droit
+Angolo superiore destro
+
+
+
+
+Coin inférieur gauche
+Angolo inferiore sinistro
+
+
+
+
+Coin inférieur droit
+Angolo inferiore destro
+
+
+
+Aucune
+Nessuna
+
+
+
+
+Légende
+Legenda
+
+
+
+
+Mise en page automatique
+Impaginazione automatica
+
+
+
+----------------------------
+Configuration de AutoLayoutTool
+Configurazione di AutoLayoutTool  
