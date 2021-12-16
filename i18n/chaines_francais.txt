@@ -1,4 +1,4 @@
-Ce plugin crée en un clic une mise en page basée sur l'étendue de la fenêtre principale d'un projet QGIS. Il ajoute également une légende, une barre d'échelle et une flèche du nord à la mise en page. La taille de la carte est calculée pour occuper l'espace maximum sur la page et l'orientation de la page est déterminée par l'étendue de la carte.
+Ce plugin crée en un clic une mise en page basée sur l'étendue de la fenêtre principale d'un projet QGIS. Il ajoute également une légende, une barre d'échelle et une flèche du nord à la mise en page. La taille de la carte est calculée pour occuper l'espace maximum sur la page et l'orientation de la page est déterminée par l'étendue de la carte. Des paramètres peuvent être réglés dans le menu 'Extension
 
 
 
@@ -41,7 +41,7 @@ Légende
 
 
 
-Lancement de AutoLayoutTool
+Lancement de AutoLayoutTool (Note pour traduction : le terme "AutoLayoutTool" ne doit pas être traduit ni ici ni ailleurs, c'est l'usage dans Qgis pour le nom des plugins)
 
 
 
