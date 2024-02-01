@@ -24,10 +24,11 @@
 
 import os
 
-from qgis.PyQt import uic
+from qgis.PyQt import uic, QtCore
 from qgis.PyQt import QtWidgets
 from configparser import ConfigParser
 
+from qgis.core import QgsApplication, QgsPrintLayout, QgsProject
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -46,7 +47,7 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.setupUi(self)
         self.plugin_dir = os.path.dirname(__file__)
 
-        # combobox management
+        # North arrow, scale and legend combobox placement management management
         self.comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
         self.comboBox_value = [self.tr(u'Top left corner'), self.tr(u'Top right corner'),
                                self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')]
@@ -58,6 +59,10 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cbb_north.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 0))
         self.cbb_scalebar.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 1))
         self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
+
+        for entry in QgsApplication.pageSizeRegistry().entries():
+            self.cbb_page_format_name.addItem(entry.displayName)
+        self.cbb_page_format_name.currentTextChanged.connect(self.items_changed)
 
         # buttons action
         self.pb_restore.clicked.connect(self.load_default)
@@ -83,10 +88,12 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
             "cbb_legend_value_value": self.cbb_legend.currentIndex(),
             "le_legend_title_value": self.le_legend_title.text(),
             "sb_margin_value_value": self.sb_margin_value.value(),
-            "le_layout_name_value": self.le_layout_name.text()
+            "le_layout_name_value": self.le_layout_name.text(),
+            "cbb_page_format_value": self.cbb_page_format_name.currentIndex()
         }
         with open(self.plugin_dir + '/config/custom.ini', 'w') as conf:
             config_object.write(conf)
+        self.pb_save.setEnabled(False)
 
     def load_default(self, value):
         """
@@ -123,6 +130,17 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
         self.le_legend_title.setText(self.tr(file_values["le_legend_title_value"]))
         self.sb_margin_value.setValue(int(file_values["sb_margin_value_value"]))
         self.le_layout_name.setText(self.tr(file_values["le_layout_name_value"]))
+        # Since default layout size is not define in default config file, we have to set right index of the combobox
+        # from qgis default size
+        try:
+            self.cbb_page_format_name.setCurrentIndex(int(file_values["cbb_page_format_value"]))
+        except:
+            tmp_layout = QgsPrintLayout(QgsProject.instance())
+            tmp_layout.initializeDefaults()
+            text = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
+            index = self.cbb_page_format_name.findText(text, QtCore.Qt.MatchFixedString)
+            if index >= 0:
+                self.cbb_page_format_name.setCurrentIndex(index)
 
         if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
             self.pb_restore.setEnabled(True)
@@ -134,7 +152,7 @@ class AutoLayoutToolDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def cbb_state_changed(self, text, i):
         """
-        Check if other comboxbox index has  to be changed, since placements have to be différents.
+        Check if other comboxbox index has to be changed, since placements have to be differents.
         :param text: string, combobox current text
         :param i: int, combobox id
         :return:

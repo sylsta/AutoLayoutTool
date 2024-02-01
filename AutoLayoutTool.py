@@ -148,6 +148,7 @@ class AutoLayoutTool:
         self.actions.append(action)
 
         self.params_from_dialog = False
+        self.page_size=''
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
