@@ -189,27 +189,31 @@ class AutoLayoutTool:
         layout.setName(layout_name)
         return layout, manager
 
-    def compute_layout_orientation(self, e, layout):
+    def compute_layout_orientation(self, extent, layout):
         """
         Determine and set best layout orientation
-        :param e: iface.mapCanvas().extent()
+        :param extent: iface.mapCanvas().extent()
         :param layout: QgsLayout
         :rtype: bool, float, float, float, float, float
         """
         print('Creating layout')
-        map_width = e.xMaximum() - e.xMinimum()
-        map_height = e.yMaximum() - e.yMinimum()
+        map_width = extent.xMaximum() - extent.xMinimum()
+        map_height = extent.yMaximum() - extent.yMinimum()
+        if self.page_size =='':
+            page_size_name = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
+        else:
+            page_size_name = self.page_size
 
-        page_size = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
+
         landscape = False
         if map_width <= map_height:
             # portrait
             if self.debug: print("Portrait")
-            layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Portrait)
+            layout.pageCollection().page(0).setPageSize(page_size_name, QgsLayoutItemPage.Orientation.Portrait)
         else:
             # landscape
             if self.debug: print("Landscape")
-            layout.pageCollection().page(0).setPageSize(page_size, QgsLayoutItemPage.Orientation.Landscape)
+            layout.pageCollection().page(0).setPageSize(page_size_name, QgsLayoutItemPage.Orientation.Landscape)
             landscape = True
         # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
@@ -418,8 +422,6 @@ class AutoLayoutTool:
             self.layout_name = self.dlg.le_layout_name.text()
         else:
             self.params_from_dialog = False
-        # Do something useful here - delete the line containing pass and
-        # substitute with your code.
 
     def param_from_file(self):
         """
@@ -440,6 +442,13 @@ class AutoLayoutTool:
         self.legend_title = self.tr(file_values["le_legend_title_value"])
         self.margin = int(file_values["sb_margin_value_value"])
         self.layout_name = self.tr(file_values["le_layout_name_value"])
+        try:
+            # if custom settingas are used get page size name
+            self.page_size = file_values["cbb_page_format_name"]
+        except:
+            # else use default composer page size setting
+            self.page_size = ''
+
 
     def run(self):
         """
@@ -452,9 +461,9 @@ class AutoLayoutTool:
         print('--------------------------------')
         print(self.tr(u'AutoLayoutTool starts'))
         print('--------------------------------')
-        e = self.iface.mapCanvas().extent()
-        map_width = e.xMaximum() - e.xMinimum()
-        map_height = e.yMaximum() - e.yMinimum()
+        extent = self.iface.mapCanvas().extent()
+        map_width = extent.xMaximum() - extent.xMinimum()
+        map_height = extent.yMaximum() - extent.yMinimum()
         if (map_height==0) or (map_width==0):
             print(self.tr(u'No loaded data - aborting'))
             print('--------------------------------')
@@ -472,14 +481,14 @@ class AutoLayoutTool:
 
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
-                                                                            e, layout)
+                                                                            extent, layout)
 
         # Calculate scale
         map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
                                                                  map_height, map_width, scale_ratio)
 
         # Add map
-        map_real_height, map_real_width, x_offset, y_offset = self.add_map(e, layout,
+        map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
                                                                            layout_height, layout_width, map_height,
                                                                            map_width, self.margin, my_map)
 
