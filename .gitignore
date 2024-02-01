@@ -1,2 +1,4 @@
 .idea/
 /config/custom.ini
+/symbology-style.db
+/user-history.db
