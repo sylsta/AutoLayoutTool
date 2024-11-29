@@ -46,6 +46,9 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
 from configparser import ConfigParser
 
+
+
+
 def param_from_file(self):
     # default values for parameters
     self.margin = 10
@@ -55,6 +58,7 @@ import os.path
 from .resources import *
 # Import the code for the dialog
 from .AutoLayoutTool_dialog import AutoLayoutToolDialog
+from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
 
 class AutoLayoutTool:
     """QGIS Plugin Implementation."""
@@ -130,10 +134,9 @@ class AutoLayoutTool:
         # Run entry menu
         text = self.tr(u'Create a new layout based on current extent ')
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/layout.png'), text, self.iface.mainWindow())
-        self.iface.registerMainWindowAction(action, "Ctrl+F4")
+        self.iface.registerMainWindowAction(action, "Ctrl+!")
         self.iface.addPluginToMenu(self.menu, action)
         action.triggered.connect(self.run)
-        self.actions.append(action)
         action.setStatusTip(text)
         action.setWhatsThis(text)
         self.iface.addToolBarIcon(action)
@@ -142,10 +145,25 @@ class AutoLayoutTool:
         # Config entry menu
         text = self.tr("AutoLayoutTool configuration")
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/config.png'), text, self.iface.mainWindow())
-        self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
+        self.iface.registerMainWindowAction(action, "Ctrl+*")
         self.iface.addPluginToMenu(self.menu, action)
         action.triggered.connect(self.config)
+        action.setStatusTip(text)
+        action.setWhatsThis(text)
+        self.iface.addToolBarIcon(action)
         self.actions.append(action)
+
+        # Visual help entry menu
+        text = self.tr("AutoLayoutTool visual help")
+        action = QAction(text, self.iface.mainWindow())
+        # self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
+        self.iface.addPluginToMenu(self.menu, action)
+        action.triggered.connect(self.visual_help)
+        action.setStatusTip(text)
+        action.setWhatsThis(text)
+        self.iface.addToolBarIcon(action)
+        self.actions.append(action)
+
 
         self.params_from_dialog = False
         self.page_size=''
@@ -157,6 +175,110 @@ class AutoLayoutTool:
                 self.tr(u'&AutoLayoutTool'),
                 action)
             self.iface.removeToolBarIcon(action)
+
+    def visual_help(self):
+        """
+
+        :return:
+        """
+        if self.first_start == True:
+            self.first_start = False
+            self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
+
+        self.dlg_visual_help.setWindowModality(QtCore.Qt.ApplicationModal)
+        # show the dialog
+        self.dlg_visual_help.show()
+        # Run the dialog event loop
+        result = self.dlg_visual_help.exec_()
+
+    def config(self):
+        """
+
+        :return:
+        """
+        if self.first_start == True:
+            self.first_start = False
+            self.dlg= AutoLayoutToolDialog()
+
+        # show the dialog
+        self.dlg.show()
+        # Run the dialog event loop
+        result = self.dlg.exec_()
+        # See if OK was pressed
+        if result:
+            self.params_from_dialog = True
+            self.north_placement = int(self.dlg.cbb_north.currentIndex())
+            self.scalebar_placement = int(self.dlg.cbb_scalebar.currentIndex())
+            self.legend_placement = int(self.dlg.cbb_legend.currentIndex())
+            self.legend_title = self.dlg.le_legend_title.text()
+            self.margin = int(self.dlg.sb_margin_value.value())
+            self.layout_name = self.dlg.le_layout_name.text()
+        else:
+            self.params_from_dialog = False
+
+    def run(self):
+        """
+        Creates a layout with a map of the current interface extent, with legend, scalebar and north arrow
+        :return: None
+        """
+        if not self.params_from_dialog:
+            self.param_from_file()
+
+        print('--------------------------------')
+        print(self.tr(u'AutoLayoutTool starts'))
+        print('--------------------------------')
+        extent = self.iface.mapCanvas().extent()
+        map_width = extent.xMaximum() - extent.xMinimum()
+        map_height = extent.yMaximum() - extent.yMinimum()
+        if (map_height==0) or (map_width==0):
+            print(self.tr(u'No loaded data - aborting'))
+            print('--------------------------------')
+            return
+
+
+        # Create layout
+        try:
+            layout, manager = self.create_layout(self.layout_name)
+        except:
+            # Quick and dirty. In case people decide not to replace previous layout
+            print(self.tr(u'Cancelled by user'))
+            print('--------------------------------')
+            return
+
+        # Determine and set best layout orientation
+        landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
+                                                                            extent, layout)
+
+        # Calculate scale
+        map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
+                                                                 map_height, map_width, scale_ratio)
+
+        # Add map
+        map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
+                                                                           layout_height, layout_width, map_height,
+                                                                           map_width, self.margin, my_map)
+
+
+        if self.legend_placement != 4:
+            # Add legend
+            self.add_legend(layout, x_offset, y_offset, self.legend_title, self.legend_placement)
+
+
+        if self.scalebar_placement != 4:
+            # Add scale bar
+            self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset, self.scalebar_placement)
+
+
+        if self.north_placement != 4:
+            # Add north arrow
+            self.add_north_arrow(layout, manager, map_real_height, x_offset, y_offset, self.north_placement)
+
+        # Finally add layout to the project via its manager
+        manager.addLayout(layout)
+        self.iface.openLayoutDesigner(layout)
+        print('--------------------------------')
+        print("♪♪ This is the end, my friend ♪♪")
+        print('--------------------------------')
 
     def create_layout(self, layout_name):
         """
@@ -399,30 +521,6 @@ class AutoLayoutTool:
         elif north_placement == 3:
             pass
 
-    def config(self):
-        """
-
-        :return:
-        """
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg = AutoLayoutToolDialog()
-
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            self.params_from_dialog = True
-            self.north_placement = int(self.dlg.cbb_north.currentIndex())
-            self.scalebar_placement = int(self.dlg.cbb_scalebar.currentIndex())
-            self.legend_placement = int(self.dlg.cbb_legend.currentIndex())
-            self.legend_title = self.dlg.le_legend_title.text()
-            self.margin = int(self.dlg.sb_margin_value.value())
-            self.layout_name = self.dlg.le_layout_name.text()
-        else:
-            self.params_from_dialog = False
 
     def param_from_file(self):
         """
@@ -451,69 +549,7 @@ class AutoLayoutTool:
             self.page_size = ''
 
 
-    def run(self):
-        """
-        Creates a layout with a map of the current interface extent, with legend, scalebar and north arrow
-        :return: None
-        """
-        if not self.params_from_dialog:
-            self.param_from_file()
 
-        print('--------------------------------')
-        print(self.tr(u'AutoLayoutTool starts'))
-        print('--------------------------------')
-        extent = self.iface.mapCanvas().extent()
-        map_width = extent.xMaximum() - extent.xMinimum()
-        map_height = extent.yMaximum() - extent.yMinimum()
-        if (map_height==0) or (map_width==0):
-            print(self.tr(u'No loaded data - aborting'))
-            print('--------------------------------')
-            return
-
-
-        # Create layout
-        try:
-            layout, manager = self.create_layout(self.layout_name)
-        except:
-            # Quick and dirty. In case people decide not to replace previous layout
-            print(self.tr(u'Cancelled by user'))
-            print('--------------------------------')
-            return
-
-        # Determine and set best layout orientation
-        landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
-                                                                            extent, layout)
-
-        # Calculate scale
-        map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
-                                                                 map_height, map_width, scale_ratio)
-
-        # Add map
-        map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
-                                                                           layout_height, layout_width, map_height,
-                                                                           map_width, self.margin, my_map)
-
-
-        if self.legend_placement != 4:
-            # Add legend
-            self.add_legend(layout, x_offset, y_offset, self.legend_title, self.legend_placement)
-
-
-        if self.scalebar_placement != 4:
-            # Add scale bar
-            self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset, self.scalebar_placement)
-
-
-        if self.north_placement != 4:
-            # Add north arrow
-            self.add_north_arrow(layout, manager, map_real_height, x_offset, y_offset, self.north_placement)
-
-        # Finally add layout to the project via its manager
-        manager.addLayout(layout)
-        self.iface.openLayoutDesigner(layout)
-        print('--------------------------------')
-        print("♪♪ This is the end, my friend ♪♪")
-        print('--------------------------------')
 
 
 
