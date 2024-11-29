@@ -1,13 +1,15 @@
 Change Log
 ==========
+* __1.99__ (2021-11-30):
+  * add config window for custom params
+  * add visual help menu entry
+  * still positionning bugs with custom locations :/
+  
 * __1.1__ (2021-11-30):
-  * fix bug
-* __1.1__ (2021-11-30):
-  * fix bug
+  * fix positioning issue (margin, north arrow, scale)
 
 * __1.0__ (2021-11-29):
   * public release
-  * fix positioning issue (margin, north arrow, scale)
 
 * __0.3__ (2021-11-22):
   * internationalization : add French language

@@ -2,11 +2,11 @@
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=One-click print layout creator
-version=2.0
-author=Sylvain Théry (UMR 5281 ART-Dev)
+version=1.99
+author=Sylvain Théry - UMR 5281 ART-Dev
 email=sylvain.thery@cnrs.fr
 
-about=Available in français, english, español, português, 中文 (see below for credits).
+about=See help menu or <a href='https://github.com/sylsta/AutoLayoutTool/blob/main/help/AutoLayoutTool_visual_demo.gif'>  this animated gif </a>for visual help :)
 
     This plugin creates in one click a map layout based on the extent of a QGIS project main window. It also adds a legend, a scale bar and a north arrow to the layout. The size of the map is calculated to occupy the maximum space on the page and the orientation of the page is determined by the extent of the map.
 
@@ -14,8 +14,9 @@ about=Available in français, english, español, português, 中文 (see below f
 
     该插件基于QGIS项目主窗口范围一键创建布局，同时它还为创建的布局添加了一个图例，比例尺和指北针。地图的尺寸以占据页面上的最大空间来计算的，而页面的方向由地图的范围所决定。
 
+    Partially translated into français, english, español, português, 中文 (see below for credits - work in progress).
 
-    Translators : 闫兴成 yansuyang@hotmail.com (zh), Mohamed Saadi mosaadi7641@gmail.com (ar),  Sandrine Fréguin-Gresh (es),
+    Translators: 闫兴成 yansuyang@hotmail.com (zh), Mohamed Saadi mosaadi7641@gmail.com (ar),  Sandrine Fréguin-Gresh (es), Ludivine Eloy (pt). Thanks guys !
 
 tags=layout, print manager, automation, mise en page, composeur d'impression, automatisation
 
@@ -24,12 +25,13 @@ repository=https://github.com/sylsta/AutoLayoutTool
 homepage=https://github.com/sylsta/AutoLayoutTool
 category=Plugins
 icon=./images/layout.png
+experimental=True
 
 changelog=
-    2.1 (2024-11-29)
-        - add visual help menu entry
-    2.0 (2024-11-29)
+    1.99 (2024-11-29)
         - add config window for custom params
+        - add visual help menu entry
+        -still positionning bugs with custom locations :/
     1.1 (2021-11-29)
         - fix positioning issue (margin, north arrow, scale)
     1.0 (2021-11-29)
