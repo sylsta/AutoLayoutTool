@@ -26,6 +26,10 @@ category=Plugins
 icon=./images/layout.png
 
 changelog=
+    2.1 (2024-11-29)
+        - add visual help menu entry
+    2.0 (2024-11-29)
+        - add config window for custom params
     1.1 (2021-11-29)
         - fix positioning issue (margin, north arrow, scale)
     1.0 (2021-11-29)

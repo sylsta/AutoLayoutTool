@@ -25,7 +25,7 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
                               -------------------
         begin                : 2021-11-19
         git sha              : $Format:%H$
-        copyright            : (C) 2021 by Sylvain Théry
+        copyright            : (c) 2021-2024 by Sylvain Théry
         email                : sylvain.thery@cnrs.fr
  ***************************************************************************/
 
