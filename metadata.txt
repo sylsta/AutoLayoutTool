@@ -26,6 +26,8 @@ homepage=https://github.com/sylsta/AutoLayoutTool
 category=Plugins
 icon=./images/layout.png
 experimental=True
+deprecated=False
+server=False
 
 changelog=
     1.99 (2024-11-29)
