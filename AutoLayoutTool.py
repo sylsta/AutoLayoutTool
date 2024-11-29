@@ -130,8 +130,9 @@ class AutoLayoutTool:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # will be set False in run()
         self.first_start = True
+        self.toolbar = self.iface.addToolBar("AutoLayoutTool")
 
-        # Run entry menu
+        # 'Run' entry menu
         text = self.tr(u'Create a new layout based on current extent ')
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/layout.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+!")
@@ -139,10 +140,11 @@ class AutoLayoutTool:
         action.triggered.connect(self.run)
         action.setStatusTip(text)
         action.setWhatsThis(text)
-        self.iface.addToolBarIcon(action)
-        self.actions.append(action)
+        # self.iface.addToolBarIcon(action)
+        # self.actions.append(action)
+        self.toolbar.addAction(action)
 
-        # Config entry menu
+        # 'Config' entry menu
         text = self.tr("AutoLayoutTool configuration")
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/config.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+*")
@@ -150,19 +152,21 @@ class AutoLayoutTool:
         action.triggered.connect(self.config)
         action.setStatusTip(text)
         action.setWhatsThis(text)
-        self.iface.addToolBarIcon(action)
-        self.actions.append(action)
+        # self.iface.addToolBarIcon(action)
+        # self.actions.append(action)
+        self.toolbar.addAction(action)
 
         # Visual help entry menu
         text = self.tr("AutoLayoutTool visual help")
-        action = QAction(text, self.iface.mainWindow())
+        action = QAction(QIcon(':/plugins/AutoLayoutTool/images/help.png'), text, self.iface.mainWindow())
         # self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
         self.iface.addPluginToMenu(self.menu, action)
         action.triggered.connect(self.visual_help)
         action.setStatusTip(text)
         action.setWhatsThis(text)
-        self.iface.addToolBarIcon(action)
-        self.actions.append(action)
+        # self.iface.addToolBarIcon(action)
+        # self.actions.append(action)
+        self.toolbar.addAction(action)
 
 
         self.params_from_dialog = False
@@ -170,12 +174,12 @@ class AutoLayoutTool:
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
-        for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&AutoLayoutTool'),
-                action)
-            self.iface.removeToolBarIcon(action)
-
+        # for action in self.actions:
+        #     self.iface.removePluginMenu(
+        #         self.tr(u'&AutoLayoutTool'),
+        #         action)
+        #     self.iface.removeToolBarIcon(action)
+        del self.toolbar
     def visual_help(self):
         """
 
