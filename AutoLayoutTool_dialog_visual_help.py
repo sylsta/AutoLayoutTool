@@ -44,7 +44,7 @@ class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
         self.movie = QMovie(f"{self.plugin_dir}/help/AutoLayoutTool_visual_demo.gif", QByteArray(), self)
         size = self.movie.scaledSize()
         self.setGeometry(200, 200, size.width(), size.height())
-        self.setWindowTitle(self.tr("Autolayout visual help"))
+        self.setWindowTitle(self.tr("AutoLayoutTool visual help"))
 
         self.movie_screen = QLabel()
         # Make label fit the gif
