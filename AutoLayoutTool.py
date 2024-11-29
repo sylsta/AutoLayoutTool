@@ -46,10 +46,10 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
 from configparser import ConfigParser
 
-# def param_from_file(self):
-#     # default values for parameters
-#     self.margin = 10
-#     self.layout_name = self.tr('Automatic layout')
+def param_from_file(self):
+    # default values for parameters
+    self.margin = 10
+    self.layout_name = self.tr('Automatic layout')
 import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -444,7 +444,7 @@ class AutoLayoutTool:
         self.margin = int(file_values["sb_margin_value_value"])
         self.layout_name = self.tr(file_values["le_layout_name_value"])
         try:
-            # if custom settings are used get page size name
+            # if custom settingas are used get page size name
             self.page_size = file_values["cbb_page_format_name"]
         except:
             # else use default composer page size setting
