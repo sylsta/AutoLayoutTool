@@ -140,8 +140,7 @@ class AutoLayoutTool:
         action.triggered.connect(self.run)
         action.setStatusTip(text)
         action.setWhatsThis(text)
-        # self.iface.addToolBarIcon(action)
-        # self.actions.append(action)
+        self.actions.append(action)
         self.toolbar.addAction(action)
 
         # 'Config' entry menu
@@ -151,9 +150,7 @@ class AutoLayoutTool:
         self.iface.addPluginToMenu(self.menu, action)
         action.triggered.connect(self.config)
         action.setStatusTip(text)
-        action.setWhatsThis(text)
-        # self.iface.addToolBarIcon(action)
-        # self.actions.append(action)
+        self.actions.append(action)
         self.toolbar.addAction(action)
 
         # Visual help entry menu
@@ -164,31 +161,27 @@ class AutoLayoutTool:
         action.triggered.connect(self.visual_help)
         action.setStatusTip(text)
         action.setWhatsThis(text)
-        # self.iface.addToolBarIcon(action)
-        # self.actions.append(action)
+        self.actions.append(action)
         self.toolbar.addAction(action)
 
 
         self.params_from_dialog = False
         self.page_size=''
+        self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
+        self.dlg_config = AutoLayoutToolDialogConfig()
 
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
-        # for action in self.actions:
-        #     self.iface.removePluginMenu(
-        #         self.tr(u'&AutoLayoutTool'),
-        #         action)
-        #     self.iface.removeToolBarIcon(action)
+        """Removes the plugin menu item and toolbarfrom QGIS GUI."""
+        for action in self.actions:
+            self.iface.removePluginMenu(
+                self.tr(u'&AutoLayoutTool'),
+                action)
         del self.toolbar
     def visual_help(self):
         """
-
+        Open Qt window to get help
         :return:
         """
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
-
         self.dlg_visual_help.setWindowModality(QtCore.Qt.ApplicationModal)
         # show the dialog
         self.dlg_visual_help.show()
@@ -197,26 +190,23 @@ class AutoLayoutTool:
 
     def config(self):
         """
-
+        Open Qt window to set parameters
         :return:
         """
-        if self.first_start == True:
-            self.first_start = False
-            self.dlg= AutoLayoutToolDialogConfig()
-
+        self.dlg_config.setWindowModality(QtCore.Qt.ApplicationModal)
         # show the dialog
-        self.dlg.show()
+        self.dlg_config.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        result = self.dlg_config.exec_()
         # See if OK was pressed
         if result:
             self.params_from_dialog = True
-            self.north_placement = int(self.dlg.cbb_north.currentIndex())
-            self.scalebar_placement = int(self.dlg.cbb_scalebar.currentIndex())
-            self.legend_placement = int(self.dlg.cbb_legend.currentIndex())
-            self.legend_title = self.dlg.le_legend_title.text()
-            self.margin = int(self.dlg.sb_margin_value.value())
-            self.layout_name = self.dlg.le_layout_name.text()
+            self.north_placement = int(self.dlg_config.cbb_north.currentIndex())
+            self.scalebar_placement = int(self.dlg_config.cbb_scalebar.currentIndex())
+            self.legend_placement = int(self.dlg_config.cbb_legend.currentIndex())
+            self.legend_title = self.dlg_config.le_legend_title.text()
+            self.margin = int(self.dlg_config.sb_margin_value.value())
+            self.layout_name = self.dlg_config.le_layout_name.text()
         else:
             self.params_from_dialog = False
 
