@@ -57,7 +57,7 @@ import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
-from .AutoLayoutTool_dialog import AutoLayoutToolDialog
+from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
 
 class AutoLayoutTool:
@@ -198,7 +198,7 @@ class AutoLayoutTool:
         """
         if self.first_start == True:
             self.first_start = False
-            self.dlg= AutoLayoutToolDialog()
+            self.dlg= AutoLayoutToolDialogConfig()
 
         # show the dialog
         self.dlg.show()
