@@ -138,7 +138,14 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             tmp_layout = QgsPrintLayout(QgsProject.instance())
             tmp_layout.initializeDefaults()
             text = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
-            index = self.cbb_page_format_name.findText(text, QtCore.Qt.MatchFixedString)
+            try:
+                match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString # PyQt6
+            except AttributeError:
+                match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
+
+
+
+            index = self.cbb_page_format_name.findText(text, match_fixed_string)
             if index >= 0:
                 self.cbb_page_format_name.setCurrentIndex(index)
 

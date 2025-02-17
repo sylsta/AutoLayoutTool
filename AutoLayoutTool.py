@@ -182,22 +182,31 @@ class AutoLayoutTool:
         Open Qt window to get help
         :return:
         """
-        self.dlg_visual_help.setWindowModality(Qt.ApplicationModal)
+        try:
+            modality = Qt.WindowModality.ApplicationModal  # PyQt6
+        except AttributeError:
+            modality = Qt.ApplicationModal  # PyQt5        try:
+
+        self.dlg_visual_help.setWindowModality(modality)
         # show the dialog
         self.dlg_visual_help.show()
         # Run the dialog event loop
-        result = self.dlg_visual_help.exec_()
+        result = self.dlg_visual_help.exec()
 
     def config(self):
         """
         Open Qt window to set parameters
         :return:
         """
-        self.dlg_config.setWindowModality(Qt.ApplicationModal)
+        try:
+            modality = Qt.WindowModality.ApplicationModal  # PyQt6
+        except AttributeError:
+            modality = Qt.ApplicationModal  # PyQt5
+        self.dlg_config.setWindowModality(modality)
         # show the dialog
         self.dlg_config.show()
         # Run the dialog event loop
-        result = self.dlg_config.exec_()
+        result = self.dlg_config.exec()
         # See if OK was pressed
         if result:
             self.params_from_dialog = True

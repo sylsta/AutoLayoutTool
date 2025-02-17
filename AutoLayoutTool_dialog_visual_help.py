@@ -48,27 +48,47 @@ class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
 
         self.movie_screen = QLabel()
         # Make label fit the gif
-        self.movie_screen.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.movie_screen.setAlignment(Qt.AlignCenter)
+        try:
+            expanding = QSizePolicy.Policy.Expanding  # Compatible PyQt6
+        except AttributeError:
+            expanding = QSizePolicy.Expanding  # Compatible PyQt5
+
+        self.movie_screen.setSizePolicy(expanding, expanding)
+        try:
+            align_center = Qt.AlignmentFlag.AlignCenter  # PyQt6
+        except AttributeError:
+            align_center = Qt.AlignCenter  # PyQt5
+
+        self.movie_screen.setAlignment(align_center)
 
         # Create the layout
         main_layout = QVBoxLayout()
 
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Close)
+        try:
+            close_button = QDialogButtonBox.StandardButton.Close  # PyQt6
+        except AttributeError:
+            close_button = QDialogButtonBox.Close  # PyQt5
+
+        self.button_box = QDialogButtonBox(close_button)
+
         self.button_box.rejected.connect(self.close)
         main_layout.addStretch()  # Ajoute un espace flexible
         main_layout.addWidget(self.button_box)  # Ajoute le QDialogButtonBox en bas
         main_layout.addWidget(self.movie_screen)
-        self.button_box2 = QDialogButtonBox(QDialogButtonBox.Close)
+        self.button_box2 = QDialogButtonBox(close_button)
         self.button_box2.rejected.connect(self.close)
         main_layout.addStretch()  # Ajoute un espace flexible
         main_layout.addWidget(self.button_box2)  # Ajoute le QDialogButtonBox en bas
         self.setLayout(main_layout)
 
         # Add the QMovie object to the label
-        self.movie.setCacheMode(QMovie.CacheAll)
+        try:
+            cache_all = QMovie.CacheMode.CacheAll  # PyQt6
+        except AttributeError:
+            cache_all = QMovie.CacheAll  # PyQt5
+
+        self.movie.setCacheMode(cache_all)
         self.movie.setSpeed(100)
         self.movie_screen.setMovie(self.movie)
         self.movie.start()
-
 
