@@ -182,7 +182,7 @@ class AutoLayoutTool:
         Open Qt window to get help
         :return:
         """
-        self.dlg_visual_help.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.dlg_visual_help.setWindowModality(Qt.ApplicationModal)
         # show the dialog
         self.dlg_visual_help.show()
         # Run the dialog event loop
@@ -193,7 +193,7 @@ class AutoLayoutTool:
         Open Qt window to set parameters
         :return:
         """
-        self.dlg_config.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.dlg_config.setWindowModality(Qt.ApplicationModal)
         # show the dialog
         self.dlg_config.show()
         # Run the dialog event loop
