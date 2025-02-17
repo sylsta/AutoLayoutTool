@@ -48,11 +48,6 @@ from configparser import ConfigParser
 
 
 
-
-def param_from_file(self):
-    # default values for parameters
-    self.margin = 10
-    self.layout_name = self.tr('Automatic layout')
 import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -109,7 +104,9 @@ class AutoLayoutTool:
             try:
                 import pydevd_pycharm
                 #pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
-                pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
+                # pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
+                pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
+                                        suspend=True)
             except:
                 pass
 
@@ -129,6 +126,7 @@ class AutoLayoutTool:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # will be set False in run()
+        pass
         self.first_start = True
         self.toolbar = self.iface.addToolBar("AutoLayoutTool")
 
@@ -156,7 +154,7 @@ class AutoLayoutTool:
         # Visual help entry menu
         text = self.tr("AutoLayoutTool visual help")
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/help.png'), text, self.iface.mainWindow())
-        # self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
+        self.iface.registerMainWindowAction(action, "Ctrl+Shift+F4")
         self.iface.addPluginToMenu(self.menu, action)
         action.triggered.connect(self.visual_help)
         action.setStatusTip(text)
@@ -167,8 +165,8 @@ class AutoLayoutTool:
         # Default value for page size in no custom config file exist (in that case, will be overwritten later
         self.params_from_dialog = False
         self.page_size=''
-        self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
-        self.dlg_config = AutoLayoutToolDialogConfig()
+
+
 
     def unload(self):
         """Removes the plugin menu item and toolbarfrom QGIS GUI."""
@@ -177,11 +175,13 @@ class AutoLayoutTool:
                 self.tr(u'&AutoLayoutTool'),
                 action)
         del self.toolbar
+
     def visual_help(self):
         """
         Open Qt window to get help
         :return:
         """
+        self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
         try:
             modality = Qt.WindowModality.ApplicationModal  # PyQt6
         except AttributeError:
@@ -191,13 +191,14 @@ class AutoLayoutTool:
         # show the dialog
         self.dlg_visual_help.show()
         # Run the dialog event loop
-        result = self.dlg_visual_help.exec()
+        # result = self.dlg_visual_help.exec()
 
     def config(self):
         """
         Open Qt window to set parameters
         :return:
         """
+        self.dlg_config = AutoLayoutToolDialogConfig()
         try:
             modality = Qt.WindowModality.ApplicationModal  # PyQt6
         except AttributeError:
