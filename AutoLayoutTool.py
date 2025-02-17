@@ -144,7 +144,7 @@ class AutoLayoutTool:
         self.toolbar.addAction(action)
 
         # 'Config' entry menu
-        text = self.tr("AutoLayoutTool configuration")
+        text = self.tr("AutoLayoutTool custom configuration")
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/config.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+*")
         self.iface.addPluginToMenu(self.menu, action)
@@ -164,7 +164,7 @@ class AutoLayoutTool:
         self.actions.append(action)
         self.toolbar.addAction(action)
 
-
+        # Default value for page size in no custom config file exist (in that case, will be overwritten later
         self.params_from_dialog = False
         self.page_size=''
         self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
@@ -308,11 +308,12 @@ class AutoLayoutTool:
 
     def compute_layout_orientation(self, extent, layout):
         """
-        Determine and set best layout orientation
+        Determine and set thebest layout orientation
         :param extent: iface.mapCanvas().extent()
         :param layout: QgsLayout
         :rtype: bool, float, float, float, float, float
         """
+
         print('Creating layout')
         map_width = extent.xMaximum() - extent.xMinimum()
         map_height = extent.yMaximum() - extent.yMinimum()
@@ -368,7 +369,7 @@ class AutoLayoutTool:
             map_width = layout_width
             map_height = round(map_height * scale_ratio, 3)  # makes qgis bug if not rounded 3
             if self.debug: print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
-            # workaround don't now why in special case it has to be changed !:#
+            # workaround don't know why in special case it has to be changed !:#
             if map_height > layout_height:
                 map_height = layout_height
                 map_width = round(previous_width / scale_ratio, 3)
