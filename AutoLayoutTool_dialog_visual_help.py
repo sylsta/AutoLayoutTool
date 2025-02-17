@@ -26,9 +26,9 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
-from PyQt5.QtCore import (Qt, QSize,QByteArray, pyqtSlot, pyqtSignal, QThread)
-from PyQt5.QtGui import (QMovie)
-from PyQt5.QtWidgets import ( QWidget,QSizePolicy,QVBoxLayout, QLabel,
+from qgis.PyQt.QtCore import (Qt, QSize,QByteArray, pyqtSlot, pyqtSignal, QThread)
+from qgis.PyQt.QtGui import (QMovie)
+from qgis.PyQt.QtWidgets import ( QWidget,QSizePolicy,QVBoxLayout, QLabel,
                              QDialogButtonBox)
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 # FORM_CLASS, _ = uic.loadUiType(os.path.join(
