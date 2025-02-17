@@ -1,6 +1,16 @@
 Change Log
 ==========
-* __1.99__ (2021-11-30):
+    1.3 ()
+
+    1.2 (2024-11-29)
+        - add config window for custom params
+        - add visual help menu entry
+        - still positionning bugs with custom locations for map elements :/
+* __1.3__ (2025-02-17):
+  * implement Qt6 compatibility
+  * bux fixes 
+
+* __1.2__ (2024-11-29):
   * add config window for custom params
   * add visual help menu entry
   * still positionning bugs with custom locations :/
