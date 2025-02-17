@@ -90,7 +90,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             "le_legend_title_value": self.le_legend_title.text(),
             "sb_margin_value_value": self.sb_margin_value.value(),
             "le_layout_name_value": self.le_layout_name.text(),
-            "cbb_page_format_value": self.cbb_page_format_name.currentIndex()
+            "cbb_page_format_value": self.cbb_page_format_name.currentText()
         }
         with open(self.plugin_dir + '/config/custom.ini', 'w') as conf:
             config_object.write(conf)

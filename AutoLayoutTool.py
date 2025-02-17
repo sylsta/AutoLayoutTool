@@ -198,25 +198,26 @@ class AutoLayoutTool:
         Open Qt window to set parameters
         :return:
         """
-        self.dlg_config = AutoLayoutToolDialogConfig()
+        dlg_config = AutoLayoutToolDialogConfig()
         try:
             modality = Qt.WindowModality.ApplicationModal  # PyQt6
         except AttributeError:
             modality = Qt.ApplicationModal  # PyQt5
-        self.dlg_config.setWindowModality(modality)
+        dlg_config.setWindowModality(modality)
         # show the dialog
-        self.dlg_config.show()
+        dlg_config.show()
         # Run the dialog event loop
-        result = self.dlg_config.exec()
+        result = dlg_config.exec()
         # See if OK was pressed
         if result:
             self.params_from_dialog = True
-            self.north_placement = int(self.dlg_config.cbb_north.currentIndex())
-            self.scalebar_placement = int(self.dlg_config.cbb_scalebar.currentIndex())
-            self.legend_placement = int(self.dlg_config.cbb_legend.currentIndex())
-            self.legend_title = self.dlg_config.le_legend_title.text()
-            self.margin = int(self.dlg_config.sb_margin_value.value())
-            self.layout_name = self.dlg_config.le_layout_name.text()
+            self.north_placement = int(dlg_config.cbb_north.currentIndex())
+            self.scalebar_placement = int(dlg_config.cbb_scalebar.currentIndex())
+            self.legend_placement = int(dlg_config.cbb_legend.currentIndex())
+            self.legend_title = dlg_config.le_legend_title.text()
+            self.margin = int(dlg_config.sb_margin_value.value())
+            self.layout_name = dlg_config.le_layout_name.text()
+            self.page_size =dlg_config.cbb_page_format_name.currentText()
         else:
             self.params_from_dialog = False
 
