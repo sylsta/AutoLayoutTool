@@ -243,13 +243,13 @@ class AutoLayoutTool:
 
 
         # Create layout
-        # try:
-        layout, manager = self.create_layout(self.layout_name)
-        # except:
-        #     # Quick and dirty. In case people decide not to replace previous layout
-        #     print(self.tr(u'Cancelled by user'))
-        #     print('--------------------------------')
-        #     return
+        try:
+            layout, manager = self.create_layout(self.layout_name)
+        except:
+            # Quick and dirty. In case people decide not to replace previous layout
+            print(self.tr(u'Cancelled by user'))
+            print('--------------------------------')
+            return
 
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
