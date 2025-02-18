@@ -492,13 +492,13 @@ class AutoLayoutTool:
         scalebar.update()
         layout.addLayoutItem(scalebar)
         if scalebar_placement == 0:
-            pass
+            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,y_offset + 5, QgsUnitTypes.LayoutMillimeters))
         elif scalebar_placement == 1:
             scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
                                                 y_offset - scalebar.rect().size().height() + 15,
                                                 QgsUnitTypes.LayoutMillimeters))
         elif scalebar_placement == 2:
-            pass
+            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
         elif scalebar_placement == 3:
             scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
                                                 map_real_height + y_offset - scalebar.rect().size().height() - 5,
