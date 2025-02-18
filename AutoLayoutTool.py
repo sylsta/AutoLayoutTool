@@ -479,6 +479,7 @@ class AutoLayoutTool:
         if legend_placement == 0:
             print("top left")
             legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+
         elif legend_placement == 1:
             print("top right2")
             print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}" )
@@ -490,20 +491,17 @@ class AutoLayoutTool:
 
             # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
             if legend_width == 0 and legend_height == 0:
-                # legend.setReferencePoint(0)
                 x = legend.x()
                 y = legend.y()
                 legend.setReferencePoint(2)
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
-            print("bottom left2")
             legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
                                               QgsUnitTypes.LayoutMillimeters))
 
             # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
             if legend_width == 0 and legend_height == 0:
-                # legend.setReferencePoint(0)
                 x = legend.x()
                 y = legend.y()
                 legend.setReferencePoint(6)
