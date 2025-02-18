@@ -6,7 +6,7 @@
     <message>
         <location filename="../AutoLayoutTool.py" line="175"/>
         <source>&amp;AutoLayoutTool</source>
-        <translation></translation>
+        <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="135"/>
@@ -14,21 +14,21 @@
         <translation>Création d'une mise en page basée sur l'extension courante du projet </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="169"/>
+        <location filename="../AutoLayoutTool.py" line="302"/>
         <source>Delete layout...</source>
-        <translation type="obsolete">Suppression de la mise en page...</translation>
+        <translation type="unfinished">Supprimer la mise en page...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="169"/>
+        <location filename="../AutoLayoutTool.py" line="302"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation type="obsolete">Une mise en page nommée '%s' existe déjà
+        <translation type="unfinished">Une mise en page nommée '%s' existe déjà
 Souhaitez-vous la supprimer ?</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="179"/>
+        <location filename="../AutoLayoutTool.py" line="312"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation type="obsolete">La précédente mise en page nommée '%s' a été supprimée... </translation>
+        <translation type="unfinished">La précédente mise en page nommée '%s' a été supprimée... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="444"/>
@@ -43,7 +43,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="403"/>
         <source>Add north arrow</source>
-        <translation type="obsolete">Ajout de la flêche Nord</translation>
+        <translation type="obsolete">Ajout de la flèche Nord</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="309"/>
@@ -53,7 +53,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="570"/>
         <source>Adding north arrow</source>
-        <translation>Ajout de la flêche Nord</translation>
+        <translation>Ajout de la flèche Nord</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="234"/>
@@ -78,60 +78,22 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="146"/>
         <source>AutoLayoutTool custom configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuration personnalisée de AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="156"/>
         <source>AutoLayoutTool visual help</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide visuelle de AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="240"/>
         <source>No loaded data - aborting</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune donnée chargée - abandon</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="250"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>AutoLayoutToolDialog</name>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top left corner</source>
-        <translation type="obsolete">Coin supérieur gauche</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top right corner</source>
-        <translation type="obsolete">Coin supérieur droit</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom left corner</source>
-        <translation type="obsolete">Coin inférieur gauche</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom right corner</source>
-        <translation type="obsolete">Coin inférieur droit</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>None</source>
-        <translation type="obsolete">Aucune</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="72"/>
-        <source>Legend</source>
-        <translation type="obsolete">Légende</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="74"/>
-        <source>Automatic Layout</source>
-        <translation type="obsolete">Mise en page automatique</translation>
+        <translation>Annulé par l'utilisateur</translation>
     </message>
 </context>
 <context>
@@ -139,27 +101,27 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top left corner</source>
-        <translation type="unfinished">Coin supérieur gauche</translation>
+        <translation>Coin supérieur gauche</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top right corner</source>
-        <translation type="unfinished">Coin supérieur droit</translation>
+        <translation>Coin supérieur droit</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom left corner</source>
-        <translation type="unfinished">Coin inférieur gauche</translation>
+        <translation>Coin inférieur gauche</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom right corner</source>
-        <translation type="unfinished">Coin inférieur droit</translation>
+        <translation>Coin inférieur droit</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>None</source>
-        <translation type="unfinished">Aucune</translation>
+        <translation>Aucune</translation>
     </message>
 </context>
 <context>
@@ -167,7 +129,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_visual_help.py" line="47"/>
         <source>AutoLayoutTool visual help</source>
-        <translation type="unfinished"></translation>
+        <translation>Aide visuelle de AutoLayoutTool</translation>
     </message>
 </context>
 <context>
@@ -225,7 +187,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="252"/>
         <source>Layout size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille de la mise en page</translation>
     </message>
 </context>
 </TS>

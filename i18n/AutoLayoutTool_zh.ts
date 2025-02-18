@@ -19,9 +19,9 @@
         <translation type="obsolete">配置AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="168"/>
+        <location filename="../AutoLayoutTool.py" line="302"/>
         <source>Delete layout...</source>
-        <translation type="obsolete">删除布局</translation>
+        <translation type="unfinished">删除布局</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="168"/>
@@ -30,9 +30,9 @@ Do you want to delete it?</source>
         <translation type="obsolete">布局%s已经存在</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="178"/>
+        <location filename="../AutoLayoutTool.py" line="312"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation type="obsolete">前一个布局%s被移除</translation>
+        <translation type="unfinished">前一个布局%s被移除</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="374"/>
@@ -87,6 +87,12 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool.py" line="250"/>
         <source>Cancelled by user</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="302"/>
+        <source>There&apos;s already a layout named &apos;%s&apos;
+Do you want to delete it?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

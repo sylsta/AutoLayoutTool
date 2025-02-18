@@ -58,9 +58,22 @@
         <source>Cancelled by user</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>AutoLayoutToolDialog</name>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="302"/>
+        <source>Delete layout...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="302"/>
+        <source>There&apos;s already a layout named &apos;%s&apos;
+Do you want to delete it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="312"/>
+        <source>Previous layout named &apos;%s&apos; removed... </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AutoLayoutToolDialogConfig</name>

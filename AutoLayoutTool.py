@@ -243,13 +243,13 @@ class AutoLayoutTool:
 
 
         # Create layout
-        try:
-            layout, manager = self.create_layout(self.layout_name)
-        except:
-            # Quick and dirty. In case people decide not to replace previous layout
-            print(self.tr(u'Cancelled by user'))
-            print('--------------------------------')
-            return
+        # try:
+        layout, manager = self.create_layout(self.layout_name)
+        # except:
+        #     # Quick and dirty. In case people decide not to replace previous layout
+        #     print(self.tr(u'Cancelled by user'))
+        #     print('--------------------------------')
+        #     return
 
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
@@ -298,21 +298,21 @@ class AutoLayoutTool:
         layouts_list = manager.printLayouts()
         for layout in layouts_list:
             if layout.name() == layout_name:
-                manager.removeLayout(layout)
-                # reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                #                              self.tr(
-                #                                  u"There's already a layout named '%s'\nDo you want to delete it?")
-                #                              % layout_name,
-                #                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                # try:
-                #     if reply == QMessageBox.No:
-                #         return
-                #     else:
-                #         manager.removeLayout(layout)
-                #         print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
-                # except:
-                #     # in case ESC key is pressed to escape the dialog
-                #     return
+                reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
+                                             self.tr(
+                                                 u"There's already a layout named '%s'\nDo you want to delete it?")
+                                             % layout_name,
+                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                try:
+                    if reply == QMessageBox.No:
+                        return
+                    else:
+                        manager.removeLayout(layout)
+                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                except:
+                    # in case ESC key is pressed to escape the dialog
+                    print()
+                    return
 
         layout = QgsPrintLayout(project)
         layout.initializeDefaults()

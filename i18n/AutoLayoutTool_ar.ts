@@ -19,20 +19,20 @@
         <translation type="obsolete">إعدادات AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="169"/>
+        <location filename="../AutoLayoutTool.py" line="302"/>
         <source>Delete layout...</source>
-        <translation type="obsolete">حذف التصميم...</translation>
+        <translation type="unfinished">حذف التصميم...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="169"/>
+        <location filename="../AutoLayoutTool.py" line="302"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation type="obsolete">يوجد بالفعل تصميم تحت اسم 's%'. هل تريد حذفه؟</translation>
+        <translation type="unfinished">يوجد بالفعل تصميم تحت اسم 's%'. هل تريد حذفه؟</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="179"/>
+        <location filename="../AutoLayoutTool.py" line="312"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation type="obsolete">تمّ حذف التصميم المسمّى 's%'...</translation>
+        <translation type="unfinished">تمّ حذف التصميم المسمّى 's%'...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="374"/>
