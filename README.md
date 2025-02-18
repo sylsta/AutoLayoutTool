@@ -3,7 +3,7 @@
 
 Available in the [official Qgis plug-in repository](https://plugins.qgis.org/plugins/AutoLayoutTool/), it is best installed from the Qgis Desktop interface.
 
-Partially translated into français, english, español, português, 中文 (see below for credits - work in progress).
+Partially translated into français, english, español, português, русский, العربية , 中文 (see below for credits - work in progress).
 
 See 'help menu' or look at [this animated gif](https://github.com/sylsta/AutoLayoutTool/blob/main/help/AutoLayoutTool_visual_demo.gif) for visual help :)
 

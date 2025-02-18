@@ -15,7 +15,7 @@ about=See help menu or <a href='https://github.com/sylsta/AutoLayoutTool/blob/ma
 
     该插件基于QGIS项目主窗口范围一键创建布局，同时它还为创建的布局添加了一个图例，比例尺和指北针。地图的尺寸以占据页面上的最大空间来计算的，而页面的方向由地图的范围所决定。
 
-    Partially translated into français, english, español, português, 中文 (see below for credits - work in progress).
+    Partially translated into français, english, español, português, русский, العربية , 中文 (see below for credits - work in progress).
 
     Translators: 闫兴成 yansuyang@hotmail.com (zh), Mohamed Saadi mosaadi7641@gmail.com (ar),  Sandrine Fréguin-Gresh (es), Ludivine Eloy (pt). Thanks guys !
 
