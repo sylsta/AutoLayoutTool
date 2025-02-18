@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh">
+<TS version="2.1" language="el">
 <context>
     <name>AutoLayoutTool</name>
     <message>
@@ -11,128 +11,84 @@
     <message>
         <location filename="../AutoLayoutTool.py" line="135"/>
         <source>Create a new layout based on current extent </source>
-        <translation>基于当前范围创建一个新的布局</translation>
+        <translation>Δημιουργία νέας διάταξης με βάση την τρέχουσα έκταση</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="137"/>
+        <location filename="../AutoLayoutTool.py" line="138"/>
         <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">配置AutoLayoutTool</translation>
+        <translation type="obsolete">Ρύθμιση AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="301"/>
         <source>Delete layout...</source>
-        <translation>删除布局</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="168"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;.
-Do you want to delete it?</source>
-        <translation type="obsolete">布局%s已经存在</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="311"/>
-        <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>前一个布局%s被移除</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="374"/>
-        <source>Calculating scale</source>
-        <translation>计算比例</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="444"/>
-        <source>Adding legend</source>
-        <translation>添加图例</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="308"/>
-        <source>Legend</source>
-        <translation type="obsolete">图例</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="536"/>
-        <source>Adding scale bar</source>
-        <translation>添加比例尺</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="570"/>
-        <source>Adding north arrow</source>
-        <translation>添加指北针</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="234"/>
-        <source>AutoLayoutTool starts</source>
-        <translation>AutoLayoutTool开始运行</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="438"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">自动布局</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="146"/>
-        <source>AutoLayoutTool custom configuration</source>
-        <translation>AutoLayoutTool自定义配置</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="156"/>
-        <source>AutoLayoutTool visual help</source>
-        <translation>AutoLayoutTool视觉帮助</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="240"/>
-        <source>No loaded data - aborting</source>
-        <translation>未加载数据 - 中止</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="250"/>
-        <source>Cancelled by user</source>
-        <translation type="obsolete">用户取消</translation>
+        <translation>Διαγραφή διάταξης...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="301"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation>已经存在名为'%s'的布局
-是否要删除它？</translation>
-    </message>
-</context>
-<context>
-    <name>AutoLayoutToolDialog</name>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top left corner</source>
-        <translation type="obsolete">左上角</translation>
+        <translation>Υπάρχει ήδη μια διάταξη με το όνομα '%s'.
+Θέλετε να τη διαγράψετε;</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top right corner</source>
-        <translation type="obsolete">右上角</translation>
+        <location filename="../AutoLayoutTool.py" line="311"/>
+        <source>Previous layout named &apos;%s&apos; removed... </source>
+        <translation>Η προηγούμενη διάταξη με το όνομα '%s' διαγράφηκε... </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom left corner</source>
-        <translation type="obsolete">左下角</translation>
+        <location filename="../AutoLayoutTool.py" line="374"/>
+        <source>Calculating scale</source>
+        <translation>Υπολογισμός κλίμακας</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom right corner</source>
-        <translation type="obsolete">右下角</translation>
+        <location filename="../AutoLayoutTool.py" line="444"/>
+        <source>Adding legend</source>
+        <translation>Προσθήκη υπομνήματος</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>None</source>
-        <translation type="obsolete">无</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="72"/>
+        <location filename="../AutoLayoutTool.py" line="309"/>
         <source>Legend</source>
-        <translation type="obsolete">图例</translation>
+        <translation type="obsolete">Υπόμνημα</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="74"/>
-        <source>Automatic Layout</source>
-        <translation type="obsolete">自动布局</translation>
+        <location filename="../AutoLayoutTool.py" line="536"/>
+        <source>Adding scale bar</source>
+        <translation>Προσθήκη μπάρας κλίμακας</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="570"/>
+        <source>Adding north arrow</source>
+        <translation>Προσθήκη βέλους βορρά</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="234"/>
+        <source>AutoLayoutTool starts</source>
+        <translation>Εκκίνηση AutoLayoutTool</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="439"/>
+        <source>Automatic layout</source>
+        <translation type="obsolete">Αυτόματη διάταξη</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="146"/>
+        <source>AutoLayoutTool custom configuration</source>
+        <translation>Προσαρμοσμένη ρύθμιση AutoLayoutTool</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="156"/>
+        <source>AutoLayoutTool visual help</source>
+        <translation>Οπτική βοήθεια AutoLayoutTool</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="240"/>
+        <source>No loaded data - aborting</source>
+        <translation>Δεν υπάρχουν δεδομένα - ματαίωση</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="250"/>
+        <source>Cancelled by user</source>
+        <translation type="obsolete">Ακυρώθηκε από τον χρήστη</translation>
     </message>
 </context>
 <context>
@@ -140,27 +96,27 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top left corner</source>
-        <translation>左上角</translation>
+        <translation>Επάνω αριστερή γωνία</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top right corner</source>
-        <translation>右上角</translation>
+        <translation>Επάνω δεξιά γωνία</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom left corner</source>
-        <translation>左下角</translation>
+        <translation>Κάτω αριστερή γωνία</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom right corner</source>
-        <translation>右下角</translation>
+        <translation>Κάτω δεξιά γωνία</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>None</source>
-        <translation>无</translation>
+        <translation>Καμία</translation>
     </message>
 </context>
 <context>
@@ -168,7 +124,7 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_visual_help.py" line="47"/>
         <source>AutoLayoutTool visual help</source>
-        <translation>AutoLayoutTool视觉帮助</translation>
+        <translation>Οπτική βοήθεια AutoLayoutTool</translation>
     </message>
 </context>
 <context>
@@ -176,57 +132,57 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="15"/>
         <source>AutoLayoutTool configuration</source>
-        <translation>配置AutoLayoutTool</translation>
+        <translation>Ρύθμιση AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="265"/>
         <source>Select placement</source>
-        <translation>选择位置</translation>
+        <translation>Επιλογή τοποθεσίας</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="100"/>
         <source>North arrow</source>
-        <translation>指北针</translation>
+        <translation>Βέλος βορρά</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="116"/>
         <source>Scale bar</source>
-        <translation>比例尺</translation>
+        <translation>Μπάρα κλίμακας</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="132"/>
         <source>Legend</source>
-        <translation>图例</translation>
+        <translation>Υπόμνημα</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="148"/>
         <source>Margin (mm)</source>
-        <translation>边距(mm)</translation>
+        <translation>Περιθώριο (mm)</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="194"/>
         <source>Restore default values</source>
-        <translation>恢复默认值</translation>
+        <translation>Επαναφορά προεπιλεγμένων τιμών</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="210"/>
         <source>Legend title</source>
-        <translation>图例标题</translation>
+        <translation>Τίτλος υπομνήματος</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="223"/>
         <source>Layout name</source>
-        <translation>布局名称</translation>
+        <translation>Όνομα διάταξης</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="236"/>
         <source>Save values</source>
-        <translation>保存</translation>
+        <translation>Αποθήκευση τιμών</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="252"/>
         <source>Layout size</source>
-        <translation>布局大小</translation>
+        <translation>Μέγεθος διάταξης</translation>
     </message>
 </context>
 </TS>

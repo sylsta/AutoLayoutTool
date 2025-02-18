@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="es" sourcelanguage="en">
+<TS version="2.1" language="es">
 <context>
     <name>AutoLayoutTool</name>
     <message>
@@ -56,24 +56,24 @@
     <message>
         <location filename="../AutoLayoutTool.py" line="250"/>
         <source>Cancelled by user</source>
-        <translation>Cancelado por el usuario</translation>
+        <translation type="obsolete">Cancelado por el usuario</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="302"/>
+        <location filename="../AutoLayoutTool.py" line="301"/>
         <source>Delete layout...</source>
         <translation>Eliminar composición de impresión...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="302"/>
+        <location filename="../AutoLayoutTool.py" line="301"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation>Ya existe un composición de impresión llamado &apos;%s&apos;
+        <translation>Ya existe un composición de impresión llamado '%s'
 ¿Deseas eliminarlo?</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="312"/>
+        <location filename="../AutoLayoutTool.py" line="311"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>Composición de impresión anterior llamado &apos;%s&apos; eliminado... </translation>
+        <translation>Composición de impresión anterior llamado '%s' eliminado... </translation>
     </message>
 </context>
 <context>
