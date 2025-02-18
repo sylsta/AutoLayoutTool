@@ -276,7 +276,7 @@ class AutoLayoutTool:
 
         if self.north_placement != 4:
             # Add north arrow
-            self.add_north_arrow(layout, manager, map_real_height, x_offset, y_offset, self.north_placement)
+            self.add_north_arrow(layout, map_real_height, map_real_width, x_offset, y_offset, self.north_placement)
 
         # Finally add layout to the project via its manager
         manager.addLayout(layout)
@@ -297,20 +297,21 @@ class AutoLayoutTool:
         layouts_list = manager.printLayouts()
         for layout in layouts_list:
             if layout.name() == layout_name:
-                reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                                             self.tr(
-                                                 u"There's already a layout named '%s'\nDo you want to delete it?")
-                                             % layout_name,
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                try:
-                    if reply == QMessageBox.No:
-                        return
-                    else:
-                        manager.removeLayout(layout)
-                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
-                except:
-                    # in case ESC key is pressed to escape the dialog
-                    return
+                manager.removeLayout(layout)
+                # reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
+                #                              self.tr(
+                #                                  u"There's already a layout named '%s'\nDo you want to delete it?")
+                #                              % layout_name,
+                #                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                # try:
+                #     if reply == QMessageBox.No:
+                #         return
+                #     else:
+                #         manager.removeLayout(layout)
+                #         print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                # except:
+                #     # in case ESC key is pressed to escape the dialog
+                #     return
 
         layout = QgsPrintLayout(project)
         layout.initializeDefaults()
@@ -503,7 +504,7 @@ class AutoLayoutTool:
                                                 map_real_height + y_offset - scalebar.rect().size().height() - 5,
                                                 QgsUnitTypes.LayoutMillimeters))
 
-    def add_north_arrow(self, layout, manager, map_real_height, x_offset, y_offset, north_placement):
+    def add_north_arrow(self, layout, map_real_height, map_real_width, x_offset, y_offset, north_placement):
         """
         Adds north arrow to the layout
         :param layout: QgsLayout
@@ -521,11 +522,15 @@ class AutoLayoutTool:
         if north_placement == 0:
             north.attemptMove(QgsLayoutPoint(3 + x_offset,y_offset + 5, QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 1:
-            pass
+            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 5,
+                                       y_offset - north.rect().size().height() + 15,
+                                       QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 2:
             north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 3:
-            pass
+            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 5,
+                                                map_real_height + y_offset - north.rect().size().height() - 5,
+                                                QgsUnitTypes.LayoutMillimeters))
 
 
     def param_from_file(self):
