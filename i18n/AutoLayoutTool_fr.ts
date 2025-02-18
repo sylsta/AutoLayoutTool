@@ -11,24 +11,24 @@
     <message>
         <location filename="../AutoLayoutTool.py" line="135"/>
         <source>Create a new layout based on current extent </source>
-        <translation>Création d'une mise en page basée sur l'extension courante du projet </translation>
+        <translation>Création d&apos;une mise en page basée sur l&apos;extension courante du projet </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="302"/>
         <source>Delete layout...</source>
-        <translation type="unfinished">Supprimer la mise en page...</translation>
+        <translation>Supprimer la mise en page...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="302"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation type="unfinished">Une mise en page nommée '%s' existe déjà
+        <translation>Une mise en page nommée &apos;%s&apos; existe déjà
 Souhaitez-vous la supprimer ?</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="312"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation type="unfinished">La précédente mise en page nommée '%s' a été supprimée... </translation>
+        <translation>La précédente mise en page nommée &apos;%s&apos; a été supprimée... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="444"/>
@@ -38,7 +38,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="536"/>
         <source>Adding scale bar</source>
-        <translation>Ajout de l'échelle</translation>
+        <translation>Ajout de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="403"/>
@@ -68,7 +68,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="374"/>
         <source>Calculating scale</source>
-        <translation>Calcul de l'échelle</translation>
+        <translation>Calcul de l&apos;échelle</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="439"/>
@@ -93,7 +93,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="250"/>
         <source>Cancelled by user</source>
-        <translation>Annulé par l'utilisateur</translation>
+        <translation>Annulé par l&apos;utilisateur</translation>
     </message>
 </context>
 <context>
@@ -142,7 +142,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="265"/>
         <source>Select placement</source>
-        <translation>Choisir l'emplacement</translation>
+        <translation>Choisir l&apos;emplacement</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="100"/>

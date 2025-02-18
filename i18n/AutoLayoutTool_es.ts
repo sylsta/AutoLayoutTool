@@ -1,78 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="es" sourcelanguage="en">
 <context>
     <name>AutoLayoutTool</name>
     <message>
         <location filename="../AutoLayoutTool.py" line="175"/>
         <source>&amp;AutoLayoutTool</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="135"/>
         <source>Create a new layout based on current extent </source>
-        <translation type="unfinished"></translation>
+        <translation>Crear un nuevo composición de impresión basado en la extensión actual </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="444"/>
         <source>Adding legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregando la leyenda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="536"/>
         <source>Adding scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregando la barra de escala</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="570"/>
         <source>Adding north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregando la flecha norte</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="234"/>
         <source>AutoLayoutTool starts</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoLayoutTool comienza</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="374"/>
         <source>Calculating scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculando la escala</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="146"/>
         <source>AutoLayoutTool custom configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración personalizada de AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="156"/>
         <source>AutoLayoutTool visual help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda visual de AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="240"/>
         <source>No loaded data - aborting</source>
-        <translation type="unfinished"></translation>
+        <translation>No hay datos cargados - abortando</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="250"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelado por el usuario</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="302"/>
         <source>Delete layout...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar composición de impresión...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="302"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ya existe un composición de impresión llamado &apos;%s&apos;
+¿Deseas eliminarlo?</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="312"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation type="unfinished"></translation>
+        <translation>Composición de impresión anterior llamado &apos;%s&apos; eliminado... </translation>
     </message>
 </context>
 <context>
@@ -80,27 +81,27 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top left corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquina superior izquierda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top right corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquina superior derecha</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom left corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquina inferior izquierda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom right corner</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquina inferior derecha</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
 </context>
 <context>
@@ -108,7 +109,7 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_visual_help.py" line="47"/>
         <source>AutoLayoutTool visual help</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayuda visual de AutoLayoutTool</translation>
     </message>
 </context>
 <context>
@@ -116,57 +117,57 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="15"/>
         <source>AutoLayoutTool configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de AutoLayoutTool</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="265"/>
         <source>Select placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar ubicación</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="100"/>
         <source>North arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Flecha norte</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="116"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra de escala</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="132"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Leyenda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="148"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Margen (mm)</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="194"/>
         <source>Restore default values</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar valores predeterminados</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="210"/>
         <source>Legend title</source>
-        <translation type="unfinished"></translation>
+        <translation>Título de la leyenda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="223"/>
         <source>Layout name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del composición de impresión</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="236"/>
         <source>Save values</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar valores</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="252"/>
         <source>Layout size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño del composición de impresión</translation>
     </message>
 </context>
 </TS>

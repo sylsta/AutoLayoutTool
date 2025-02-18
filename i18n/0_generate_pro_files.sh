@@ -2,7 +2,7 @@
 # -*- encoding: UTF-8 -*-
 DIRECTORY=..
 PREFIX="AutoLayoutTool"
-I18N_LIST="ar eo es fr pt ru zh"
+I18N_LIST="ar es fr pt ru zh"
 FORMS="FORMS = "
 SOURCES="SOURCES = "
 TRANSLATIONS="TRANSLATIONS = "

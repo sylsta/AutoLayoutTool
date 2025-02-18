@@ -19,7 +19,7 @@ about=See help menu or <a href='https://github.com/sylsta/AutoLayoutTool/blob/ma
 
     Translators: 闫兴成 yansuyang@hotmail.com (zh), Mohamed Saadi mosaadi7641@gmail.com (ar),  Sandrine Fréguin-Gresh (es), Ludivine Eloy (pt). Thanks guys !
 
-tags=layout, print manager, automation, mise en page, composeur d'impression, automatisation
+tags=layout, print manager, automation, mise en page, composeur d'impression, automatisation, composición de impresión, layout de impressão
 
 tracker=https://github.com/sylsta/AutoLayoutTool/issues
 repository=https://github.com/sylsta/AutoLayoutTool
