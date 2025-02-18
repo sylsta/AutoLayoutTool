@@ -104,10 +104,11 @@ class AutoLayoutTool:
             try:
                 import pydevd_pycharm
                 #pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
-                # pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
-                pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
-                                        suspend=True)
+                pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
+                # pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
+                #                         suspend=True)
             except:
+                print("pydevd_pycharm module     issue")
                 pass
 
 
@@ -266,7 +267,7 @@ class AutoLayoutTool:
 
         if self.legend_placement != 4:
             # Add legend
-            self.add_legend(layout, x_offset, y_offset, self.legend_title, self.legend_placement)
+            self.add_legend(layout, map_real_height, map_real_width, x_offset, y_offset, self.legend_title, self.legend_placement)
 
 
         if self.scalebar_placement != 4:
@@ -432,7 +433,7 @@ class AutoLayoutTool:
         layout.addLayoutItem(my_map)
         return map_real_height, map_real_width, x_offset, y_offset
 
-    def add_legend(self, layout, x_offset, y_offset, legend_title, legend_placement):
+    def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement):
         """
         Add legend to the layout
         :param layout: QgsLayout
@@ -444,12 +445,14 @@ class AutoLayoutTool:
         layers_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
         legend.setTitle(self.tr(legend_title))
+        legend.setId("legend")
         legend.setAutoUpdateModel(False)
         group = legend.model().rootGroup()
         group.clear()
         for l in layers_to_add:
             if l.nodeType() == 0:
                 subgroup = group.addGroup(l.name())
+
                 checked = l.checkedLayers()
                 for c in checked:
                     subgroup.addLayer(c)
@@ -458,16 +461,68 @@ class AutoLayoutTool:
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
+        layout.refresh()  # Forcer la mise à jour du layout
+        legend.refresh()
+
+
+        # Unfortunatly, there is an issue with the code bellow
+        # values are always equal to zero
+        # See :
+        # https://gis.stackexchange.com/questions/431566/pyqgis-moving-legend-with-changed-reference-point/431705#431705
+        # https://gis.stackexchange.com/questions/371225/getting-the-size-of-a-qgslayoutitem
+        # https://gist.github.com/ThomasG77/d15771bb30c231166701cf31788f8a6b#file-pyqgis-371225-py-L26
+        legend_width = legend.sizeWithUnits().width()
+        legend_height = legend.sizeWithUnits().height()
+
+
+
         if legend_placement == 0:
+            print("top left")
             legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
         elif legend_placement == 1:
-            pass
-        elif legend_placement == 2:
-            pass
-        elif legend_placement == 3:
-            pass
+            print("top right2")
+            print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}" )
 
-        legend.refresh()
+            print(f"lsw={legend.rect().size().width()} mrw={map_real_width}" )
+            # legend.attemptMove(QgsLayoutPoint(map_real_width - legend.sizeWithUnits().width() + x, y_offset, QgsUnitTypes.LayoutMillimeters))
+            legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
+                                              QgsUnitTypes.LayoutMillimeters))
+
+            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
+            if legend_width == 0 and legend_height == 0:
+                # legend.setReferencePoint(0)
+                x = legend.x()
+                y = legend.y()
+                legend.setReferencePoint(2)
+                legend.attemptMove(QgsLayoutPoint(x, y))
+
+        elif legend_placement == 2:
+            print("bottom left2")
+            legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
+                                              QgsUnitTypes.LayoutMillimeters))
+
+            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
+            if legend_width == 0 and legend_height == 0:
+                # legend.setReferencePoint(0)
+                x = legend.x()
+                y = legend.y()
+                legend.setReferencePoint(6)
+                legend.attemptMove(QgsLayoutPoint(x, y))
+
+        elif legend_placement == 3:
+
+            legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset,
+                                              map_real_height + y_offset - legend_height,
+                                              QgsUnitTypes.LayoutMillimeters))
+
+            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
+            if legend_width == 0 and legend_height == 0:
+                # legend.setReferencePoint(0)
+                x = legend.x()
+                y = legend.y()
+                legend.setReferencePoint(8)
+                legend.attemptMove(QgsLayoutPoint(x, y))
+
 
     def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """
