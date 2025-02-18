@@ -493,7 +493,10 @@ class AutoLayoutTool:
             if legend_width == 0 and legend_height == 0:
                 x = legend.x()
                 y = legend.y()
-                legend.setReferencePoint(2)
+                try:
+                    legend.setReferencePoint(legend.ReferencePoint.UpperRight) #Qt6
+                except AttributeError:
+                    legend.setReferencePoint(2) #Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
@@ -504,7 +507,10 @@ class AutoLayoutTool:
             if legend_width == 0 and legend_height == 0:
                 x = legend.x()
                 y = legend.y()
-                legend.setReferencePoint(6)
+                try:
+                    legend.setReferencePoint(legend.ReferencePoint.lowerLeft) #Qt6
+                except AttributeError:
+                    legend.setReferencePoint(6) #Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 3:
@@ -518,7 +524,10 @@ class AutoLayoutTool:
                 # legend.setReferencePoint(0)
                 x = legend.x()
                 y = legend.y()
-                legend.setReferencePoint(8)
+                try:
+                    legend.setReferencePoint(legend.ReferencePoint.lowerRight) #Qt6
+                except AttributeError:
+                    legend.setReferencePoint(8) #Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
 
