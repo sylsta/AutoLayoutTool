@@ -67,7 +67,7 @@ class AutoLayoutTool:
         :type iface: QgsInterface
         """
         # debug state for pycharm (pro version only :-() python debug server
-        self.debug = True
+        self.debug = False
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
