@@ -481,7 +481,7 @@ class AutoLayoutTool:
             legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
 
         elif legend_placement == 1:
-            print("top right2")
+            print("top right")
             print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}" )
 
             print(f"lsw={legend.rect().size().width()} mrw={map_real_width}" )
@@ -500,6 +500,7 @@ class AutoLayoutTool:
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
+            print("bottom left")
             legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
                                               QgsUnitTypes.LayoutMillimeters))
 
@@ -508,13 +509,13 @@ class AutoLayoutTool:
                 x = legend.x()
                 y = legend.y()
                 try:
-                    legend.setReferencePoint(legend.ReferencePoint.lowerLeft) #Qt6
+                    legend.setReferencePoint(legend.ReferencePoint.LowerLeft) #Qt6
                 except AttributeError:
                     legend.setReferencePoint(6) #Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 3:
-
+            print("bottom right")
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset,
                                               map_real_height + y_offset - legend_height,
                                               QgsUnitTypes.LayoutMillimeters))
@@ -525,7 +526,7 @@ class AutoLayoutTool:
                 x = legend.x()
                 y = legend.y()
                 try:
-                    legend.setReferencePoint(legend.ReferencePoint.lowerRight) #Qt6
+                    legend.setReferencePoint(legend.ReferencePoint.LowerRight) #Qt6
                 except AttributeError:
                     legend.setReferencePoint(8) #Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
