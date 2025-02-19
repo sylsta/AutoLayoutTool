@@ -25,7 +25,7 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
                               -------------------
         begin                : 2021-11-19
         git sha              : $Format:%H$
-        copyright            : (c) 2021-2024 by Sylvain Théry
+        copyright            : (c) 2021-2025 by Sylvain Théry
         email                : sylvain.thery@cnrs.fr
  ***************************************************************************/
 
@@ -649,7 +649,7 @@ class AutoLayoutTool:
         self.margin = int(file_values["sb_margin_value_value"])
         self.layout_name = self.tr(file_values["le_layout_name_value"])
         try:
-            # if custom settingas are used get page size name
+            # if custom setting as are used get page size name
             self.page_size = file_values["cbb_page_format_name"]
         except:
             # else use default composer page size setting
