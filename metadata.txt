@@ -2,7 +2,7 @@
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=One-click print layout creator
-version=2.0
+version=1.90
 supportsQt6=True
 author=Sylvain Théry - UMR 5281 ART-Dev
 email=sylvain.thery@cnrs.fr
