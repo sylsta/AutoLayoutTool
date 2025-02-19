@@ -611,16 +611,16 @@ class AutoLayoutTool:
         if north_placement == 0:
             # up left
             north.attemptMove(QgsLayoutPoint(3 + x_offset,
-                                             3 + y_offset, QgsUnitTypes.LayoutMillimeters))
+                                             3 + y_offset,
+                                             QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 1:
             # up right
             north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
-                                             y_offset - north.rect().size().height() + 15,
-                                             QgsUnitTypes.LayoutMillimeters))
+                                             3 + y_offset, QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 2:
             # bottom left
             north.attemptMove(QgsLayoutPoint(3 + x_offset,
-                                             map_real_height + y_offset - 15,
+                                             map_real_height + y_offset - north.rect().size().height() -2,
                                              QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 3:
             # bottom right
