@@ -572,16 +572,25 @@ class AutoLayoutTool:
         scalebar.update()
         layout.addLayoutItem(scalebar)
         if scalebar_placement == 0:
-            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,y_offset + 5, QgsUnitTypes.LayoutMillimeters))
+            # up left
+            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,
+                                                y_offset - scalebar.rect().size().height() + 15,
+                                                QgsUnitTypes.LayoutMillimeters))
+
         elif scalebar_placement == 1:
-            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
+            #  up right
+            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 2,
                                                 y_offset - scalebar.rect().size().height() + 15,
                                                 QgsUnitTypes.LayoutMillimeters))
         elif scalebar_placement == 2:
-            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
+            # bottom left
+            scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,
+                                                map_real_height + y_offset - scalebar.rect().size().height() - 2,
+                                                QgsUnitTypes.LayoutMillimeters))
         elif scalebar_placement == 3:
-            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 5,
-                                                map_real_height + y_offset - scalebar.rect().size().height() - 5,
+            # bottom right
+            scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 2,
+                                                map_real_height + y_offset - scalebar.rect().size().height() - 2,
                                                 QgsUnitTypes.LayoutMillimeters))
 
     def add_north_arrow(self, layout, map_real_height, map_real_width, x_offset, y_offset, north_placement):
@@ -600,17 +609,24 @@ class AutoLayoutTool:
         layout.addLayoutItem(north)
         north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
         if north_placement == 0:
-            north.attemptMove(QgsLayoutPoint(3 + x_offset,y_offset + 5, QgsUnitTypes.LayoutMillimeters))
+            # up left
+            north.attemptMove(QgsLayoutPoint(3 + x_offset,
+                                             3 + y_offset, QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 1:
-            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 5,
-                                       y_offset - north.rect().size().height() + 15,
-                                       QgsUnitTypes.LayoutMillimeters))
+            # up right
+            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
+                                             y_offset - north.rect().size().height() + 15,
+                                             QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 2:
-            north.attemptMove(QgsLayoutPoint(3 + x_offset, map_real_height + y_offset - 15, QgsUnitTypes.LayoutMillimeters))
+            # bottom left
+            north.attemptMove(QgsLayoutPoint(3 + x_offset,
+                                             map_real_height + y_offset - 15,
+                                             QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 3:
-            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 5,
-                                                map_real_height + y_offset - north.rect().size().height() - 5,
-                                                QgsUnitTypes.LayoutMillimeters))
+            # bottom right
+            north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
+                                             map_real_height + y_offset - north.rect().size().height() -2,
+                                             QgsUnitTypes.LayoutMillimeters))
 
 
     def param_from_file(self):
