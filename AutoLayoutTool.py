@@ -298,20 +298,37 @@ class AutoLayoutTool:
         layouts_list = manager.printLayouts()
         for layout in layouts_list:
             if layout.name() == layout_name:
-                reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                                             self.tr(
-                                                 u"There's already a layout named '%s'\nDo you want to delete it?")
-                                             % layout_name,
-                                             QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 try:
-                    if reply == QMessageBox.No:
-                        return
-                    else:
-                        manager.removeLayout(layout)
-                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                    # Qt6
+                    reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
+                                                 self.tr(
+                                                     u"There's already a layout named '%s'\nDo you want to delete it?")
+                                                 % layout_name,
+                                                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                                 QMessageBox.StandardButton.No)
+
+                except AttributeError:
+                    # Qt5
+                    reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
+                                                 self.tr(
+                                                     u"There's already a layout named '%s'\nDo you want to delete it?")
+                                                 % layout_name,
+                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                try:
+                    try:
+                        # Qt6
+                        if reply == QMessageBox.StandardButton.No:
+                            return
+                    except AttributeError:
+                        # Qt5
+                        if reply == QMessageBox.No:
+                            return
+
+                    manager.removeLayout(layout)
+                    print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
                 except:
                     # in case ESC key is pressed to escape the dialog
-                    print()
+                    print("bug")
                     return
 
         layout = QgsPrintLayout(project)
