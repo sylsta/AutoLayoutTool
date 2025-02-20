@@ -72,6 +72,11 @@ class AutoLayoutTool:
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+        # print vrsion number
+        config = ConfigParser()
+        config.read(f'{self.plugin_dir}/metadata.txt')
+        print(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded")
+
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
