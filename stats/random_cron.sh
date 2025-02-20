@@ -11,7 +11,7 @@ MINUTE1=$((RANDOM % 60))  # 0-59
 MINUTE2=$((RANDOM % 60))  # 0-59
 
 # Définir le chemin du script Python
-SCRIPT_PATH="/home/sylter/Cloud/github.com/AutoLayoutTool/stats/check_dl_stat.py"
+SCRIPT_PATH="/usr/bin/python3 /home/sylter/Cloud/github.com/AutoLayoutTool/stats/check_dl_stat.py"
 
 # Définir la ligne pour s'auto-appeler chaque jour à 10h59
 CRON_SELF="59 10 * * * /home/sylter/Cloud/github.com/AutoLayoutTool/stats/random_cron.sh"
