@@ -55,7 +55,7 @@ class RectangleAreaTool(QgsMapTool):
     def canvasReleaseEvent(self, e):
         self.isEmittingPoint = False
         self.rubberBand.hide()
-        self.transformCoordinates()
+        # self.transformCoordinates() # no need to convert CRS
         self.rectangleCreated.emit(self.startPoint.x(), self.startPoint.y(), self.endPoint.x(), self.endPoint.y())
 
     def canvasMoveEvent(self, e):

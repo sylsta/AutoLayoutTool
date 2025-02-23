@@ -43,7 +43,8 @@ from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
-    QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage
+    QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
+    QgsRectangle
 from configparser import ConfigParser
 
 
@@ -132,6 +133,81 @@ class AutoLayoutTool:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('AutoLayoutTool', message)
 
+    def add_action(
+        self,
+        icon_path,
+        text,
+        callback,
+        enabled_flag=True,
+        add_to_menu=True,
+        add_to_toolbar=True,
+        status_tip=None,
+        whats_this=None,
+        parent=None,
+        checkable=True):
+        """Add a toolbar icon to the toolbar.
+
+        :param icon_path: Path to the icon for this action. Can be a resource
+            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
+        :type icon_path: str
+
+        :param text: Text that should be shown in menu items for this action.
+        :type text: str
+
+        :param callback: Function to be called when the action is triggered.
+        :type callback: function
+
+        :param enabled_flag: A flag indicating if the action should be enabled
+            by default. Defaults to True.
+        :type enabled_flag: bool
+
+        :param add_to_menu: Flag indicating whether the action should also
+            be added to the menu. Defaults to True.
+        :type add_to_menu: bool
+
+        :param add_to_toolbar: Flag indicating whether the action should also
+            be added to the toolbar. Defaults to True.
+        :type add_to_toolbar: bool
+
+        :param status_tip: Optional text to show in a popup when mouse pointer
+            hovers over the action.
+        :type status_tip: str
+
+        :param parent: Parent widget for the new action. Defaults None.
+        :type parent: QWidget
+
+        :param whats_this: Optional text to show in the status bar when the
+            mouse pointer hovers over the action.
+
+        :returns: The action that was created. Note that the action is also
+            added to self.actions list.
+        :rtype: QAction
+        """
+
+        icon = QIcon(icon_path)
+        action = QAction(icon, text, parent)
+        action.triggered.connect(callback)
+        action.setEnabled(enabled_flag)
+
+        if status_tip is not None:
+            action.setStatusTip(status_tip)
+
+        if whats_this is not None:
+            action.setWhatsThis(whats_this)
+
+        action.setCheckable(checkable)
+
+        if add_to_toolbar:
+            self.toolbar.addAction(action)
+
+        if add_to_menu:
+            self.iface.addPluginToMenu(
+                self.menu,
+                action)
+
+        self.actions.append(action)
+
+        return action
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # will be set False in run()
@@ -144,35 +220,36 @@ class AutoLayoutTool:
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/layout.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+!")
         self.iface.addPluginToMenu(self.menu, action)
-        action.triggered.connect(self.run)
+        action.triggered.connect(self.run_from_mapCanvas)
         action.setStatusTip(text)
         action.setWhatsThis(text)
         self.actions.append(action)
         self.toolbar.addAction(action)
 
+        # #
+        # text = self.tr(u'Create a new layout based on the drawing of a rectangle')
+        # action = QAction(QIcon(':/plugins/AutoLayoutTool/images/rectangle.png'), text, self.iface.mainWindow())
+        # self.iface.registerMainWindowAction(action, "Ctrl+!")
+        # self.iface.addPluginToMenu(self.menu, action)
+        # action.triggered.connect(self.runRectangle)
+        # action.setStatusTip(text)
+        # action.setWhatsThis(text)
+        # self.actions.append(action)
+        # self.toolbar.addAction(action)
         #
-        text = self.tr(u'Create a new layout based on the drawing of a rectangle')
-        action = QAction(QIcon(':/plugins/OSMDownloader/rectangle.png'), text, self.iface.mainWindow())
-        self.iface.registerMainWindowAction(action, "Ctrl+!")
-        self.iface.addPluginToMenu(self.menu, action)
-        action.triggered.connect(self.runRectangle)
-        action.setStatusTip(text)
-        action.setWhatsThis(text)
-        self.actions.append(action)
-        self.toolbar.addAction(action)
-        #
-        # self.rectangleAction = self.add_action(
-        #                                 icon_path,
-        #                                 text=self.tr(u'Download OSM data by rectangle selection'),
-        #                                 callback=self.runRectangle,
-        #                                 parent=self.iface.mainWindow(),
-        #                                 add_to_menu=False,
-        #                                 checkable=True)
+        icon_path = ':/plugins/AutoLayoutTool/images/rectangle.png'
+        self.rectangleAction = self.add_action(
+                                        icon_path,
+                                        text=self.tr(u'Create a new layout based on the drawing of a rectangle'),
+                                        callback=self.runRectangle,
+                                        parent=self.iface.mainWindow(),
+                                        add_to_menu=False,
+                                        checkable=True)
 
-        self.rectangleAreaTool = RectangleAreaTool(self.iface.mapCanvas(), action)
+        self.rectangleAreaTool = RectangleAreaTool(self.iface.mapCanvas(), self.rectangleAction)
 
-        self.rectangleAreaTool.rectangleCreated.connect(self.run)
-
+        self.rectangleAreaTool.rectangleCreated.connect(self.run_from_rectangle)
+        self.actions.append(self.rectangleAction)
 
 
         # 'Config' entry menu
@@ -262,7 +339,7 @@ class AutoLayoutTool:
         else:
             self.params_from_dialog = False
 
-    def run(self):
+    def run_from_mapCanvas(self):
         """
         Creates a layout with a map of the current interface extent, with legend, scalebar and north arrow
         :return: None
@@ -271,6 +348,16 @@ class AutoLayoutTool:
         extent = self.iface.mapCanvas().extent()
 
         self.draw_layout_from_extent(extent)
+
+    def run_from_rectangle(self,  startX, startY, endX, endY):
+        """
+
+        """
+        print(f'{startX}, {startY}, {endX}, {endY}')
+        extent = QgsRectangle( startX, startY, endX, endY)
+        self.draw_layout_from_extent(extent)
+
+
 
     def draw_layout_from_extent(self, extent):
         """
