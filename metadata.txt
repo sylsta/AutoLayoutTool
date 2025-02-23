@@ -2,7 +2,7 @@
 name=AutoLayoutTool
 qgisMinimumVersion=3.0
 description=One-click print layout creator
-version=2.4
+version=2.1
 supportsQt6=True
 author=Sylvain Théry - UMR 5281 ART-Dev
 email=sylvain.thery@cnrs.fr
@@ -31,9 +31,8 @@ deprecated=False
 server=False
 
 changelog=
-    2.0 (2025-02-19):
-        - fix custom positioning issue (margin, north arrow, scale)
-        - update translations
+    2.1 (2025-02-23):
+        - creates layout by rectangle drawing
 
     2.0 (2025-02-19):
         - fix custom positioning issue (margin, north arrow, scale)
