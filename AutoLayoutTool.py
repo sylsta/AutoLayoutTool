@@ -226,17 +226,7 @@ class AutoLayoutTool:
         self.actions.append(action)
         self.toolbar.addAction(action)
 
-        # #
-        # text = self.tr(u'Create a new layout based on the drawing of a rectangle')
-        # action = QAction(QIcon(':/plugins/AutoLayoutTool/images/rectangle.png'), text, self.iface.mainWindow())
-        # self.iface.registerMainWindowAction(action, "Ctrl+!")
-        # self.iface.addPluginToMenu(self.menu, action)
-        # action.triggered.connect(self.runRectangle)
-        # action.setStatusTip(text)
-        # action.setWhatsThis(text)
-        # self.actions.append(action)
-        # self.toolbar.addAction(action)
-        #
+        # old fashion due to reuse of code
         icon_path = ':/plugins/AutoLayoutTool/images/rectangle.png'
         self.rectangleAction = self.add_action(
                                         icon_path,
