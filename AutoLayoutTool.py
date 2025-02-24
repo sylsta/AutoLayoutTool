@@ -76,7 +76,7 @@ class AutoLayoutTool:
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
-        # print vrsion number
+        # print version number
         config = ConfigParser()
         config.read(f'{self.plugin_dir}/metadata.txt')
         print(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded")
@@ -117,7 +117,7 @@ class AutoLayoutTool:
                 # pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
                 #                         suspend=True)
             except:
-                print("pydevd_pycharm module     issue")
+                print("pydevd_pycharm module issue")
                 pass
 
 
