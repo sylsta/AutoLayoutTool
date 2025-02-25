@@ -39,6 +39,7 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
  ***************************************************************************/
 """
 
+
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
@@ -48,9 +49,7 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
 from configparser import ConfigParser
 
 
-
-
-
+    # from .mtp4windows_win_mtp.access import get_portable_devices
 import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
