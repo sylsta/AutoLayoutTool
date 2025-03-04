@@ -31,13 +31,17 @@ deprecated=False
 server=False
 
 changelog=
+    2.1 (2025-02-23):
+        - creates layout by rectangle drawing
+
     2.0 (2025-02-19):
+        - public release
         - fix custom positioning issue (margin, north arrow, scale)
         - update translations
 
     1.3 (2025-02-17)
         - implement Qt6 compatibility
-        - bux fixes
+        - bug fixes
 
     1.2 (2024-11-30)
         - add config window for custom params

@@ -3,5 +3,6 @@
         <file>images/layout.png</file>
         <file>images/config.png</file>
         <file>images/help.png</file>
+        <file>images/rectangle.png</file>
     </qresource>
 </RCC>
