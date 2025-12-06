@@ -4,7 +4,7 @@ qgisMinimumVersion=3.0
 description=One-click print layout creator
 version=2.1
 supportsQt6=True
-author=Sylvain Théry - UMR 5281 ART-Dev
+author=Sylvain Théry - CNRS - UMR 5281 ART-Dev
 email=sylvain.thery@cnrs.fr
 
 about=See help menu or <a href='https://github.com/sylsta/AutoLayoutTool/blob/main/help/AutoLayoutTool_visual_demo.gif'>  this animated gif </a>for visual help :)
