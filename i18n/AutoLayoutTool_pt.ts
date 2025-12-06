@@ -4,76 +4,81 @@
 <context>
     <name>AutoLayoutTool</name>
     <message>
-        <location filename="../AutoLayoutTool.py" line="175"/>
+        <location filename="../AutoLayoutTool.py" line="274"/>
         <source>&amp;AutoLayoutTool</source>
         <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="135"/>
+        <location filename="../AutoLayoutTool.py" line="218"/>
         <source>Create a new layout based on current extent </source>
         <translation>Criar um novo layout com base na extensão atual </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="374"/>
+        <location filename="../AutoLayoutTool.py" line="505"/>
         <source>Calculating scale</source>
         <translation>Calculando a escala</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="444"/>
+        <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Adicionando a legenda</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="536"/>
+        <location filename="../AutoLayoutTool.py" line="677"/>
         <source>Adding scale bar</source>
         <translation>Adicionando a barra de escala</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="570"/>
+        <location filename="../AutoLayoutTool.py" line="720"/>
         <source>Adding north arrow</source>
         <translation>Adicionando a seta norte</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="234"/>
+        <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>AutoLayoutTool inicia</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="146"/>
+        <location filename="../AutoLayoutTool.py" line="245"/>
         <source>AutoLayoutTool custom configuration</source>
         <translation>Configuração personalizada do AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="156"/>
+        <location filename="../AutoLayoutTool.py" line="255"/>
         <source>AutoLayoutTool visual help</source>
         <translation>Ajuda visual do AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="240"/>
+        <location filename="../AutoLayoutTool.py" line="364"/>
         <source>No loaded data - aborting</source>
         <translation>Nenhum dado carregado - abortando</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="250"/>
+        <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="obsolete">Cancelado pelo usuário</translation>
+        <translation type="unfinished">Cancelado pelo usuário</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>Delete layout...</source>
         <translation>Excluir layout...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
         <translation>Já existe um layout chamado '%s'
 Deseja excluí-lo?</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="311"/>
+        <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
         <translation>Layout anterior chamado '%s' removido... </translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="230"/>
+        <source>Create a new layout based on the drawing of a rectangle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

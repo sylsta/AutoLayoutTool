@@ -4,12 +4,12 @@
 <context>
     <name>AutoLayoutTool</name>
     <message>
-        <location filename="../AutoLayoutTool.py" line="175"/>
+        <location filename="../AutoLayoutTool.py" line="274"/>
         <source>&amp;AutoLayoutTool</source>
         <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="135"/>
+        <location filename="../AutoLayoutTool.py" line="218"/>
         <source>Create a new layout based on current extent </source>
         <translation>إنشاء تصميم جديد بناء على الرّقعة الحاليّة</translation>
     </message>
@@ -19,28 +19,28 @@
         <translation type="obsolete">إعدادات AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>Delete layout...</source>
         <translation>حذف التصميم...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
         <translation>يوجد بالفعل تصميم تحت اسم '%s'. هل تريد حذفه؟</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="311"/>
+        <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
         <translation>تمّ حذف التصميم المسمّى '%s'...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="374"/>
+        <location filename="../AutoLayoutTool.py" line="505"/>
         <source>Calculating scale</source>
         <translation>المقياس في طور الحساب</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="444"/>
+        <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>تتمّ الآن إضافة مفتاح الخريطة</translation>
     </message>
@@ -50,17 +50,17 @@ Do you want to delete it?</source>
         <translation type="obsolete">مفتاح الخريطة</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="536"/>
+        <location filename="../AutoLayoutTool.py" line="677"/>
         <source>Adding scale bar</source>
         <translation>تتمّ الآن إضافة المقياس</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="570"/>
+        <location filename="../AutoLayoutTool.py" line="720"/>
         <source>Adding north arrow</source>
         <translation>تتمّ الآن إضافة الاتّجاه</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="234"/>
+        <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>الأداة AutoLayoutTool في طور التّشغيل</translation>
     </message>
@@ -70,24 +70,29 @@ Do you want to delete it?</source>
         <translation type="obsolete">تصميم أوتوماتيكيّ</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="146"/>
+        <location filename="../AutoLayoutTool.py" line="245"/>
         <source>AutoLayoutTool custom configuration</source>
         <translation>التكوين المخصص لأداة AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="156"/>
+        <location filename="../AutoLayoutTool.py" line="255"/>
         <source>AutoLayoutTool visual help</source>
         <translation>المساعدة البصرية لأداة AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="240"/>
+        <location filename="../AutoLayoutTool.py" line="364"/>
         <source>No loaded data - aborting</source>
         <translation>لا توجد بيانات محملة - إلغاء</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="250"/>
+        <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="obsolete">تم الإلغاء من قبل المستخدم</translation>
+        <translation type="unfinished">تم الإلغاء من قبل المستخدم</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="230"/>
+        <source>Create a new layout based on the drawing of a rectangle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

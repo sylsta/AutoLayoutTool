@@ -4,96 +4,81 @@
 <context>
     <name>AutoLayoutTool</name>
     <message>
-        <location filename="../AutoLayoutTool.py" line="175"/>
+        <location filename="../AutoLayoutTool.py" line="274"/>
         <source>&amp;AutoLayoutTool</source>
         <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="135"/>
+        <location filename="../AutoLayoutTool.py" line="218"/>
         <source>Create a new layout based on current extent </source>
-        <translation>Création d'une mise en page basée sur l'extension courante du projet </translation>
+        <translation>Création d&apos;une mise en page basée sur l&apos;extension courante du projet </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>Delete layout...</source>
         <translation>Supprimer la mise en page...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>There&apos;s already a layout named &apos;%s&apos;
 Do you want to delete it?</source>
-        <translation>Une mise en page nommée '%s' existe déjà
+        <translation>Une mise en page nommée &apos;%s&apos; existe déjà
 Souhaitez-vous la supprimer ?</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="311"/>
+        <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>La précédente mise en page nommée '%s' a été supprimée... </translation>
+        <translation>La précédente mise en page nommée &apos;%s&apos; a été supprimée... </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="444"/>
+        <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Ajout de la légende</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="536"/>
+        <location filename="../AutoLayoutTool.py" line="677"/>
         <source>Adding scale bar</source>
-        <translation>Ajout de l'échelle</translation>
+        <translation>Ajout de l&apos;échelle</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="403"/>
-        <source>Add north arrow</source>
-        <translation type="obsolete">Ajout de la flèche Nord</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation type="obsolete">Légende</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="570"/>
+        <location filename="../AutoLayoutTool.py" line="720"/>
         <source>Adding north arrow</source>
         <translation>Ajout de la flèche Nord</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="234"/>
+        <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>Lancement de AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">Configuration de AutoLayoutTool</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="374"/>
+        <location filename="../AutoLayoutTool.py" line="505"/>
         <source>Calculating scale</source>
-        <translation>Calcul de l'échelle</translation>
+        <translation>Calcul de l&apos;échelle</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="439"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">Mise en page automatique</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="146"/>
+        <location filename="../AutoLayoutTool.py" line="245"/>
         <source>AutoLayoutTool custom configuration</source>
         <translation>Configuration personnalisée de AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="156"/>
+        <location filename="../AutoLayoutTool.py" line="255"/>
         <source>AutoLayoutTool visual help</source>
         <translation>Aide visuelle de AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="240"/>
+        <location filename="../AutoLayoutTool.py" line="364"/>
         <source>No loaded data - aborting</source>
         <translation>Aucune donnée chargée - abandon</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="250"/>
+        <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="obsolete">Annulé par l'utilisateur</translation>
+        <translation>Annulé par l&apos;utilisateur</translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="230"/>
+        <source>Create a new layout based on the drawing of a rectangle</source>
+        <translation>Création d&apos;une mise en page en dessinant un rectangle sur le canvas</translation>
     </message>
 </context>
 <context>
@@ -142,7 +127,7 @@ Souhaitez-vous la supprimer ?</translation>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="265"/>
         <source>Select placement</source>
-        <translation>Choisir l'emplacement</translation>
+        <translation>Choisir l&apos;emplacement</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.ui" line="100"/>
