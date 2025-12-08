@@ -383,15 +383,16 @@ class AutoLayoutTool:
         if (map_height == 0) or (map_width == 0):
             print(self.tr(u'No loaded data - aborting'))
             print('--------------------------------')
-            # return
+            return  # CORRIGÉ : return activé
         # Create layout
         try:
             layout, manager = self.create_layout(self.layout_name)
-        except:
+        except Exception as e:
             # Quick and dirty. In case people decide not to replace previous layout
             print(self.tr(u'Cancelled by user'))
+            print(f'Error: {e}')
             print('--------------------------------')
-            # return
+            return  # CORRIGÉ : return activé
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
             extent, layout)
@@ -503,11 +504,11 @@ class AutoLayoutTool:
         if landscape:
             scale_ratio = (layout_width / map_width)
             if map_height * scale_ratio > layout_height:
-                scale_ratio = map_height / layout_height
+                scale_ratio = layout_height / map_height  # CORRIGÉ : était map_height / layout_height
         else:
             scale_ratio = layout_height / map_height
             if map_width * scale_ratio > layout_width:
-                scale_ratio = map_height / layout_height
+                scale_ratio = layout_width / map_width  # CORRIGÉ : était map_height / layout_height
         return landscape, layout_height, layout_width, map_height, map_width, scale_ratio
 
     def calculate_map_scale(self, landscape, layout, layout_height, layout_width, map_height, map_width, scale_ratio):
@@ -530,26 +531,35 @@ class AutoLayoutTool:
         previous_width = map_width
         if landscape:
             if self.debug: print("Landscape")
+            # Calculate extent ratio
+            extent_ratio = previous_width / previous_height  # width/height ratio of extent
+            
+            # Try fitting width to layout_width
             map_width = layout_width
-            map_height = round(map_height * scale_ratio, 3)  # makes qgis bug if not rounded 3
-            if self.debug: print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
-            # workaround don't know why in special case it has to be changed !:#
+            map_height = round(map_width / extent_ratio, 3)  # height from width
+            
+            # If height doesn't fit, recalculate from height
             if map_height > layout_height:
                 map_height = layout_height
-                map_width = round(previous_width / scale_ratio, 3)
-                if self.debug: print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
+                map_width = round(map_height * extent_ratio, 3)  # width from height
+            
+            if self.debug: print("final landscape - mapw: %r / maph: %r" % (map_width, map_height))
         else:
             if self.debug: print("Portrait")
-            map_width = round(map_width * scale_ratio, 3)
+            # Calculate extent ratio
+            extent_ratio = previous_height / previous_width  # height/width ratio of extent
+            
+            # Try fitting height to layout_height
             map_height = layout_height
-            if self.debug: print("ori_mapw: %r / ori_maph: %r" % (map_width, map_height))
-            # workaround: don't now why in special case it has to be changed ! (extent is nearly a square 4 instance)
-            if map_width > map_height:
+            map_width = round(map_height / extent_ratio, 3)  # width from height
+            
+            # If width doesn't fit, recalculate from width
+            if map_width > layout_width:
                 map_width = layout_width
-                map_height = round(previous_height / scale_ratio, 3)
-                if self.debug: print("corr_mapw: %r / corr_maph: %r" % (map_width, map_height))
+                map_height = round(map_width * extent_ratio, 3)  # height from width
+            
+            if self.debug: print("final portrait - mapw: %r / maph: %r" % (map_width, map_height))
 
-        if self.debug: print("final_mapw: %r / final_maph: %r" % (map_width, map_height))
         return map_height, map_width, my_map
 
     def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map):
