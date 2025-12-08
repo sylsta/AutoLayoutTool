@@ -72,6 +72,11 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         self.le_layout_name.editingFinished.connect(self.items_changed)
         self.le_legend_title.editingFinished.connect(self.items_changed)
         self.sb_margin_value.editingFinished.connect(self.items_changed)
+        
+        # NOUVELLES LIGNES - Connecter les signaux des cases à cocher
+        self.cb_show_config_icon.stateChanged.connect(self.items_changed)
+        self.cb_show_help_icon.stateChanged.connect(self.items_changed)
+        
         self.set_form_values(False)
 
 
@@ -91,6 +96,11 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             "sb_margin_value_value": self.sb_margin_value.value(),
             "le_layout_name_value": self.le_layout_name.text(),
             "cbb_page_format_value": self.cbb_page_format_name.currentText()
+        }
+        # NOUVELLE SECTION - UI_OPTIONS pour les préférences d'interface
+        config_object["UI_OPTIONS"] = {
+            "cb_show_config_icon": self.cb_show_config_icon.isChecked(),
+            "cb_show_help_icon": self.cb_show_help_icon.isChecked()
         }
         with open(self.plugin_dir + '/config/custom.ini', 'w') as conf:
             config_object.write(conf)
@@ -151,6 +161,20 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             index = self.cbb_page_format_name.findText(text, match_fixed_string)
             if index >= 0:
                 self.cbb_page_format_name.setCurrentIndex(index)
+
+        # NOUVELLES LIGNES - Charger les états des cases à cocher depuis la section UI_OPTIONS
+        try:
+            ui_values = config_object["UI_OPTIONS"]
+            self.cb_show_config_icon.setChecked(
+                ui_values.getboolean("cb_show_config_icon", True)
+            )
+            self.cb_show_help_icon.setChecked(
+                ui_values.getboolean("cb_show_help_icon", True)
+            )
+        except:
+            # Valeurs par défaut si section ou clés non trouvées
+            self.cb_show_config_icon.setChecked(True)
+            self.cb_show_help_icon.setChecked(True)
 
         if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
 
