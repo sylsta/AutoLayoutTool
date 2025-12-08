@@ -214,8 +214,8 @@ class AutoLayoutTool:
         self.first_start = True
         self.toolbar = self.iface.addToolBar("AutoLayoutTool")
 
-        # NOUVEAU - Créer le menu avec icône en utilisant pluginMenu().addMenu()
-        # Cette méthode permet d'avoir une icône sur le nom du menu lui-même
+        # Create menu with icon using pluginMenu().addMenu()
+        # This method allows having an icon on the menu name itself
         menu_icon = QIcon(':/plugins/AutoLayoutTool/images/layout.png')
         self.menu_obj = self.iface.pluginMenu().addMenu(menu_icon, self.tr(u'&AutoLayoutTool'))
 
@@ -223,7 +223,7 @@ class AutoLayoutTool:
         text = self.tr(u'Create a new layout based on current extent ')
         action = QAction(QIcon(':/plugins/AutoLayoutTool/images/layout.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(action, "Ctrl+!")
-        # Ajouter au menu créé
+        # Add to created menu
         self.menu_obj.addAction(action)
         action.triggered.connect(self.run_from_mapCanvas)
         action.setStatusTip(text)
@@ -247,22 +247,22 @@ class AutoLayoutTool:
         self.actions.append(self.rectangleAction)
 
 
-        # 'Config' entry menu - STOCKER LA RÉFÉRENCE
+        # 'Config' entry menu
         text = self.tr("AutoLayoutTool custom configuration")
         self.config_action = QAction(QIcon(':/plugins/AutoLayoutTool/images/config.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(self.config_action, "Ctrl+*")
-        # Ajouter au menu créé
+        # Add to created menu
         self.menu_obj.addAction(self.config_action)
         self.config_action.triggered.connect(self.config)
         self.config_action.setStatusTip(text)
         self.actions.append(self.config_action)
         self.toolbar.addAction(self.config_action)
 
-        # Visual help entry menu - STOCKER LA RÉFÉRENCE
+        # Visual help entry menu
         text = self.tr("AutoLayoutTool visual help")
         self.help_action = QAction(QIcon(':/plugins/AutoLayoutTool/images/help.png'), text, self.iface.mainWindow())
         self.iface.registerMainWindowAction(self.help_action, "Ctrl+Shift+F4")
-        # Ajouter au menu créé
+        # Add to created menu
         self.menu_obj.addAction(self.help_action)
         self.help_action.triggered.connect(self.visual_help)
         self.help_action.setStatusTip(text)
@@ -270,7 +270,7 @@ class AutoLayoutTool:
         self.actions.append(self.help_action)
         self.toolbar.addAction(self.help_action)
 
-        # NOUVELLE LIGNE - Charger les préférences de visibilité de la toolbar
+        # Load toolbar visibility preferences
         self.load_toolbar_visibility_preferences()
 
         # Default value for page size in no custom config file exist (in that case, will be overwritten later
@@ -281,13 +281,13 @@ class AutoLayoutTool:
 
     def unload(self):
         """Removes the plugin menu item and toolbar from QGIS GUI."""
-        # Supprimer le menu créé avec pluginMenu().addMenu()
+        # Remove menu created with pluginMenu().addMenu()
         if hasattr(self, 'menu_obj') and self.menu_obj:
             self.iface.pluginMenu().removeAction(self.menu_obj.menuAction())
             self.menu_obj.deleteLater()
             self.menu_obj = None
         
-        # Supprimer la toolbar
+        # Remove toolbar
         if hasattr(self, 'toolbar') and self.toolbar:
             del self.toolbar
 
@@ -340,7 +340,7 @@ class AutoLayoutTool:
             self.margin = int(dlg_config.sb_margin_value.value())
             self.layout_name = dlg_config.le_layout_name.text()
             self.page_size =dlg_config.cbb_page_format_name.currentText()
-            # NOUVELLES LIGNES - Appliquer immédiatement la visibilité selon les cases à cocher
+            # Apply visibility immediately according to checkboxes
             self.apply_toolbar_visibility(
                 dlg_config.cb_show_config_icon.isChecked(),
                 dlg_config.cb_show_help_icon.isChecked()
@@ -383,7 +383,7 @@ class AutoLayoutTool:
         if (map_height == 0) or (map_width == 0):
             print(self.tr(u'No loaded data - aborting'))
             print('--------------------------------')
-            return  # CORRIGÉ : return activé
+            return
         # Create layout
         try:
             layout, manager = self.create_layout(self.layout_name)
@@ -392,7 +392,7 @@ class AutoLayoutTool:
             print(self.tr(u'Cancelled by user'))
             print(f'Error: {e}')
             print('--------------------------------')
-            return  # CORRIGÉ : return activé
+            return
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
             extent, layout)
@@ -504,11 +504,11 @@ class AutoLayoutTool:
         if landscape:
             scale_ratio = (layout_width / map_width)
             if map_height * scale_ratio > layout_height:
-                scale_ratio = layout_height / map_height  # CORRIGÉ : était map_height / layout_height
+                scale_ratio = layout_height / map_height
         else:
             scale_ratio = layout_height / map_height
             if map_width * scale_ratio > layout_width:
-                scale_ratio = layout_width / map_width  # CORRIGÉ : était map_height / layout_height
+                scale_ratio = layout_width / map_width
         return landscape, layout_height, layout_width, map_height, map_width, scale_ratio
 
     def calculate_map_scale(self, landscape, layout, layout_height, layout_width, map_height, map_width, scale_ratio):
@@ -622,7 +622,7 @@ class AutoLayoutTool:
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
-        layout.refresh()  # Forcer la mise à jour du layout
+        layout.refresh()  # Force layout update
         legend.refresh()
 
 
@@ -777,15 +777,15 @@ class AutoLayoutTool:
 
     def apply_toolbar_visibility(self, show_config, show_help):
         """
-        Applique la visibilité des icônes de la toolbar (sans toucher au menu)
-        :param show_config: bool - Afficher l'icône de config dans la toolbar
-        :param show_help: bool - Afficher l'icône d'aide dans la toolbar
+        Apply toolbar icons visibility (without affecting menu)
+        :param show_config: bool - Show config icon in toolbar
+        :param show_help: bool - Show help icon in toolbar
         """
-        # IMPORTANT : Ne masquer que les icônes de la toolbar, pas les entrées du menu
-        # Les actions sont visibles dans le menu, mais leur visibilité dans la toolbar
-        # est contrôlée par le fait de les ajouter ou retirer de la toolbar
+        # Only hide toolbar icons, not menu entries
+        # Actions are visible in menu, but their toolbar visibility
+        # is controlled by adding or removing them from toolbar
         
-        # Retirer les actions de la toolbar si nécessaire
+        # Remove actions from toolbar if necessary
         if not show_config:
             self.toolbar.removeAction(self.config_action)
         elif show_config and self.config_action not in self.toolbar.actions():
@@ -798,25 +798,25 @@ class AutoLayoutTool:
 
     def load_toolbar_visibility_preferences(self):
         """
-        Charge les préférences de visibilité des icônes de la toolbar depuis le fichier de configuration
+        Load toolbar icons visibility preferences from configuration file
         """
         config = ConfigParser()
         config_file = os.path.join(self.plugin_dir, 'config', 'custom.ini')
         
-        # Valeurs par défaut
+        # Default values
         show_config = True
         show_help = True
         
         if os.path.isfile(config_file):
             config.read(config_file)
             try:
-                # Lecture depuis la section UI_OPTIONS
+                # Read from UI_OPTIONS section
                 show_config = config.getboolean("UI_OPTIONS", "cb_show_config_icon", fallback=True)
                 show_help = config.getboolean("UI_OPTIONS", "cb_show_help_icon", fallback=True)
             except:
                 pass
         
-        # Appliquer les préférences
+        # Apply preferences
         self.apply_toolbar_visibility(show_config, show_help)
 
     def param_from_file(self):

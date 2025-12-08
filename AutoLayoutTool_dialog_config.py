@@ -73,7 +73,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         self.le_legend_title.editingFinished.connect(self.items_changed)
         self.sb_margin_value.editingFinished.connect(self.items_changed)
         
-        # NOUVELLES LIGNES - Connecter les signaux des cases à cocher
+        # Connect checkbox signals
         self.cb_show_config_icon.stateChanged.connect(self.items_changed)
         self.cb_show_help_icon.stateChanged.connect(self.items_changed)
         
@@ -97,7 +97,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             "le_layout_name_value": self.le_layout_name.text(),
             "cbb_page_format_value": self.cbb_page_format_name.currentText()
         }
-        # NOUVELLE SECTION - UI_OPTIONS pour les préférences d'interface
+        # UI_OPTIONS section for interface preferences
         config_object["UI_OPTIONS"] = {
             "cb_show_config_icon": self.cb_show_config_icon.isChecked(),
             "cb_show_help_icon": self.cb_show_help_icon.isChecked()
@@ -162,7 +162,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             if index >= 0:
                 self.cbb_page_format_name.setCurrentIndex(index)
 
-        # NOUVELLES LIGNES - Charger les états des cases à cocher depuis la section UI_OPTIONS
+        # Load checkbox states from UI_OPTIONS section
         try:
             ui_values = config_object["UI_OPTIONS"]
             self.cb_show_config_icon.setChecked(
@@ -172,7 +172,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
                 ui_values.getboolean("cb_show_help_icon", True)
             )
         except:
-            # Valeurs par défaut si section ou clés non trouvées
+            # Default values if section or keys not found
             self.cb_show_config_icon.setChecked(True)
             self.cb_show_help_icon.setChecked(True)
 
