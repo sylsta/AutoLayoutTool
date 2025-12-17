@@ -25,5 +25,5 @@ flake:
 
 zip:
 	rm -f ${ZIPFILE}
-	cd ..; zip -9r $(ZIPFILE) $(PLUGINNAME) -x "*.git/*" "*.idea/*" "*.gitignore" "*pyc" "*__pycache__/*" "*doc/*" "*config/custom.ini" "*resources.qrc" "*Makefile" "*symbology-style.db" "*user-history.db" "*i18n/*.sh" "*stats/*"
+	cd ..; zip -9r $(ZIPFILE) $(PLUGINNAME) -x "*.git/*" "*.idea/*" "*.gitignore" "*pyc" "*__pycache__/*" "*doc/*" "*config/custom.ini" "*resources.qrc" "*Makefile" "*symbology-style.db" "*user-history.db" "*i18n/*.sh" "*stats/*" "*i18n/*.sh"
 	@echo "Successfully zipped to" $(ZIPFILE)

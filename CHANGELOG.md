@@ -1,5 +1,10 @@
 Change Log
 ==========
+
+* __2.1__ (2025-12-17):
+  * creates layout by rectangle drawing
+  * bug fix concerning layout size calculation
+
 * __2.0__ (2025-02-19):
   * fix custom positioning issue (margin, north arrow, scale)
   * update translations
