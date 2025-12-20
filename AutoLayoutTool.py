@@ -39,7 +39,6 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
  ***************************************************************************/
 """
 
-
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
@@ -48,8 +47,7 @@ from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutIte
     QgsRectangle
 from configparser import ConfigParser
 
-
-    # from .mtp4windows_win_mtp.access import get_portable_devices
+# from .mtp4windows_win_mtp.access import get_portable_devices
 import os.path
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -57,6 +55,7 @@ from .resources import *
 from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
 from .rectangleAreaTool import RectangleAreaTool
+
 
 class AutoLayoutTool:
     """QGIS Plugin Implementation."""
@@ -111,14 +110,13 @@ class AutoLayoutTool:
         if self.debug:
             try:
                 import pydevd_pycharm
-                #pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+                # pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
                 pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
                 # pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
                 #                         suspend=True)
             except:
                 print("pydevd_pycharm module issue")
                 pass
-
 
     def tr(self, message):
         """
@@ -133,17 +131,17 @@ class AutoLayoutTool:
         return QCoreApplication.translate('AutoLayoutTool', message)
 
     def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None,
-        checkable=True):
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None,
+            checkable=True):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -207,6 +205,7 @@ class AutoLayoutTool:
         self.actions.append(action)
 
         return action
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # will be set False in run()
@@ -234,18 +233,17 @@ class AutoLayoutTool:
         # old fashion due to reuse of code
         icon_path = ':/plugins/AutoLayoutTool/images/rectangle.png'
         self.rectangleAction = self.add_action(
-                                        icon_path,
-                                        text=self.tr(u'Create a new layout based on the drawing of a rectangle'),
-                                        callback=self.runRectangle,
-                                        parent=self.iface.mainWindow(),
-                                        add_to_menu=False,
-                                        checkable=True)
+            icon_path,
+            text=self.tr(u'Create a new layout based on the drawing of a rectangle'),
+            callback=self.runRectangle,
+            parent=self.iface.mainWindow(),
+            add_to_menu=False,
+            checkable=True)
 
         self.rectangleAreaTool = RectangleAreaTool(self.iface.mapCanvas(), self.rectangleAction)
 
         self.rectangleAreaTool.rectangleCreated.connect(self.run_from_rectangle)
         self.actions.append(self.rectangleAction)
-
 
         # 'Config' entry menu
         text = self.tr("AutoLayoutTool custom configuration")
@@ -275,9 +273,7 @@ class AutoLayoutTool:
 
         # Default value for page size in no custom config file exist (in that case, will be overwritten later
         self.params_from_dialog = False
-        self.page_size=''
-
-
+        self.page_size = ''
 
     def unload(self):
         """Removes the plugin menu item and toolbar from QGIS GUI."""
@@ -286,7 +282,7 @@ class AutoLayoutTool:
             self.iface.pluginMenu().removeAction(self.menu_obj.menuAction())
             self.menu_obj.deleteLater()
             self.menu_obj = None
-        
+
         # Remove toolbar
         if hasattr(self, 'toolbar') and self.toolbar:
             del self.toolbar
@@ -296,7 +292,6 @@ class AutoLayoutTool:
             self.iface.mapCanvas().setMapTool(self.rectangleAreaTool)
         else:
             self.iface.mapCanvas().unsetMapTool(self.rectangleAreaTool)
-
 
     def visual_help(self):
         """
@@ -339,7 +334,7 @@ class AutoLayoutTool:
             self.legend_title = dlg_config.le_legend_title.text()
             self.margin = int(dlg_config.sb_margin_value.value())
             self.layout_name = dlg_config.le_layout_name.text()
-            self.page_size =dlg_config.cbb_page_format_name.currentText()
+            self.page_size = dlg_config.cbb_page_format_name.currentText()
             # Apply visibility immediately according to checkboxes
             self.apply_toolbar_visibility(
                 dlg_config.cb_show_config_icon.isChecked(),
@@ -358,15 +353,13 @@ class AutoLayoutTool:
 
         self.draw_layout_from_extent(extent)
 
-    def run_from_rectangle(self,  startX, startY, endX, endY):
+    def run_from_rectangle(self, startX, startY, endX, endY):
         """
 
         """
         print(f'{startX}, {startY}, {endX}, {endY}')
-        extent = QgsRectangle( startX, startY, endX, endY)
+        extent = QgsRectangle(startX, startY, endX, endY)
         self.draw_layout_from_extent(extent)
-
-
 
     def draw_layout_from_extent(self, extent):
         """
@@ -387,8 +380,13 @@ class AutoLayoutTool:
         # Create layout
         try:
             layout, manager = self.create_layout(self.layout_name)
+            if layout is None:
+                # User cancelled the operation
+                print(self.tr(u'Cancelled by user'))
+                print('--------------------------------')
+                return
         except Exception as e:
-            # Quick and dirty. In case people decide not to replace previous layout
+            # Quick and dirty. In case of unexpected error
             print(self.tr(u'Cancelled by user'))
             print(f'Error: {e}')
             print('--------------------------------')
@@ -423,7 +421,7 @@ class AutoLayoutTool:
 
     def create_layout(self, layout_name):
         """
-        Layout Management: creates new layout and delete previous
+        Layout Management: creates new layout and optionally delete previous or create with incremented name
         :param layout_name:
         :return
         :rtype:QgsLayout, QgsProject.instance().layoutManager()
@@ -431,45 +429,96 @@ class AutoLayoutTool:
         project = QgsProject.instance()
         manager = project.layoutManager()
         layouts_list = manager.printLayouts()
+
+        final_name = layout_name
+
         for layout in layouts_list:
             if layout.name() == layout_name:
+                # Get the next available incremented name for display in dialog
+                next_name = self.get_unique_layout_name(manager, layout_name)
+
                 try:
                     # Qt6
-                    reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                                                 self.tr(
-                                                     u"There's already a layout named '%s'\nDo you want to delete it?")
-                                                 % layout_name,
-                                                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                                                 QMessageBox.StandardButton.No)
+                    msg_box = QMessageBox()
+                    msg_box.setWindowTitle(self.tr(u'Layout already exists...'))
+                    msg_box.setText(self.tr(u"There's already a layout named '%s'") % layout_name)
+                    msg_box.setInformativeText(self.tr(u"What would you like to do?"))
+
+                    delete_btn = msg_box.addButton(self.tr(u"Delete existing"), QMessageBox.ButtonRole.DestructiveRole)
+                    new_btn = msg_box.addButton(self.tr(u"Create '%s'") % next_name, QMessageBox.ButtonRole.AcceptRole)
+                    cancel_btn = msg_box.addButton(QMessageBox.StandardButton.Cancel)
+
+                    msg_box.setDefaultButton(cancel_btn)
+                    msg_box.exec()
+
+                    clicked = msg_box.clickedButton()
+
+                    if clicked == delete_btn:
+                        manager.removeLayout(layout)
+                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                        final_name = layout_name
+                    elif clicked == new_btn:
+                        final_name = next_name
+                        print(self.tr(u"Creating new layout '%s'") % next_name)
+                    else:
+                        # Cancel was clicked or dialog was closed
+                        return None, None
 
                 except AttributeError:
                     # Qt5
-                    reply = QMessageBox.question(None, self.tr(u'Delete layout...'),
-                                                 self.tr(
-                                                     u"There's already a layout named '%s'\nDo you want to delete it?")
-                                                 % layout_name,
-                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                try:
-                    try:
-                        # Qt6
-                        if reply == QMessageBox.StandardButton.No:
-                            return
-                    except AttributeError:
-                        # Qt5
-                        if reply == QMessageBox.No:
-                            return
+                    msg_box = QMessageBox()
+                    msg_box.setWindowTitle(self.tr(u'Layout already exists...'))
+                    msg_box.setText(self.tr(u"There's already a layout named '%s'") % layout_name)
+                    msg_box.setInformativeText(self.tr(u"What would you like to do?"))
 
-                    manager.removeLayout(layout)
-                    print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
-                except:
-                    # in case ESC key is pressed to escape the dialog
-                    print("bug")
-                    return
+                    delete_btn = msg_box.addButton(self.tr(u"Delete existing"), QMessageBox.DestructiveRole)
+                    new_btn = msg_box.addButton(self.tr(u"Create '%s'") % next_name, QMessageBox.AcceptRole)
+                    cancel_btn = msg_box.addButton(QMessageBox.Cancel)
+
+                    msg_box.setDefaultButton(cancel_btn)
+                    msg_box.exec_()
+
+                    clicked = msg_box.clickedButton()
+
+                    if clicked == delete_btn:
+                        manager.removeLayout(layout)
+                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                        final_name = layout_name
+                    elif clicked == new_btn:
+                        final_name = next_name
+                        print(self.tr(u"Creating new layout '%s'") % next_name)
+                    else:
+                        # Cancel was clicked or dialog was closed
+                        return None, None
+                break
 
         layout = QgsPrintLayout(project)
         layout.initializeDefaults()
-        layout.setName(layout_name)
+        layout.setName(final_name)
         return layout, manager
+
+    def get_unique_layout_name(self, manager, base_name):
+        """
+        Generate a unique layout name by adding an increment suffix if needed
+        :param manager: QgsProject.instance().layoutManager()
+        :param base_name: The base layout name to check
+        :return: A unique layout name (e.g., 'Automatic Layout', 'Automatic Layout (1)', etc.)
+        :rtype: str
+        """
+        layouts_list = manager.printLayouts()
+        existing_names = [layout.name() for layout in layouts_list]
+
+        # If base name doesn't exist, use it directly
+        if base_name not in existing_names:
+            return base_name
+
+        # Find the next available increment
+        increment = 1
+        while True:
+            new_name = f"{base_name} ({increment})"
+            if new_name not in existing_names:
+                return new_name
+            increment += 1
 
     def compute_layout_orientation(self, extent, layout):
         """
@@ -482,11 +531,11 @@ class AutoLayoutTool:
         print('Creating layout')
         map_width = extent.xMaximum() - extent.xMinimum()
         map_height = extent.yMaximum() - extent.yMinimum()
-        if self.page_size =='':
-            page_size_name = QgsApplication.pageSizeRegistry().find(layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
+        if self.page_size == '':
+            page_size_name = QgsApplication.pageSizeRegistry().find(
+                layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
         else:
             page_size_name = self.page_size
-
 
         landscape = False
         if map_width <= map_height:
@@ -533,31 +582,31 @@ class AutoLayoutTool:
             if self.debug: print("Landscape")
             # Calculate extent ratio
             extent_ratio = previous_width / previous_height  # width/height ratio of extent
-            
+
             # Try fitting width to layout_width
             map_width = layout_width
             map_height = round(map_width / extent_ratio, 3)  # height from width
-            
+
             # If height doesn't fit, recalculate from height
             if map_height > layout_height:
                 map_height = layout_height
                 map_width = round(map_height * extent_ratio, 3)  # width from height
-            
+
             if self.debug: print("final landscape - mapw: %r / maph: %r" % (map_width, map_height))
         else:
             if self.debug: print("Portrait")
             # Calculate extent ratio
             extent_ratio = previous_height / previous_width  # height/width ratio of extent
-            
+
             # Try fitting height to layout_height
             map_height = layout_height
             map_width = round(map_height / extent_ratio, 3)  # width from height
-            
+
             # If width doesn't fit, recalculate from width
             if map_width > layout_width:
                 map_width = layout_width
                 map_height = round(map_width * extent_ratio, 3)  # height from width
-            
+
             if self.debug: print("final portrait - mapw: %r / maph: %r" % (map_width, map_height))
 
         return map_height, map_width, my_map
@@ -625,7 +674,6 @@ class AutoLayoutTool:
         layout.refresh()  # Force layout update
         legend.refresh()
 
-
         # Unfortunatly, there is an issue with the code bellow
         # values are always equal to zero
         # See :
@@ -635,17 +683,15 @@ class AutoLayoutTool:
         legend_width = legend.sizeWithUnits().width()
         legend_height = legend.sizeWithUnits().height()
 
-
-
         if legend_placement == 0:
             print("top left")
             legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
 
         elif legend_placement == 1:
             print("top right")
-            print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}" )
+            print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}")
 
-            print(f"lsw={legend.rect().size().width()} mrw={map_real_width}" )
+            print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
             # legend.attemptMove(QgsLayoutPoint(map_real_width - legend.sizeWithUnits().width() + x, y_offset, QgsUnitTypes.LayoutMillimeters))
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
                                               QgsUnitTypes.LayoutMillimeters))
@@ -655,9 +701,9 @@ class AutoLayoutTool:
                 x = legend.x()
                 y = legend.y()
                 try:
-                    legend.setReferencePoint(legend.ReferencePoint.UpperRight) #Qt6
+                    legend.setReferencePoint(legend.ReferencePoint.UpperRight)  # Qt6
                 except AttributeError:
-                    legend.setReferencePoint(2) #Qt5
+                    legend.setReferencePoint(2)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
@@ -670,9 +716,9 @@ class AutoLayoutTool:
                 x = legend.x()
                 y = legend.y()
                 try:
-                    legend.setReferencePoint(legend.ReferencePoint.LowerLeft) #Qt6
+                    legend.setReferencePoint(legend.ReferencePoint.LowerLeft)  # Qt6
                 except AttributeError:
-                    legend.setReferencePoint(6) #Qt5
+                    legend.setReferencePoint(6)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 3:
@@ -687,11 +733,10 @@ class AutoLayoutTool:
                 x = legend.x()
                 y = legend.y()
                 try:
-                    legend.setReferencePoint(legend.ReferencePoint.LowerRight) #Qt6
+                    legend.setReferencePoint(legend.ReferencePoint.LowerRight)  # Qt6
                 except AttributeError:
-                    legend.setReferencePoint(8) #Qt5
+                    legend.setReferencePoint(8)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
-
 
     def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """
@@ -764,16 +809,13 @@ class AutoLayoutTool:
         elif north_placement == 2:
             # bottom left
             north.attemptMove(QgsLayoutPoint(3 + x_offset,
-                                             map_real_height + y_offset - north.rect().size().height() -2,
+                                             map_real_height + y_offset - north.rect().size().height() - 2,
                                              QgsUnitTypes.LayoutMillimeters))
         elif north_placement == 3:
             # bottom right
             north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
-                                             map_real_height + y_offset - north.rect().size().height() -2,
+                                             map_real_height + y_offset - north.rect().size().height() - 2,
                                              QgsUnitTypes.LayoutMillimeters))
-
-
-
 
     def apply_toolbar_visibility(self, show_config, show_help):
         """
@@ -784,13 +826,13 @@ class AutoLayoutTool:
         # Only hide toolbar icons, not menu entries
         # Actions are visible in menu, but their toolbar visibility
         # is controlled by adding or removing them from toolbar
-        
+
         # Remove actions from toolbar if necessary
         if not show_config:
             self.toolbar.removeAction(self.config_action)
         elif show_config and self.config_action not in self.toolbar.actions():
             self.toolbar.addAction(self.config_action)
-            
+
         if not show_help:
             self.toolbar.removeAction(self.help_action)
         elif show_help and self.help_action not in self.toolbar.actions():
@@ -802,11 +844,11 @@ class AutoLayoutTool:
         """
         config = ConfigParser()
         config_file = os.path.join(self.plugin_dir, 'config', 'custom.ini')
-        
+
         # Default values
         show_config = True
         show_help = True
-        
+
         if os.path.isfile(config_file):
             config.read(config_file)
             try:
@@ -815,14 +857,14 @@ class AutoLayoutTool:
                 show_help = config.getboolean("UI_OPTIONS", "cb_show_help_icon", fallback=True)
             except:
                 pass
-        
+
         # Apply preferences
         self.apply_toolbar_visibility(show_config, show_help)
 
     def param_from_file(self):
         """
         Load default or custom params from file
-        :return: 
+        :return:
         """
         config_object = ConfigParser()
         if os.path.isfile(self.plugin_dir + '/config/custom.ini'):
@@ -844,9 +886,3 @@ class AutoLayoutTool:
         except:
             # else use default composer page size setting
             self.page_size = ''
-
-
-
-
-
-
