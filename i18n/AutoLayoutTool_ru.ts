@@ -14,26 +14,33 @@
         <translation>Создать новый макет на основе текущего охвата</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">Конфигурация AutoLayoutTool</translation>
+        <source>Layout already exists...</source>
+        <translation>Макет уже существует...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>Удалить макет...</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>Макет с именем &apos;%s&apos; уже существует</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>Макет с именем '%s' уже существует.
-Хотите удалить его?</translation>
+        <source>What would you like to do?</source>
+        <translation>Что вы хотите сделать?</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>Удалить существующий</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>Создать &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>Создание нового макета &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>Предыдущий макет с именем '%s' удалён... </translation>
+        <translation>Предыдущий макет с именем &apos;%s&apos; удалён... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="505"/>
@@ -44,11 +51,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Добавление легенды</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation type="obsolete">Легенда</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="677"/>
@@ -64,11 +66,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>AutoLayoutTool запущен</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="439"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">Автоматический макет</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="245"/>
@@ -88,12 +85,12 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">Отменено пользователем</translation>
+        <translation>Отменено пользователем</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новый макет на основе рисования прямоугольника</translation>
     </message>
 </context>
 <context>
@@ -107,7 +104,7 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool_dialog_config.py" line="52"/>
         <source>Top right corner</source>
         <translation>Верхний правый угол</translation>
-    </message>
+    </message><name>
     <message>
         <location filename="../AutoLayoutTool_dialog_config.py" line="53"/>
         <source>Bottom left corner</source>

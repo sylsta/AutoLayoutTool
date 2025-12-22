@@ -14,25 +14,33 @@
         <translation>إنشاء تصميم جديد بناء على الرّقعة الحاليّة</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">إعدادات AutoLayoutTool</translation>
+        <source>Layout already exists...</source>
+        <translation>التصميم موجود بالفعل...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>حذف التصميم...</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>يوجد بالفعل تصميم تحت اسم &apos;%s&apos;</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>يوجد بالفعل تصميم تحت اسم '%s'. هل تريد حذفه؟</translation>
+        <source>What would you like to do?</source>
+        <translation>ماذا تريد أن تفعل؟</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>حذف الموجود</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>إنشاء &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>جارٍ إنشاء تصميم جديد &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>تمّ حذف التصميم المسمّى '%s'...</translation>
+        <translation>تمّ حذف التصميم المسمّى &apos;%s&apos;...</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="505"/>
@@ -43,11 +51,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>تتمّ الآن إضافة مفتاح الخريطة</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation type="obsolete">مفتاح الخريطة</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="677"/>
@@ -63,11 +66,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>الأداة AutoLayoutTool في طور التّشغيل</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="439"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">تصميم أوتوماتيكيّ</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="245"/>
@@ -87,12 +85,12 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">تم الإلغاء من قبل المستخدم</translation>
+        <translation>تم الإلغاء من قبل المستخدم</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>إنشاء تصميم جديد بناءً على رسم مستطيل</translation>
     </message>
 </context>
 <context>

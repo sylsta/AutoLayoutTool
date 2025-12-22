@@ -14,26 +14,33 @@
         <translation>Crea un nuovo layout basato sull'estensione corrente</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">Configurazione di AutoLayoutTool</translation>
+        <source>Layout already exists...</source>
+        <translation>Il layout esiste già...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>Elimina layout...</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>Esiste già un layout chiamato &apos;%s&apos;</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>Esiste già un layout chiamato '%s'.
-Vuoi eliminarlo?</translation>
+        <source>What would you like to do?</source>
+        <translation>Cosa vorresti fare?</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>Elimina esistente</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>Crea &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>Creazione del nuovo layout &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>Layout precedente chiamato '%s' rimosso... </translation>
+        <translation>Layout precedente chiamato &apos;%s&apos; rimosso... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="505"/>
@@ -44,11 +51,6 @@ Vuoi eliminarlo?</translation>
         <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Aggiunta della legenda</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation type="obsolete">Legenda</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="677"/>
@@ -64,11 +66,6 @@ Vuoi eliminarlo?</translation>
         <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>Avvio di AutoLayoutTool</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="439"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">Layout automatico</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="245"/>
@@ -88,12 +85,12 @@ Vuoi eliminarlo?</translation>
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">Annullato dall'utente</translation>
+        <translation>Annullato dall'utente</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea un nuovo layout basato sul disegno di un rettangolo</translation>
     </message>
 </context>
 <context>

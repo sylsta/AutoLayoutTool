@@ -14,20 +14,28 @@
         <translation>基于当前范围创建一个新的布局</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="137"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">配置AutoLayoutTool</translation>
+        <source>Layout already exists...</source>
+        <translation>布局已存在...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>删除布局</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>已经存在名为&apos;%s&apos;的布局</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="168"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;.
-Do you want to delete it?</source>
-        <translation type="obsolete">布局%s已经存在</translation>
+        <source>What would you like to do?</source>
+        <translation>您想怎么做？</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>删除现有</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>创建&apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>正在创建新布局&apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
@@ -45,11 +53,6 @@ Do you want to delete it?</source>
         <translation>添加图例</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="308"/>
-        <source>Legend</source>
-        <translation type="obsolete">图例</translation>
-    </message>
-    <message>
         <location filename="../AutoLayoutTool.py" line="677"/>
         <source>Adding scale bar</source>
         <translation>添加比例尺</translation>
@@ -63,11 +66,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>AutoLayoutTool开始运行</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="438"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">自动布局</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="245"/>
@@ -87,57 +85,12 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">用户取消</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>已经存在名为'%s'的布局
-是否要删除它？</translation>
+        <translation>用户取消</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>AutoLayoutToolDialog</name>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top left corner</source>
-        <translation type="obsolete">左上角</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Top right corner</source>
-        <translation type="obsolete">右上角</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom left corner</source>
-        <translation type="obsolete">左下角</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>Bottom right corner</source>
-        <translation type="obsolete">右下角</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="62"/>
-        <source>None</source>
-        <translation type="obsolete">无</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="72"/>
-        <source>Legend</source>
-        <translation type="obsolete">图例</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool_dialog.py" line="74"/>
-        <source>Automatic Layout</source>
-        <translation type="obsolete">自动布局</translation>
+        <translation>基于绘制矩形创建新布局</translation>
     </message>
 </context>
 <context>

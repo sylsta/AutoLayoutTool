@@ -14,26 +14,33 @@
         <translation>Δημιουργία νέας διάταξης με βάση την τρέχουσα έκταση</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="138"/>
-        <source>AutoLayoutTool configuration</source>
-        <translation type="obsolete">Ρύθμιση AutoLayoutTool</translation>
+        <source>Layout already exists...</source>
+        <translation>Η διάταξη υπάρχει ήδη...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>Διαγραφή διάταξης...</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>Υπάρχει ήδη μια διάταξη με το όνομα &apos;%s&apos;</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>Υπάρχει ήδη μια διάταξη με το όνομα '%s'.
-Θέλετε να τη διαγράψετε;</translation>
+        <source>What would you like to do?</source>
+        <translation>Τι θα θέλατε να κάνετε;</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>Διαγραφή υπάρχουσας</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>Δημιουργία &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>Δημιουργία νέας διάταξης &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>Η προηγούμενη διάταξη με το όνομα '%s' διαγράφηκε... </translation>
+        <translation>Η προηγούμενη διάταξη με το όνομα &apos;%s&apos; διαγράφηκε... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="505"/>
@@ -44,11 +51,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Προσθήκη υπομνήματος</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="309"/>
-        <source>Legend</source>
-        <translation type="obsolete">Υπόμνημα</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="677"/>
@@ -64,11 +66,6 @@ Do you want to delete it?</source>
         <location filename="../AutoLayoutTool.py" line="359"/>
         <source>AutoLayoutTool starts</source>
         <translation>Εκκίνηση AutoLayoutTool</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="439"/>
-        <source>Automatic layout</source>
-        <translation type="obsolete">Αυτόματη διάταξη</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="245"/>
@@ -88,12 +85,12 @@ Do you want to delete it?</source>
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">Ακυρώθηκε από τον χρήστη</translation>
+        <translation>Ακυρώθηκε από τον χρήστη</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία νέας διάταξης με βάση τη σχεδίαση ορθογωνίου</translation>
     </message>
 </context>
 <context>

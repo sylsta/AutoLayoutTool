@@ -14,6 +14,30 @@
         <translation>Crear un nuevo composición de impresión basado en la extensión actual </translation>
     </message>
     <message>
+        <source>Layout already exists...</source>
+        <translation>La composición ya existe...</translation>
+    </message>
+    <message>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>Ya existe una composición llamada &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation>¿Qué desea hacer?</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>Eliminar existente</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>Crear &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>Creando nueva composición &apos;%s&apos;</translation>
+    </message>
+    <message>
         <location filename="../AutoLayoutTool.py" line="575"/>
         <source>Adding legend</source>
         <translation>Agregando la leyenda</translation>
@@ -56,29 +80,16 @@
     <message>
         <location filename="../AutoLayoutTool.py" line="372"/>
         <source>Cancelled by user</source>
-        <translation type="unfinished">Cancelado por el usuario</translation>
+        <translation>Cancelado por el usuario</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>Eliminar composición de impresión...</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>Ya existe un composición de impresión llamado '%s'
-¿Deseas eliminarlo?</translation>
-    </message>
-    <message>
-        <location filename="../AutoLayoutTool.py" line="442"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
-        <translation>Composición de impresión anterior llamado '%s' eliminado... </translation>
+        <translation>Composición de impresión anterior llamado &apos;%s&apos; eliminado... </translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="230"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear una nueva composición basada en el dibujo de un rectángulo</translation>
     </message>
 </context>
 <context>

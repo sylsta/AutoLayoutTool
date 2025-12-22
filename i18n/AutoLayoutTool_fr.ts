@@ -14,16 +14,28 @@
         <translation>Création d&apos;une mise en page basée sur l&apos;extension courante du projet </translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>Delete layout...</source>
-        <translation>Supprimer la mise en page...</translation>
+        <source>Layout already exists...</source>
+        <translation>La mise en page existe déjà...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="426"/>
-        <source>There&apos;s already a layout named &apos;%s&apos;
-Do you want to delete it?</source>
-        <translation>Une mise en page nommée &apos;%s&apos; existe déjà
-Souhaitez-vous la supprimer ?</translation>
+        <source>There&apos;s already a layout named &apos;%s&apos;</source>
+        <translation>Une mise en page nommée &apos;%s&apos; existe déjà</translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation>Que souhaitez-vous faire ?</translation>
+    </message>
+    <message>
+        <source>Delete existing</source>
+        <translation>Supprimer l&apos;existante</translation>
+    </message>
+    <message>
+        <source>Create &apos;%s&apos;</source>
+        <translation>Créer &apos;%s&apos;</translation>
+    </message>
+    <message>
+        <source>Creating new layout &apos;%s&apos;</source>
+        <translation>Création de la nouvelle mise en page &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="../AutoLayoutTool.py" line="442"/>
