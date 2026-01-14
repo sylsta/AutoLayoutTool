@@ -8,7 +8,7 @@
                              -------------------
         begin                : 2021-11-19
         git sha              : $Format:%H$
-        copyright            : (c) 2021-2025 by Sylvain Théry
+        copyright            : (c) 2021-2026 by Sylvain Théry
         email                : sylvain.thery@cnrs.fr
  ***************************************************************************/
 
@@ -86,7 +86,6 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         Write custom ini file if button pressed
         :return:
         """
-        pass
         config_object = ConfigParser()
         config_object["ITEMS_PLACEMENT"] = {
             "cbb_north_value": self.cbb_north.currentIndex(),
@@ -113,7 +112,6 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         :param value: boolean. True to load from default config file
         :return:
         """
-        pass
         self.set_form_values(True)
     #
     def set_form_values(self, default):
@@ -134,7 +132,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             self.pb_save.setEnabled(False)
             try:
                 os.remove(self.plugin_dir + '/config/custom.ini')
-            except:
+            except FileNotFoundError:
                 pass
         file_values = config_object["ITEMS_PLACEMENT"]
         self.cbb_north.setCurrentIndex(int(file_values["cbb_north_value"]))
@@ -147,7 +145,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         # from qgis default size
         try:
             self.cbb_page_format_name.setCurrentIndex(int(file_values["cbb_page_format_value"]))
-        except:
+        except (KeyError, ValueError):
             tmp_layout = QgsPrintLayout(QgsProject.instance())
             tmp_layout.initializeDefaults()
             text = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
@@ -155,8 +153,6 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
                 match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString # PyQt6
             except AttributeError:
                 match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
-
-
 
             index = self.cbb_page_format_name.findText(text, match_fixed_string)
             if index >= 0:
@@ -171,7 +167,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             self.cb_show_help_icon.setChecked(
                 ui_values.getboolean("cb_show_help_icon", True)
             )
-        except:
+        except (KeyError, ValueError):
             # Default values if section or keys not found
             self.cb_show_config_icon.setChecked(True)
             self.cb_show_help_icon.setChecked(True)
