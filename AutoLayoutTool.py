@@ -80,23 +80,18 @@ class AutoLayoutTool:
         print(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded")
 
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'AutoLayoutTool_{}.qm'.format(locale))
+        user_locale = QSettings().value('locale/userLocale')
+        if user_locale:
+            locale_code = user_locale[0:2]
+            locale_path = os.path.join(
+                self.plugin_dir,
+                'i18n',
+                f'AutoLayoutTool_{locale_code}.qm')
 
-        if os.path.exists(locale_path):
-            self.translator = QTranslator()
-            self.translator.load(locale_path)
-            QCoreApplication.installTranslator(self.translator)
-        try:
-            locale.setlocale(
-                locale.LC_ALL,
-                QSettings().value('locale/userLocale')
-            )
-        except:
-            pass
+            if os.path.exists(locale_path):
+                self.translator = QTranslator()
+                self.translator.load(locale_path)
+                QCoreApplication.installTranslator(self.translator)
 
         # Declare instance attributes
         self.actions = []
@@ -209,7 +204,6 @@ class AutoLayoutTool:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         # will be set False in run()
-        pass
         self.first_start = True
         self.toolbar = self.iface.addToolBar("AutoLayoutTool")
 
@@ -302,8 +296,7 @@ class AutoLayoutTool:
         try:
             modality = Qt.WindowModality.ApplicationModal  # PyQt6
         except AttributeError:
-            modality = Qt.ApplicationModal  # PyQt5        try:
-
+            modality = Qt.ApplicationModal  # PyQt5
         self.dlg_visual_help.setWindowModality(modality)
         # show the dialog
         self.dlg_visual_help.show()
@@ -629,7 +622,6 @@ class AutoLayoutTool:
         map_height = map_height - margin
         my_map.setRect(0, 0, map_width, map_height)
         my_map.setExtent(e)
-        layout.addLayoutItem(my_map)
         my_map.refresh()
         map_real_width = my_map.rect().size().width()
         map_real_height = my_map.rect().size().height()
@@ -855,8 +847,8 @@ class AutoLayoutTool:
                 # Read from UI_OPTIONS section
                 show_config = config.getboolean("UI_OPTIONS", "cb_show_config_icon", fallback=True)
                 show_help = config.getboolean("UI_OPTIONS", "cb_show_help_icon", fallback=True)
-            except:
-                pass
+            except (KeyError, ValueError) as e:
+                print(f"Warning: Could not read UI_OPTIONS from config: {e}")
 
         # Apply preferences
         self.apply_toolbar_visibility(show_config, show_help)
@@ -883,6 +875,6 @@ class AutoLayoutTool:
         try:
             # if custom setting as are used get page size name
             self.page_size = file_values["cbb_page_format_name"]
-        except:
+        except KeyError:
             # else use default composer page size setting
             self.page_size = ''
