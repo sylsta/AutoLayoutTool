@@ -1,5 +1,10 @@
 Change Log
 ==========
+* __2.3__ (2026-03-22):
+    * Metadata update for QGIS 4.x
+
+* __2.2__ (2026-01-20):
+    * Incrementing the print layout number in its title
 
 * __2.1__ (2025-12-17):
   * creates layout by rectangle drawing

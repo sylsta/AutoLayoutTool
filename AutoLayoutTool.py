@@ -109,7 +109,7 @@ class AutoLayoutTool:
                 pydevd_pycharm.settrace('localhost', port=53100, suspend=False)
                 # pydevd_pycharm.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True,
                 #                         suspend=True)
-            except:
+            except Exception:
                 print("pydevd_pycharm module issue")
                 pass
 
@@ -237,7 +237,6 @@ class AutoLayoutTool:
         self.rectangleAreaTool = RectangleAreaTool(self.iface.mapCanvas(), self.rectangleAction)
 
         self.rectangleAreaTool.rectangleCreated.connect(self.run_from_rectangle)
-        self.actions.append(self.rectangleAction)
 
         # 'Config' entry menu
         text = self.tr("AutoLayoutTool custom configuration")
@@ -271,6 +270,10 @@ class AutoLayoutTool:
 
     def unload(self):
         """Removes the plugin menu item and toolbar from QGIS GUI."""
+        # Unregister keyboard shortcuts
+        for action in self.actions:
+            self.iface.unregisterMainWindowAction(action)
+
         # Remove menu created with pluginMenu().addMenu()
         if hasattr(self, 'menu_obj') and self.menu_obj:
             self.iface.pluginMenu().removeAction(self.menu_obj.menuAction())
@@ -279,7 +282,8 @@ class AutoLayoutTool:
 
         # Remove toolbar
         if hasattr(self, 'toolbar') and self.toolbar:
-            del self.toolbar
+            self.toolbar.deleteLater()
+            self.toolbar = None
 
     def runRectangle(self, b):
         if b:
@@ -618,8 +622,8 @@ class AutoLayoutTool:
         :rtype: float, float, float, float
         """
         print('Adding map')
-        map_width = map_width - margin
-        map_height = map_height - margin
+        map_width = map_width - 2 * margin
+        map_height = map_height - 2 * margin
         my_map.setRect(0, 0, map_width, map_height)
         my_map.setExtent(e)
         my_map.refresh()
@@ -644,7 +648,7 @@ class AutoLayoutTool:
         :return: None
         """
         print(self.tr(u"Adding legend"))
-        layers_to_add = [l for l in QgsProject().instance().layerTreeRoot().children() if l.isVisible()]
+        layers_to_add = [l for l in QgsProject.instance().layerTreeRoot().children() if l.isVisible()]
         legend = QgsLayoutItemLegend(layout)
         legend.setTitle(self.tr(legend_title))
         legend.setId("legend")
@@ -680,10 +684,9 @@ class AutoLayoutTool:
             legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
 
         elif legend_placement == 1:
-            print("top right")
-            print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}")
-
-            print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
+            if self.debug: print("top right")
+            if self.debug: print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}")
+            if self.debug: print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
             # legend.attemptMove(QgsLayoutPoint(map_real_width - legend.sizeWithUnits().width() + x, y_offset, QgsUnitTypes.LayoutMillimeters))
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
                                               QgsUnitTypes.LayoutMillimeters))
@@ -699,7 +702,7 @@ class AutoLayoutTool:
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
-            print("bottom left")
+            if self.debug: print("bottom left")
             legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
                                               QgsUnitTypes.LayoutMillimeters))
 
@@ -714,7 +717,7 @@ class AutoLayoutTool:
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 3:
-            print("bottom right")
+            if self.debug: print("bottom right")
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset,
                                               map_real_height + y_offset - legend_height,
                                               QgsUnitTypes.LayoutMillimeters))
@@ -873,8 +876,8 @@ class AutoLayoutTool:
         self.margin = int(file_values["sb_margin_value_value"])
         self.layout_name = self.tr(file_values["le_layout_name_value"])
         try:
-            # if custom setting as are used get page size name
-            self.page_size = file_values["cbb_page_format_name"]
+            # if custom settings are used, get page size name
+            self.page_size = file_values["cbb_page_format_value"]
         except KeyError:
             # else use default composer page size setting
             self.page_size = ''
