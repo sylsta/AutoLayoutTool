@@ -25,6 +25,7 @@ from qgis.core import QgsWkbTypes, QgsPointXY, QgsCoordinateReferenceSystem, Qgs
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import pyqtSignal
 
+
 class RectangleAreaTool(QgsMapTool):
 
     rectangleCreated = pyqtSignal(float, float, float, float)
@@ -61,7 +62,7 @@ class RectangleAreaTool(QgsMapTool):
     def canvasMoveEvent(self, e):
         if not self.isEmittingPoint:
             return
-        self.endPoint = self.toMapCoordinates( e.pos() )
+        self.endPoint = self.toMapCoordinates(e.pos())
         self.showRect(self.startPoint, self.endPoint)
 
     def showRect(self, startPoint, endPoint):

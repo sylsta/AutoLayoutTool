@@ -24,16 +24,15 @@
 
 import os
 
-from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
-from qgis.PyQt.QtCore import (Qt, QSize,QByteArray, pyqtSlot, pyqtSignal, QThread)
+from qgis.PyQt.QtCore import (Qt, QByteArray)
 from qgis.PyQt.QtGui import (QMovie)
-from qgis.PyQt.QtWidgets import ( QWidget,QSizePolicy,QVBoxLayout, QLabel,
-                             QDialogButtonBox)
+from qgis.PyQt.QtWidgets import (QWidget, QSizePolicy, QVBoxLayout, QLabel, QDialogButtonBox)
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 # FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #     os.path.dirname(__file__), 'AutoLayoutTool_visual_help.ui'))
 #
+
 
 class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
     def __init__(self, parent=None):
@@ -91,4 +90,3 @@ class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
         self.movie.setSpeed(100)
         self.movie_screen.setMovie(self.movie)
         self.movie.start()
-

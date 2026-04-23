@@ -72,14 +72,12 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         self.le_layout_name.editingFinished.connect(self.items_changed)
         self.le_legend_title.editingFinished.connect(self.items_changed)
         self.sb_margin_value.editingFinished.connect(self.items_changed)
-        
+
         # Connect checkbox signals
         self.cb_show_config_icon.stateChanged.connect(self.items_changed)
         self.cb_show_help_icon.stateChanged.connect(self.items_changed)
-        
+
         self.set_form_values(False)
-
-
 
     def write_custom_values(self):
         """
@@ -114,6 +112,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         """
         self.set_form_values(True)
     #
+
     def set_form_values(self, default):
         """
         Either load default or custom values from file and feed form components
@@ -149,8 +148,9 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
             tmp_layout = QgsPrintLayout(QgsProject.instance())
             tmp_layout.initializeDefaults()
             text = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
+
             try:
-                match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString # PyQt6
+                match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString  # PyQt6
             except AttributeError:
                 match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
 
@@ -180,7 +180,6 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
 
             self.pb_restore.setEnabled(False)
             self.pb_save.setEnabled(False)
-
 
     def cbb_state_changed(self, text, i):
         """

@@ -39,18 +39,18 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
  ***************************************************************************/
 """
 
+# from .mtp4windows_win_mtp.access import get_portable_devices
+import os.path
+from configparser import ConfigParser
+
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
-from qgis.PyQt.QtGui import QIcon, QColor, QKeySequence
-from qgis.PyQt.QtWidgets import QAction, QMessageBox, QShortcut
+from qgis.PyQt.QtGui import QIcon, QColor
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
     QgsRectangle
-from configparser import ConfigParser
 
-# from .mtp4windows_win_mtp.access import get_portable_devices
-import os.path
 # Initialize Qt resources from file resources.py
-from .resources import *
 # Import the code for the dialog
 from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
@@ -687,7 +687,7 @@ class AutoLayoutTool:
             if self.debug: print("top right")
             if self.debug: print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}")
             if self.debug: print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
-            # legend.attemptMove(QgsLayoutPoint(map_real_width - legend.sizeWithUnits().width() + x, y_offset, QgsUnitTypes.LayoutMillimeters))
+
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
                                               QgsUnitTypes.LayoutMillimeters))
 
@@ -781,7 +781,6 @@ class AutoLayoutTool:
         """
         Adds north arrow to the layout
         :param layout: QgsLayout
-        :param manager: QgsProject.instance().layoutManager()
         :param map_real_height: float
         :param x_offset: float
         :param y_offset: float
