@@ -48,9 +48,10 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
-    QgsRectangle
+    QgsRectangle, QgsMessageLog, Qgis
 
 # Initialize Qt resources from file resources.py
+from . import resources
 # Import the code for the dialog
 from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
@@ -77,8 +78,10 @@ class AutoLayoutTool:
         # print version number
         config = ConfigParser()
         config.read(f'{self.plugin_dir}/metadata.txt')
-        print(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded")
-
+        self.plugin_name = config.get('general', 'name')
+        print(f"{self.plugin_name} {config.get('general', 'version')} loaded")
+        QgsMessageLog.logMessage(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded",
+                                 self.plugin_name, level=Qgis.Info)
         # initialize locale
         user_locale = QSettings().value('locale/userLocale')
         if user_locale:
