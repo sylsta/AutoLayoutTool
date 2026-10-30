@@ -58,14 +58,12 @@ from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
 from .rectangleAreaTool import RectangleAreaTool
 from . import settings
 
-# Units: Qgis.LayoutUnit / Qgis.DistanceUnit (QGIS >= 3.30, required for QGIS 4),
-# QgsUnitTypes members for older QGIS 3 versions
+# Layout units: Qgis.LayoutUnit (QGIS >= 3.30, required for QGIS 4),
+# QgsUnitTypes member for older QGIS 3 versions
 try:
     LAYOUT_MM = Qgis.LayoutUnit.Millimeters
-    DISTANCE_KM = Qgis.DistanceUnit.Kilometers
 except AttributeError:
     LAYOUT_MM = QgsUnitTypes.LayoutMillimeters
-    DISTANCE_KM = QgsUnitTypes.DistanceKilometers
 
 # Translation files whose name does not match the QGIS locale code
 LOCALE_FILE_ALIASES = {'el': 'gr'}  # Greek
@@ -799,14 +797,21 @@ class AutoLayoutTool:
         :return: None
         """
         self.log(self.tr(u'Adding scale bar'))
+        # The constructor already calls applyDefaultSettings(). Calling it again after applyDefaultSize()
+        # (as before) resets the units to "unknown", and forcing km by dividing by 1000 assumed metres.
         scalebar = QgsLayoutItemScaleBar(layout)
         scalebar.setStyle('Single Box')
         scalebar.setLinkedMap(my_map)
-        scalebar.applyDefaultSize()
-        scalebar.applyDefaultSettings()
-        scalebar.setUnits(DISTANCE_KM)
-        scalebar.setUnitsPerSegment(scalebar.unitsPerSegment() / 1000)
-        scalebar.setUnitLabel('km')
+        # Let QGIS pick the unit from the map CRS and scale: m / km for metric and geographic CRS
+        # (distances are computed on the ellipsoid), ft / mi for imperial CRS
+        units = scalebar.guessUnits()
+        # Sets units, a rounded segment length (bar = 1/5 of map width) and resizes the item
+        scalebar.applyDefaultSize(units)
+        try:
+            scalebar.setUnitLabel(QgsUnitTypes.toAbbreviatedString(units))
+        except (AttributeError, TypeError):
+            # Keep the label set by applyDefaultSize()
+            pass
         scalebar.update()
         layout.addLayoutItem(scalebar)
         if scalebar_placement == 0:

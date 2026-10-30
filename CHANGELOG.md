@@ -1,5 +1,8 @@
 Change Log
 ==========
+* __2.5__ (2026-10-30):
+  * Fix scale bar units
+
 * __2.4__ (2026-10-30):
   * major improvement and bug fixes
 
