@@ -4,5 +4,6 @@
         <file>images/config.png</file>
         <file>images/help.png</file>
         <file>images/rectangle.png</file>
+        <file>images/layers_extent.png</file>
     </qresource>
 </RCC>

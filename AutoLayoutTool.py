@@ -43,18 +43,19 @@ import os.path
 import traceback
 from configparser import ConfigParser
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QFile
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
-    QgsRectangle, QgsMessageLog, Qgis, QgsLayerTree
+    QgsRectangle, QgsMessageLog, Qgis, QgsLayerTree, QgsCoordinateTransform, QgsCsException
 
 # Initialize Qt resources from file resources.py
 from . import resources
 # Import the code for the dialog
 from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
+from .AutoLayoutTool_dialog_layers import AutoLayoutToolDialogLayers, layer_has_extent
 from .rectangleAreaTool import RectangleAreaTool
 from . import settings
 
@@ -64,6 +65,13 @@ try:
     LAYOUT_MM = Qgis.LayoutUnit.Millimeters
 except AttributeError:
     LAYOUT_MM = QgsUnitTypes.LayoutMillimeters
+try:
+    DISTANCE_M = Qgis.DistanceUnit.Meters
+except AttributeError:
+    DISTANCE_M = QgsUnitTypes.DistanceMeters
+
+# Half size (in metres) of the extent used when the selected layers have a zero-size extent (e.g. a single point)
+MIN_HALF_EXTENT_M = 500
 
 # Translation files whose name does not match the QGIS locale code
 LOCALE_FILE_ALIASES = {'el': 'gr'}  # Greek
@@ -138,6 +146,17 @@ class AutoLayoutTool:
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('AutoLayoutTool', message)
+
+    def plugin_icon(self, file_name):
+        """
+        Icon from the compiled Qt resources if present, else from the images/ folder
+        :param file_name: str, e.g. 'layers_extent.png'
+        :rtype: QIcon
+        """
+        resource_path = f':/plugins/AutoLayoutTool/images/{file_name}'
+        if QFile.exists(resource_path):
+            return QIcon(resource_path)
+        return QIcon(os.path.join(self.plugin_dir, 'images', file_name))
 
     def notify(self, message, level=Qgis.Info, duration=5):
         """
@@ -267,6 +286,16 @@ class AutoLayoutTool:
         self.rectangleAreaTool = RectangleAreaTool(self.iface.mapCanvas(), self.rectangleAction)
 
         self.rectangleAreaTool.rectangleCreated.connect(self.run_from_rectangle)
+
+        # 'Layers extent' entry: menu + toolbar (between rectangle and config icons)
+        text = self.tr(u'Create a new layout based on the extent of selected layers...')
+        self.layers_action = QAction(self.plugin_icon('layers_extent.png'), text, self.iface.mainWindow())
+        self.menu_obj.addAction(self.layers_action)
+        self.toolbar.addAction(self.layers_action)
+        self.layers_action.triggered.connect(self.run_from_layers)
+        self.layers_action.setStatusTip(text)
+        self.layers_action.setWhatsThis(text)
+        self.actions.append(self.layers_action)
 
         # 'Config' entry menu
         text = self.tr("AutoLayoutTool custom configuration")
@@ -398,19 +427,96 @@ class AutoLayoutTool:
             return
         self.draw_layout_from_extent(extent)
 
-    def draw_layout_from_extent(self, extent):
+    def run_from_layers(self):
+        """
+        Opens the layer selection dialog, then creates a layout covering the extent of the checked layers.
+        Only the checked layers are displayed in the map and in the legend.
+        """
+        project = QgsProject.instance()
+        all_layers = list(project.mapLayers().values())
+        if not all_layers:
+            self.notify(self.tr(u'There is no layer in the project'), Qgis.Warning)
+            return
+        if not any(layer_has_extent(l) for l in all_layers):
+            self.notify(self.tr(u'There is no layer with a spatial extent in the project'), Qgis.Warning)
+            return
+        dlg = AutoLayoutToolDialogLayers(self.iface.mainWindow())
+        if not dlg.exec():
+            return
+        layers = [project.mapLayer(layer_id) for layer_id in dlg.selected_layer_ids()]
+        layers = [l for l in layers if l is not None]
+        extent = self.layers_extent(layers, dlg.buffer_percent())
+        if extent is None:
+            self.notify(self.tr(u'Could not compute an extent for the selected layers'), Qgis.Warning)
+            return
+        self.draw_layout_from_extent(extent, layers)
+
+    def layers_extent(self, layers, buffer_percent):
+        """
+        Combined extent of the layers, in the project CRS, enlarged by buffer_percent on each side
+        :param layers: list of QgsMapLayer
+        :param buffer_percent: float, % of width / height added on each side
+        :return: QgsRectangle or None
+        """
+        project = QgsProject.instance()
+        dest_crs = project.crs()
+        if not dest_crs.isValid():
+            dest_crs = layers[0].crs()
+        extent = None
+        for layer in layers:
+            if not layer_has_extent(layer):
+                continue
+            layer_extent = layer.extent()
+            if layer.crs().isValid() and layer.crs() != dest_crs:
+                try:
+                    transform = QgsCoordinateTransform(layer.crs(), dest_crs, project)
+                    layer_extent = transform.transformBoundingBox(layer_extent)
+                except QgsCsException:
+                    self.notify(self.tr(u"Layer '%s' could not be reprojected - ignored") % layer.name(),
+                                Qgis.Warning)
+                    continue
+            if layer_extent.isNull() or not layer_extent.isFinite():
+                continue
+            if extent is None:
+                extent = QgsRectangle(layer_extent)
+            else:
+                extent.combineExtentWith(layer_extent)
+        if extent is None:
+            return None
+
+        width, height = extent.width(), extent.height()
+        if width == 0 and height == 0:
+            # Single point: use a fixed size around it
+            half = MIN_HALF_EXTENT_M * QgsUnitTypes.fromUnitToUnitFactor(DISTANCE_M, dest_crs.mapUnits())
+            half_width = half_height = half
+        else:
+            # Aligned points: give the null dimension the size of the other one
+            half_width = (width or height) / 2
+            half_height = (height or width) / 2
+        # Buffer on each side
+        half_width *= 1 + 2 * buffer_percent / 100
+        half_height *= 1 + 2 * buffer_percent / 100
+        center = extent.center()
+        return QgsRectangle(center.x() - half_width, center.y() - half_height,
+                            center.x() + half_width, center.y() + half_height)
+
+    def draw_layout_from_extent(self, extent, layers=None):
         """
         Creates the layout, then adds map, legend, scalebar and north arrow
         :param extent: QgsRectangle, map extent to display
         """
         try:
-            self._draw_layout_from_extent(extent)
+            self._draw_layout_from_extent(extent, layers)
         except Exception as e:
             # Unexpected error: tell the user instead of failing silently in the python console
             self.notify(self.tr(u'Layout creation failed: %s') % e, Qgis.Critical, duration=0)
             self.log(traceback.format_exc(), Qgis.Critical)
 
-    def _draw_layout_from_extent(self, extent):
+    def _draw_layout_from_extent(self, extent, layers=None):
+        """
+        :param extent: QgsRectangle
+        :param layers: list of QgsMapLayer to display (map and legend), or None for visible layers
+        """
         if not self.params_from_dialog:
             self.param_from_file()
         self.log(self.tr(u'AutoLayoutTool starts'))
@@ -439,11 +545,11 @@ class AutoLayoutTool:
         # Add map
         map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
                                                                            layout_height, layout_width, map_height,
-                                                                           map_width, self.margin, my_map)
+                                                                           map_width, self.margin, my_map, layers)
         if self.legend_placement != 4:
             # Add legend
             self.add_legend(layout, map_real_height, map_real_width, x_offset, y_offset, self.legend_title,
-                            self.legend_placement)
+                            self.legend_placement, layers)
         if self.scalebar_placement != 4:
             # Add scale bar
             self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset,
@@ -649,7 +755,7 @@ class AutoLayoutTool:
 
         return map_height, map_width, my_map
 
-    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map):
+    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map, layers=None):
         """
         Add map to the layout
         :param e: iface.mapCanvas().extent()
@@ -666,6 +772,12 @@ class AutoLayoutTool:
         map_width = map_width - 2 * margin
         map_height = map_height - 2 * margin
         my_map.setRect(0, 0, map_width, map_height)
+        if layers:
+            # Display only these layers, in the project rendering order, whatever their visibility
+            ids = {l.id() for l in layers}
+            ordered = [l for l in QgsProject.instance().layerTreeRoot().layerOrder() if l.id() in ids]
+            my_map.setLayers(ordered or layers)
+            my_map.setKeepLayerSet(True)
         my_map.setExtent(e)
         my_map.refresh()
         map_real_width = my_map.rect().size().width()
@@ -680,7 +792,8 @@ class AutoLayoutTool:
         layout.addLayoutItem(my_map)
         return map_real_height, map_real_width, x_offset, y_offset
 
-    def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement):
+    def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement,
+                   layers=None):
         """
         Add legend to the layout
         :param layout: QgsLayout
@@ -695,7 +808,8 @@ class AutoLayoutTool:
         legend.setAutoUpdateModel(False)
         group = legend.model().rootGroup()
         group.clear()
-        self.fill_legend_group(group, QgsProject.instance().layerTreeRoot())
+        layer_ids = {l.id() for l in layers} if layers else None
+        self.fill_legend_group(group, QgsProject.instance().layerTreeRoot(), layer_ids)
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
@@ -765,25 +879,27 @@ class AutoLayoutTool:
                     legend.setReferencePoint(8)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
-    def fill_legend_group(self, target, source):
+    def fill_legend_group(self, target, source, layer_ids=None):
         """
         Recursively copy visible groups and layers of the project layer tree into the legend tree.
         Uses QgsLayerTree.isGroup()/isLayer() instead of comparing nodeType() to ints,
         which does not work with PyQt6 enums (QGIS 4).
         :param target: QgsLayerTreeGroup, legend group to fill
         :param source: QgsLayerTreeGroup, project group to read
+        :param layer_ids: set of layer ids to keep whatever their visibility, or None to keep visible layers
         """
         for node in source.children():
-            if not node.itemVisibilityChecked():
+            if layer_ids is None and not node.itemVisibilityChecked():
                 continue
             if QgsLayerTree.isGroup(node):
                 subgroup = target.addGroup(node.name())
-                self.fill_legend_group(subgroup, node)
+                self.fill_legend_group(subgroup, node, layer_ids)
                 if not subgroup.children():
                     # No visible layer in this group: do not show an empty group title
                     target.removeChildNode(subgroup)
             elif QgsLayerTree.isLayer(node) and node.layer() is not None:
-                target.addLayer(node.layer())
+                if layer_ids is None or node.layer().id() in layer_ids:
+                    target.addLayer(node.layer())
 
     def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """
@@ -884,7 +1000,11 @@ class AutoLayoutTool:
         if not show_config:
             self.toolbar.removeAction(self.config_action)
         elif show_config and self.config_action not in self.toolbar.actions():
-            self.toolbar.addAction(self.config_action)
+            # Keep the order: ... layers, config, help
+            if self.help_action in self.toolbar.actions():
+                self.toolbar.insertAction(self.help_action, self.config_action)
+            else:
+                self.toolbar.addAction(self.config_action)
 
         if not show_help:
             self.toolbar.removeAction(self.help_action)

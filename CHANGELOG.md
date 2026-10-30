@@ -1,5 +1,8 @@
 Change Log
 ==========
+* __2.6__ ():
+  * create a layout from the extent of layers chosen in a dialo
+
 * __2.5__ (2026-10-30):
   * Fix scale bar units
 
