@@ -1,5 +1,8 @@
 Change Log
 ==========
+* __2.4__ (2026-10-30):
+  * major improvement and bug fixes
+
 * __2.3__ (2026-03-22):
     * Metadata update for QGIS 4.x
 

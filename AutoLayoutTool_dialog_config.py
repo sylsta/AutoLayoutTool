@@ -26,9 +26,10 @@ import os
 
 from qgis.PyQt import uic, QtCore
 from qgis.PyQt import QtWidgets
-from configparser import ConfigParser
 
 from qgis.core import QgsApplication, QgsPrintLayout, QgsProject
+
+from . import settings
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -40,12 +41,10 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         """Constructor."""
         super(AutoLayoutToolDialogConfig, self).__init__(parent)
         # Set up the user interface from Designer through FORM_CLASS.
-        # After self.setupUi() you can access any designer object by doing
-        # self.<objectname>, and you can use autoconnect slots - see
-        # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
-        # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         self.plugin_dir = os.path.dirname(__file__)
+        # True when "restore" was clicked: custom values are only removed if the dialog is accepted
+        self.reset_pending = False
 
         # North arrow, scale and legend combobox placement management management
         self.comboBox_list = [self.cbb_north, self.cbb_scalebar, self.cbb_legend]
@@ -53,22 +52,21 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
                                self.tr(u'Bottom left corner'), self.tr(u'Bottom right corner'), self.tr('None')]
         for i in range(len(self.comboBox_list)):
             self.comboBox_list[i].addItems(self.comboBox_value)
-            # Cant understand why this do not work
-            # comboBox.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, i))
-            # self.comboBox_list[i].currentTextChanged.connect(lambda x: self.cbb_state_changed(x, i))
         self.cbb_north.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 0))
         self.cbb_scalebar.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 1))
         self.cbb_legend.currentTextChanged.connect(lambda x: self.cbb_state_changed(x, 2))
 
+        # Display the (translatable) display name, but keep the registry name as item data:
+        # QgsLayoutItemPage.setPageSize() expects the registry name.
         for entry in QgsApplication.pageSizeRegistry().entries():
-            self.cbb_page_format_name.addItem(entry.displayName)
+            self.cbb_page_format_name.addItem(entry.displayName, entry.name)
         self.cbb_page_format_name.currentTextChanged.connect(self.items_changed)
 
-        # # buttons action
+        # buttons action
         self.pb_restore.clicked.connect(self.load_default)
         self.pb_save.clicked.connect(self.write_custom_values)
 
-        # # other staff signals
+        # other staff signals
         self.le_layout_name.editingFinished.connect(self.items_changed)
         self.le_legend_title.editingFinished.connect(self.items_changed)
         self.sb_margin_value.editingFinished.connect(self.items_changed)
@@ -79,107 +77,106 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
 
         self.set_form_values(False)
 
+    def page_size_name(self):
+        """
+        :return: page size registry name of the selected format (e.g. 'A4')
+        """
+        data = self.cbb_page_format_name.currentData()
+        return data if data else self.cbb_page_format_name.currentText()
+
     def write_custom_values(self):
         """
-        Write custom ini file if button pressed
+        Save custom values in the QGIS profile if button pressed
         :return:
         """
-        config_object = ConfigParser()
-        config_object["ITEMS_PLACEMENT"] = {
-            "cbb_north_value": self.cbb_north.currentIndex(),
-            "cbb_scalebar_value": self.cbb_scalebar.currentIndex(),
-            "cbb_legend_value_value": self.cbb_legend.currentIndex(),
-            "le_legend_title_value": self.le_legend_title.text(),
-            "sb_margin_value_value": self.sb_margin_value.value(),
-            "le_layout_name_value": self.le_layout_name.text(),
-            "cbb_page_format_value": self.cbb_page_format_name.currentText()
-        }
-        # UI_OPTIONS section for interface preferences
-        config_object["UI_OPTIONS"] = {
-            "cb_show_config_icon": self.cb_show_config_icon.isChecked(),
-            "cb_show_help_icon": self.cb_show_help_icon.isChecked()
-        }
-        with open(self.plugin_dir + '/config/custom.ini', 'w') as conf:
-            config_object.write(conf)
+        settings.save({
+            "ITEMS_PLACEMENT": {
+                "cbb_north_value": self.cbb_north.currentIndex(),
+                "cbb_scalebar_value": self.cbb_scalebar.currentIndex(),
+                "cbb_legend_value_value": self.cbb_legend.currentIndex(),
+                "le_legend_title_value": self.le_legend_title.text(),
+                "sb_margin_value_value": self.sb_margin_value.value(),
+                "le_layout_name_value": self.le_layout_name.text(),
+                "cbb_page_format_value": self.page_size_name()
+            },
+            # UI_OPTIONS section for interface preferences
+            "UI_OPTIONS": {
+                "cb_show_config_icon": self.cb_show_config_icon.isChecked(),
+                "cb_show_help_icon": self.cb_show_help_icon.isChecked()
+            }
+        })
+        self.reset_pending = False
         self.pb_save.setEnabled(False)
+        self.pb_restore.setEnabled(True)
 
-    #
     def load_default(self, value):
         """
-        Workaround. Action launched by restore button click
-        :param value: boolean. True to load from default config file
+        Action launched by restore button click: load default values in the form.
+        Custom values are removed only if the dialog is then accepted (see accept()).
+        :param value: unused (clicked signal)
         :return:
         """
         self.set_form_values(True)
-    #
+        self.reset_pending = True
+
+    def accept(self):
+        """
+        Validate the dialog. Apply a pending "restore defaults".
+        """
+        if self.reset_pending:
+            settings.clear_custom()
+            self.reset_pending = False
+        super(AutoLayoutToolDialogConfig, self).accept()
+
+    def set_page_format(self, page_format):
+        """
+        Select page format in combobox, from its registry name (or legacy display name).
+        Fall back to QGIS default page size.
+        :param page_format: str
+        """
+        index = -1
+        if page_format:
+            index = self.cbb_page_format_name.findData(page_format)
+            if index < 0:
+                try:
+                    match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString  # PyQt6
+                except AttributeError:
+                    match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
+                index = self.cbb_page_format_name.findText(page_format, match_fixed_string)
+        if index < 0:
+            # Use QGIS default page size
+            tmp_layout = QgsPrintLayout(QgsProject.instance())
+            tmp_layout.initializeDefaults()
+            name = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
+            index = self.cbb_page_format_name.findData(name)
+        if index >= 0:
+            self.cbb_page_format_name.setCurrentIndex(index)
 
     def set_form_values(self, default):
         """
-        Either load default or custom values from file and feed form components
-        :param default:
+        Either load default or custom values and feed form components
+        :param default: bool, True to load default values
         :return:
         """
-        print(self.plugin_dir)
-        config_object = ConfigParser()
-        if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
-            config_object.read(self.plugin_dir + '/config/custom.ini')
-            self.pb_restore.setEnabled(True)
-            self.pb_save.setEnabled(False)
-        else:
-            config_object.read(self.plugin_dir + '/config/default.ini')
-            self.pb_restore.setEnabled(False)
-            self.pb_save.setEnabled(False)
-            try:
-                os.remove(self.plugin_dir + '/config/custom.ini')
-            except FileNotFoundError:
-                pass
-        file_values = config_object["ITEMS_PLACEMENT"]
+        values = settings.load(use_custom=not default)
+        file_values = values["ITEMS_PLACEMENT"]
         self.cbb_north.setCurrentIndex(int(file_values["cbb_north_value"]))
         self.cbb_scalebar.setCurrentIndex(int(file_values["cbb_scalebar_value"]))
         self.cbb_legend.setCurrentIndex(int(file_values["cbb_legend_value_value"]))
+        # tr() translates default values ('Legend', 'Automatic Layout'); custom text is returned unchanged
         self.le_legend_title.setText(self.tr(file_values["le_legend_title_value"]))
         self.sb_margin_value.setValue(int(file_values["sb_margin_value_value"]))
         self.le_layout_name.setText(self.tr(file_values["le_layout_name_value"]))
-        # Since default layout size is not define in default config file, we have to set right index of the combobox
-        # from qgis default size
-        try:
-            self.cbb_page_format_name.setCurrentIndex(int(file_values["cbb_page_format_value"]))
-        except (KeyError, ValueError):
-            tmp_layout = QgsPrintLayout(QgsProject.instance())
-            tmp_layout.initializeDefaults()
-            text = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
+        self.set_page_format(file_values.get("cbb_page_format_value", ""))
 
-            try:
-                match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString  # PyQt6
-            except AttributeError:
-                match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
+        # Checkbox states from UI_OPTIONS section
+        ui_values = values["UI_OPTIONS"]
+        self.cb_show_config_icon.setChecked(settings.to_bool(ui_values.get("cb_show_config_icon"), True))
+        self.cb_show_help_icon.setChecked(settings.to_bool(ui_values.get("cb_show_help_icon"), True))
 
-            index = self.cbb_page_format_name.findText(text, match_fixed_string)
-            if index >= 0:
-                self.cbb_page_format_name.setCurrentIndex(index)
-
-        # Load checkbox states from UI_OPTIONS section
-        try:
-            ui_values = config_object["UI_OPTIONS"]
-            self.cb_show_config_icon.setChecked(
-                ui_values.getboolean("cb_show_config_icon", True)
-            )
-            self.cb_show_help_icon.setChecked(
-                ui_values.getboolean("cb_show_help_icon", True)
-            )
-        except (KeyError, ValueError):
-            # Default values if section or keys not found
-            self.cb_show_config_icon.setChecked(True)
-            self.cb_show_help_icon.setChecked(True)
-
-        if not default and os.path.isfile(self.plugin_dir + '/config/custom.ini'):
-
-            self.pb_restore.setEnabled(True)
-            self.pb_save.setEnabled(False)
-        else:
-
-            self.pb_restore.setEnabled(False)
-            self.pb_save.setEnabled(False)
+        # Restore is available if custom values exist; save only after a change
+        self.pb_restore.setEnabled((not default) and settings.has_custom())
+        self.pb_save.setEnabled(default and settings.has_custom())
 
     def cbb_state_changed(self, text, i):
         """

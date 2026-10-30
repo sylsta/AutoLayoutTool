@@ -25,6 +25,13 @@ from qgis.core import QgsWkbTypes, QgsPointXY, QgsCoordinateReferenceSystem, Qgs
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import pyqtSignal
 
+# Qgis.GeometryType (QGIS >= 3.30, required for QGIS 4), QgsWkbTypes for older QGIS 3 versions
+try:
+    from qgis.core import Qgis
+    POLYGON_GEOMETRY = Qgis.GeometryType.Polygon
+except AttributeError:
+    POLYGON_GEOMETRY = QgsWkbTypes.PolygonGeometry
+
 
 class RectangleAreaTool(QgsMapTool):
 
@@ -36,7 +43,7 @@ class RectangleAreaTool(QgsMapTool):
         self.canvas = canvas
         self.active = False
         self.setAction(action)
-        self.rubberBand = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
+        self.rubberBand = QgsRubberBand(self.canvas, POLYGON_GEOMETRY)
         mFillColor = QColor(254, 178, 76, 63)
         self.rubberBand.setColor(mFillColor)
         self.rubberBand.setWidth(1)
@@ -45,7 +52,7 @@ class RectangleAreaTool(QgsMapTool):
     def reset(self):
         self.startPoint = self.endPoint = None
         self.isEmittingPoint = False
-        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
+        self.rubberBand.reset(POLYGON_GEOMETRY)
 
     def canvasPressEvent(self, e):
         self.startPoint = self.toMapCoordinates(e.pos())
@@ -54,8 +61,10 @@ class RectangleAreaTool(QgsMapTool):
         self.showRect(self.startPoint, self.endPoint)
 
     def canvasReleaseEvent(self, e):
+        if not self.isEmittingPoint or self.startPoint is None:
+            return
         self.isEmittingPoint = False
-        self.rubberBand.hide()
+        self.rubberBand.reset(POLYGON_GEOMETRY)
         # self.transformCoordinates() # no need to convert CRS
         self.rectangleCreated.emit(self.startPoint.x(), self.startPoint.y(), self.endPoint.x(), self.endPoint.y())
 
@@ -66,7 +75,7 @@ class RectangleAreaTool(QgsMapTool):
         self.showRect(self.startPoint, self.endPoint)
 
     def showRect(self, startPoint, endPoint):
-        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
+        self.rubberBand.reset(POLYGON_GEOMETRY)
         if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
             return
         point1 = QgsPointXY(startPoint.x(), startPoint.y())

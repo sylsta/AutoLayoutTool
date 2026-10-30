@@ -39,8 +39,8 @@ Icon from   https://www.freepik.com/free-icon/layout_14181101.htm
  ***************************************************************************/
 """
 
-# from .mtp4windows_win_mtp.access import get_portable_devices
 import os.path
+import traceback
 from configparser import ConfigParser
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
@@ -48,7 +48,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
     QgsLayoutItemScaleBar, QgsUnitTypes, QgsLayoutItemPicture, QgsLayoutSize, QgsApplication, QgsLayoutItemPage, \
-    QgsRectangle, QgsMessageLog, Qgis
+    QgsRectangle, QgsMessageLog, Qgis, QgsLayerTree
 
 # Initialize Qt resources from file resources.py
 from . import resources
@@ -56,6 +56,19 @@ from . import resources
 from .AutoLayoutTool_dialog_config import AutoLayoutToolDialogConfig
 from .AutoLayoutTool_dialog_visual_help import AutoLayoutToolDialogVisualHelp
 from .rectangleAreaTool import RectangleAreaTool
+from . import settings
+
+# Units: Qgis.LayoutUnit / Qgis.DistanceUnit (QGIS >= 3.30, required for QGIS 4),
+# QgsUnitTypes members for older QGIS 3 versions
+try:
+    LAYOUT_MM = Qgis.LayoutUnit.Millimeters
+    DISTANCE_KM = Qgis.DistanceUnit.Kilometers
+except AttributeError:
+    LAYOUT_MM = QgsUnitTypes.LayoutMillimeters
+    DISTANCE_KM = QgsUnitTypes.DistanceKilometers
+
+# Translation files whose name does not match the QGIS locale code
+LOCALE_FILE_ALIASES = {'el': 'gr'}  # Greek
 
 
 class AutoLayoutTool:
@@ -79,13 +92,13 @@ class AutoLayoutTool:
         config = ConfigParser()
         config.read(f'{self.plugin_dir}/metadata.txt')
         self.plugin_name = config.get('general', 'name')
-        print(f"{self.plugin_name} {config.get('general', 'version')} loaded")
         QgsMessageLog.logMessage(f"{config.get('general', 'name')} {config.get('general', 'version')} loaded",
                                  self.plugin_name, level=Qgis.Info)
         # initialize locale
         user_locale = QSettings().value('locale/userLocale')
         if user_locale:
             locale_code = user_locale[0:2]
+            locale_code = LOCALE_FILE_ALIASES.get(locale_code, locale_code)
             locale_path = os.path.join(
                 self.plugin_dir,
                 'i18n',
@@ -127,6 +140,22 @@ class AutoLayoutTool:
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('AutoLayoutTool', message)
+
+    def notify(self, message, level=Qgis.Info, duration=5):
+        """
+        Show a message to the user in the QGIS message bar and log it
+        :param message: str
+        :param level: Qgis.MessageLevel
+        :param duration: int, seconds (0 = until closed)
+        """
+        self.iface.messageBar().pushMessage(self.plugin_name, message, level=level, duration=duration)
+        QgsMessageLog.logMessage(message, self.plugin_name, level=level)
+
+    def log(self, message, level=Qgis.Info):
+        """
+        Write a message in the QGIS log panel only
+        """
+        QgsMessageLog.logMessage(message, self.plugin_name, level=level)
 
     def add_action(
             self,
@@ -273,6 +302,14 @@ class AutoLayoutTool:
 
     def unload(self):
         """Removes the plugin menu item and toolbar from QGIS GUI."""
+        # Release the rectangle map tool and its rubber band
+        if hasattr(self, 'rectangleAreaTool') and self.rectangleAreaTool:
+            canvas = self.iface.mapCanvas()
+            if canvas.mapTool() == self.rectangleAreaTool:
+                canvas.unsetMapTool(self.rectangleAreaTool)
+            self.rectangleAreaTool.rubberBand.reset()
+            canvas.scene().removeItem(self.rectangleAreaTool.rubberBand)
+            self.rectangleAreaTool = None
         # Unregister keyboard shortcuts
         for action in self.actions:
             self.iface.unregisterMainWindowAction(action)
@@ -334,7 +371,7 @@ class AutoLayoutTool:
             self.legend_title = dlg_config.le_legend_title.text()
             self.margin = int(dlg_config.sb_margin_value.value())
             self.layout_name = dlg_config.le_layout_name.text()
-            self.page_size = dlg_config.cbb_page_format_name.currentText()
+            self.page_size = dlg_config.page_size_name()
             # Apply visibility immediately according to checkboxes
             self.apply_toolbar_visibility(
                 dlg_config.cb_show_config_icon.isChecked(),
@@ -357,39 +394,38 @@ class AutoLayoutTool:
         """
 
         """
-        print(f'{startX}, {startY}, {endX}, {endY}')
         extent = QgsRectangle(startX, startY, endX, endY)
+        if extent.width() == 0 or extent.height() == 0:
+            self.notify(self.tr(u'Click and drag on the map to draw a rectangle'), Qgis.Warning)
+            return
         self.draw_layout_from_extent(extent)
 
     def draw_layout_from_extent(self, extent):
         """
-
+        Creates the layout, then adds map, legend, scalebar and north arrow
+        :param extent: QgsRectangle, map extent to display
         """
+        try:
+            self._draw_layout_from_extent(extent)
+        except Exception as e:
+            # Unexpected error: tell the user instead of failing silently in the python console
+            self.notify(self.tr(u'Layout creation failed: %s') % e, Qgis.Critical, duration=0)
+            self.log(traceback.format_exc(), Qgis.Critical)
 
+    def _draw_layout_from_extent(self, extent):
         if not self.params_from_dialog:
             self.param_from_file()
-        print('--------------------------------')
-        print(self.tr(u'AutoLayoutTool starts'))
-        print('--------------------------------')
+        self.log(self.tr(u'AutoLayoutTool starts'))
         map_width = extent.xMaximum() - extent.xMinimum()
         map_height = extent.yMaximum() - extent.yMinimum()
         if (map_height == 0) or (map_width == 0):
-            print(self.tr(u'No loaded data - aborting'))
-            print('--------------------------------')
+            self.notify(self.tr(u'No loaded data - aborting'), Qgis.Warning)
             return
         # Create layout
-        try:
-            layout, manager = self.create_layout(self.layout_name)
-            if layout is None:
-                # User cancelled the operation
-                print(self.tr(u'Cancelled by user'))
-                print('--------------------------------')
-                return
-        except Exception as e:
-            # Quick and dirty. In case of unexpected error
-            print(self.tr(u'Cancelled by user'))
-            print(f'Error: {e}')
-            print('--------------------------------')
+        layout, manager = self.create_layout(self.layout_name)
+        if layout is None:
+            # User cancelled the operation
+            self.log(self.tr(u'Cancelled by user'))
             return
         # Determine and set best layout orientation
         landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
@@ -397,6 +433,11 @@ class AutoLayoutTool:
         # Calculate scale
         map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
                                                                  map_height, map_width, scale_ratio)
+        # Margin must leave room for the map
+        if map_width - 2 * self.margin <= 0 or map_height - 2 * self.margin <= 0:
+            self.notify(self.tr(u'Margin (%s mm) is too large for the page size - aborting') % self.margin,
+                        Qgis.Warning, duration=10)
+            return
         # Add map
         map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
                                                                            layout_height, layout_width, map_height,
@@ -415,9 +456,7 @@ class AutoLayoutTool:
         # Finally add layout to the project via its manager
         manager.addLayout(layout)
         self.iface.openLayoutDesigner(layout)
-        print('--------------------------------')
-        print("♪♪ This is the end, my friend ♪♪")
-        print('--------------------------------')
+        self.log("♪♪ This is the end, my friend ♪♪")
 
     def create_layout(self, layout_name):
         """
@@ -455,11 +494,11 @@ class AutoLayoutTool:
 
                     if clicked == delete_btn:
                         manager.removeLayout(layout)
-                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                        self.log(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
                         final_name = layout_name
                     elif clicked == new_btn:
                         final_name = next_name
-                        print(self.tr(u"Creating new layout '%s'") % next_name)
+                        self.log(self.tr(u"Creating new layout '%s'") % next_name)
                     else:
                         # Cancel was clicked or dialog was closed
                         return None, None
@@ -482,11 +521,11 @@ class AutoLayoutTool:
 
                     if clicked == delete_btn:
                         manager.removeLayout(layout)
-                        print(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+                        self.log(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
                         final_name = layout_name
                     elif clicked == new_btn:
                         final_name = next_name
-                        print(self.tr(u"Creating new layout '%s'") % next_name)
+                        self.log(self.tr(u"Creating new layout '%s'") % next_name)
                     else:
                         # Cancel was clicked or dialog was closed
                         return None, None
@@ -528,7 +567,7 @@ class AutoLayoutTool:
         :rtype: bool, float, float, float, float, float
         """
 
-        print('Creating layout')
+        self.log('Creating layout')
         map_width = extent.xMaximum() - extent.xMinimum()
         map_height = extent.yMaximum() - extent.yMinimum()
         if self.page_size == '':
@@ -537,16 +576,17 @@ class AutoLayoutTool:
         else:
             page_size_name = self.page_size
 
-        landscape = False
-        if map_width <= map_height:
-            # portrait
-            if self.debug: print("Portrait")
-            layout.pageCollection().page(0).setPageSize(page_size_name, QgsLayoutItemPage.Orientation.Portrait)
-        else:
-            # landscape
-            if self.debug: print("Landscape")
-            layout.pageCollection().page(0).setPageSize(page_size_name, QgsLayoutItemPage.Orientation.Landscape)
-            landscape = True
+        landscape = map_width > map_height
+        if self.debug: print("Landscape" if landscape else "Portrait")
+        orientation = QgsLayoutItemPage.Orientation.Landscape if landscape \
+            else QgsLayoutItemPage.Orientation.Portrait
+        page = layout.pageCollection().page(0)
+        if not page.setPageSize(page_size_name, orientation):
+            # Unknown page size name: keep QGIS default page size, but still apply orientation
+            self.notify(self.tr(u"Unknown page size '%s' - using QGIS default page size") % page_size_name,
+                        Qgis.Warning)
+            default_name = QgsApplication.pageSizeRegistry().find(page.pageSize())
+            page.setPageSize(default_name, orientation)
         # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
@@ -572,7 +612,7 @@ class AutoLayoutTool:
         :param scale_ratio: float
         :rtype: float, float, QgsLayoutItemMap
         """
-        print(self.tr(u'Calculating scale'))
+        self.log(self.tr(u'Calculating scale'))
         my_map = QgsLayoutItemMap(layout)
         if self.debug: print("mapw: %r / maph: %r" % (map_width, map_height))
         if self.debug: print("scale ratio: %r" % scale_ratio)
@@ -624,7 +664,7 @@ class AutoLayoutTool:
         :param my_map: QgsLayoutItemMap
         :rtype: float, float, float, float
         """
-        print('Adding map')
+        self.log('Adding map')
         map_width = map_width - 2 * margin
         map_height = map_height - 2 * margin
         my_map.setRect(0, 0, map_width, map_height)
@@ -638,7 +678,7 @@ class AutoLayoutTool:
         if self.debug: print("real_mapw: %r / real_maph: %r" % (map_real_width, map_real_height))
         my_map.setBackgroundColor(QColor(255, 255, 255, 255))
         my_map.setFrameEnabled(True)
-        my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+        my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, LAYOUT_MM))
         layout.addLayoutItem(my_map)
         return map_real_height, map_real_width, x_offset, y_offset
 
@@ -650,23 +690,14 @@ class AutoLayoutTool:
         :param y_offset: float
         :return: None
         """
-        print(self.tr(u"Adding legend"))
-        layers_to_add = [l for l in QgsProject.instance().layerTreeRoot().children() if l.isVisible()]
+        self.log(self.tr(u"Adding legend"))
         legend = QgsLayoutItemLegend(layout)
-        legend.setTitle(self.tr(legend_title))
+        legend.setTitle(legend_title)
         legend.setId("legend")
         legend.setAutoUpdateModel(False)
         group = legend.model().rootGroup()
         group.clear()
-        for l in layers_to_add:
-            if l.nodeType() == 0:
-                subgroup = group.addGroup(l.name())
-
-                checked = l.checkedLayers()
-                for c in checked:
-                    subgroup.addLayer(c)
-            elif l.nodeType() == 1:
-                group.addLayer(l.layer())
+        self.fill_legend_group(group, QgsProject.instance().layerTreeRoot())
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
@@ -683,8 +714,8 @@ class AutoLayoutTool:
         legend_height = legend.sizeWithUnits().height()
 
         if legend_placement == 0:
-            print("top left")
-            legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, QgsUnitTypes.LayoutMillimeters))
+            if self.debug: print("top left")
+            legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, LAYOUT_MM))
 
         elif legend_placement == 1:
             if self.debug: print("top right")
@@ -692,7 +723,7 @@ class AutoLayoutTool:
             if self.debug: print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
 
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
-                                              QgsUnitTypes.LayoutMillimeters))
+                                              LAYOUT_MM))
 
             # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
             if legend_width == 0 and legend_height == 0:
@@ -707,7 +738,7 @@ class AutoLayoutTool:
         elif legend_placement == 2:
             if self.debug: print("bottom left")
             legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
-                                              QgsUnitTypes.LayoutMillimeters))
+                                              LAYOUT_MM))
 
             # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
             if legend_width == 0 and legend_height == 0:
@@ -723,7 +754,7 @@ class AutoLayoutTool:
             if self.debug: print("bottom right")
             legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset,
                                               map_real_height + y_offset - legend_height,
-                                              QgsUnitTypes.LayoutMillimeters))
+                                              LAYOUT_MM))
 
             # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
             if legend_width == 0 and legend_height == 0:
@@ -736,6 +767,26 @@ class AutoLayoutTool:
                     legend.setReferencePoint(8)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
+    def fill_legend_group(self, target, source):
+        """
+        Recursively copy visible groups and layers of the project layer tree into the legend tree.
+        Uses QgsLayerTree.isGroup()/isLayer() instead of comparing nodeType() to ints,
+        which does not work with PyQt6 enums (QGIS 4).
+        :param target: QgsLayerTreeGroup, legend group to fill
+        :param source: QgsLayerTreeGroup, project group to read
+        """
+        for node in source.children():
+            if not node.itemVisibilityChecked():
+                continue
+            if QgsLayerTree.isGroup(node):
+                subgroup = target.addGroup(node.name())
+                self.fill_legend_group(subgroup, node)
+                if not subgroup.children():
+                    # No visible layer in this group: do not show an empty group title
+                    target.removeChildNode(subgroup)
+            elif QgsLayerTree.isLayer(node) and node.layer() is not None:
+                target.addLayer(node.layer())
+
     def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """
         Add scalebar to the layout
@@ -747,13 +798,13 @@ class AutoLayoutTool:
         :param y_offset: float
         :return: None
         """
-        print(self.tr(u'Adding scale bar'))
+        self.log(self.tr(u'Adding scale bar'))
         scalebar = QgsLayoutItemScaleBar(layout)
         scalebar.setStyle('Single Box')
         scalebar.setLinkedMap(my_map)
         scalebar.applyDefaultSize()
         scalebar.applyDefaultSettings()
-        scalebar.setUnits(QgsUnitTypes.DistanceKilometers)
+        scalebar.setUnits(DISTANCE_KM)
         scalebar.setUnitsPerSegment(scalebar.unitsPerSegment() / 1000)
         scalebar.setUnitLabel('km')
         scalebar.update()
@@ -762,23 +813,23 @@ class AutoLayoutTool:
             # up left
             scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,
                                                 y_offset - scalebar.rect().size().height() + 15,
-                                                QgsUnitTypes.LayoutMillimeters))
+                                                LAYOUT_MM))
 
         elif scalebar_placement == 1:
             #  up right
             scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 2,
                                                 y_offset - scalebar.rect().size().height() + 15,
-                                                QgsUnitTypes.LayoutMillimeters))
+                                                LAYOUT_MM))
         elif scalebar_placement == 2:
             # bottom left
             scalebar.attemptMove(QgsLayoutPoint(3 + x_offset,
                                                 map_real_height + y_offset - scalebar.rect().size().height() - 2,
-                                                QgsUnitTypes.LayoutMillimeters))
+                                                LAYOUT_MM))
         elif scalebar_placement == 3:
             # bottom right
             scalebar.attemptMove(QgsLayoutPoint(map_real_width + x_offset - scalebar.rect().size().width() - 2,
                                                 map_real_height + y_offset - scalebar.rect().size().height() - 2,
-                                                QgsUnitTypes.LayoutMillimeters))
+                                                LAYOUT_MM))
 
     def add_north_arrow(self, layout, map_real_height, map_real_width, x_offset, y_offset, north_placement):
         """
@@ -789,30 +840,30 @@ class AutoLayoutTool:
         :param y_offset: float
         :return: None
         """
-        print(self.tr(u"Adding north arrow"))
+        self.log(self.tr(u"Adding north arrow"))
         north = QgsLayoutItemPicture(layout)
         north.setPicturePath(self.plugin_dir + "/images/north-arrow.svg")
         layout.addLayoutItem(north)
-        north.attemptResize(QgsLayoutSize(8, 13, QgsUnitTypes.LayoutMillimeters))
+        north.attemptResize(QgsLayoutSize(8, 13, LAYOUT_MM))
         if north_placement == 0:
             # up left
             north.attemptMove(QgsLayoutPoint(3 + x_offset,
                                              3 + y_offset,
-                                             QgsUnitTypes.LayoutMillimeters))
+                                             LAYOUT_MM))
         elif north_placement == 1:
             # up right
             north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
-                                             3 + y_offset, QgsUnitTypes.LayoutMillimeters))
+                                             3 + y_offset, LAYOUT_MM))
         elif north_placement == 2:
             # bottom left
             north.attemptMove(QgsLayoutPoint(3 + x_offset,
                                              map_real_height + y_offset - north.rect().size().height() - 2,
-                                             QgsUnitTypes.LayoutMillimeters))
+                                             LAYOUT_MM))
         elif north_placement == 3:
             # bottom right
             north.attemptMove(QgsLayoutPoint(map_real_width + x_offset - north.rect().size().width() - 3,
                                              map_real_height + y_offset - north.rect().size().height() - 2,
-                                             QgsUnitTypes.LayoutMillimeters))
+                                             LAYOUT_MM))
 
     def apply_toolbar_visibility(self, show_config, show_help):
         """
@@ -837,49 +888,23 @@ class AutoLayoutTool:
 
     def load_toolbar_visibility_preferences(self):
         """
-        Load toolbar icons visibility preferences from configuration file
+        Load toolbar icons visibility preferences (QGIS profile settings or defaults)
         """
-        config = ConfigParser()
-        config_file = os.path.join(self.plugin_dir, 'config', 'custom.ini')
-
-        # Default values
-        show_config = True
-        show_help = True
-
-        if os.path.isfile(config_file):
-            config.read(config_file)
-            try:
-                # Read from UI_OPTIONS section
-                show_config = config.getboolean("UI_OPTIONS", "cb_show_config_icon", fallback=True)
-                show_help = config.getboolean("UI_OPTIONS", "cb_show_help_icon", fallback=True)
-            except (KeyError, ValueError) as e:
-                print(f"Warning: Could not read UI_OPTIONS from config: {e}")
-
-        # Apply preferences
-        self.apply_toolbar_visibility(show_config, show_help)
+        ui_values = settings.load()["UI_OPTIONS"]
+        self.apply_toolbar_visibility(settings.to_bool(ui_values.get("cb_show_config_icon"), True),
+                                      settings.to_bool(ui_values.get("cb_show_help_icon"), True))
 
     def param_from_file(self):
         """
-        Load default or custom params from file
+        Load default or custom params (custom params are stored in the QGIS profile)
         :return:
         """
-        config_object = ConfigParser()
-        if os.path.isfile(self.plugin_dir + '/config/custom.ini'):
-            config_object.read(self.plugin_dir + '/config/custom.ini')
-        else:
-            config_object.read(self.plugin_dir + '/config/default.ini')
-
-        # read values for parameters
-        file_values = config_object["ITEMS_PLACEMENT"]
+        file_values = settings.load()["ITEMS_PLACEMENT"]
         self.north_placement = int(file_values["cbb_north_value"])
         self.scalebar_placement = int(file_values["cbb_scalebar_value"])
         self.legend_placement = int(file_values["cbb_legend_value_value"])
         self.legend_title = self.tr(file_values["le_legend_title_value"])
         self.margin = int(file_values["sb_margin_value_value"])
         self.layout_name = self.tr(file_values["le_layout_name_value"])
-        try:
-            # if custom settings are used, get page size name
-            self.page_size = file_values["cbb_page_format_value"]
-        except KeyError:
-            # else use default composer page size setting
-            self.page_size = ''
+        # page size registry name; empty string means QGIS default page size
+        self.page_size = file_values.get("cbb_page_format_value", "")

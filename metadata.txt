@@ -31,6 +31,9 @@ deprecated=False
 server=False
 
 changelog=
+    2.4 (2026-10-30):
+        - major improvement and bug fixes
+        
     2.3 (2026-03-22):
         - Metadata update for QGIS 4.x
 
