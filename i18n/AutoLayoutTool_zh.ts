@@ -4,133 +4,138 @@
 <context>
     <name>AutoLayoutTool</name>
     <message>
-        <location filename="../AutoLayoutTool.py" line="251"/>
+        <location filename="../AutoLayoutTool.py" line="262"/>
         <source>&amp;AutoLayoutTool</source>
         <translation>&amp;AutoLayoutTool</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="254"/>
+        <location filename="../AutoLayoutTool.py" line="265"/>
         <source>Create a new layout based on current extent </source>
         <translation>基于当前范围创建一个新的布局</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="601"/>
+        <location filename="../AutoLayoutTool.py" line="613"/>
         <source>Layout already exists...</source>
         <translation>布局已存在...</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="602"/>
+        <location filename="../AutoLayoutTool.py" line="614"/>
         <source>There&apos;s already a layout named &apos;%s&apos;</source>
         <translation>已经存在名为'%s'的布局</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="603"/>
+        <location filename="../AutoLayoutTool.py" line="615"/>
         <source>What would you like to do?</source>
         <translation>您想怎么做？</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="605"/>
+        <location filename="../AutoLayoutTool.py" line="617"/>
         <source>Delete existing</source>
         <translation>删除现有</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="606"/>
+        <location filename="../AutoLayoutTool.py" line="618"/>
         <source>Create &apos;%s&apos;</source>
         <translation>创建'%s'</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="620"/>
+        <location filename="../AutoLayoutTool.py" line="632"/>
         <source>Creating new layout &apos;%s&apos;</source>
         <translation>正在创建新布局'%s'</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="616"/>
+        <location filename="../AutoLayoutTool.py" line="628"/>
         <source>Previous layout named &apos;%s&apos; removed... </source>
         <translation>前一个布局%s被移除</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="707"/>
+        <location filename="../AutoLayoutTool.py" line="719"/>
         <source>Calculating scale</source>
         <translation>计算比例</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="792"/>
+        <location filename="../AutoLayoutTool.py" line="804"/>
         <source>Adding legend</source>
         <translation>添加图例</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="903"/>
+        <location filename="../AutoLayoutTool.py" line="915"/>
         <source>Adding scale bar</source>
         <translation>添加比例尺</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="952"/>
+        <location filename="../AutoLayoutTool.py" line="964"/>
         <source>Adding north arrow</source>
         <translation>添加指北针</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="510"/>
+        <location filename="../AutoLayoutTool.py" line="522"/>
         <source>AutoLayoutTool starts</source>
         <translation>AutoLayoutTool开始运行</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="290"/>
+        <location filename="../AutoLayoutTool.py" line="301"/>
         <source>AutoLayoutTool custom configuration</source>
         <translation>AutoLayoutTool自定义配置</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="301"/>
+        <location filename="../AutoLayoutTool.py" line="312"/>
         <source>AutoLayoutTool visual help</source>
         <translation>AutoLayoutTool视觉帮助</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="514"/>
+        <location filename="../AutoLayoutTool.py" line="526"/>
         <source>No loaded data - aborting</source>
         <translation>未加载数据 - 中止</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="520"/>
+        <location filename="../AutoLayoutTool.py" line="532"/>
         <source>Cancelled by user</source>
         <translation>用户取消</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="267"/>
+        <location filename="../AutoLayoutTool.py" line="278"/>
         <source>Create a new layout based on the drawing of a rectangle</source>
         <translation>基于绘制矩形创建新布局</translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="280"/>
+        <location filename="../AutoLayoutTool.py" line="291"/>
         <source>Create a new layout based on the extent of selected layers...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="415"/>
+        <location filename="../AutoLayoutTool.py" line="426"/>
         <source>Click and drag on the map to draw a rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="438"/>
+        <location filename="../AutoLayoutTool.py" line="450"/>
         <source>Could not compute an extent for the selected layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="463"/>
+        <location filename="../AutoLayoutTool.py" line="475"/>
         <source>Layer &apos;%s&apos; could not be reprojected - ignored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="500"/>
+        <location filename="../AutoLayoutTool.py" line="512"/>
         <source>Layout creation failed: %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="530"/>
+        <location filename="../AutoLayoutTool.py" line="542"/>
         <source>Margin (%s mm) is too large for the page size - aborting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool.py" line="678"/>
+        <location filename="../AutoLayoutTool.py" line="690"/>
         <source>Unknown page size &apos;%s&apos; - using QGIS default page size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../AutoLayoutTool.py" line="441"/>
+        <source>There is no layer with a spatial extent in the project</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -170,27 +175,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog_layers.py" line="83"/>
+        <location filename="../AutoLayoutTool_dialog_layers.py" line="82"/>
         <source>Layers to include in the layout:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog_layers.py" line="95"/>
+        <location filename="../AutoLayoutTool_dialog_layers.py" line="94"/>
         <source>Check all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog_layers.py" line="96"/>
+        <location filename="../AutoLayoutTool_dialog_layers.py" line="95"/>
         <source>Uncheck all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog_layers.py" line="106"/>
+        <location filename="../AutoLayoutTool_dialog_layers.py" line="105"/>
         <source>Buffer (% on each side):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../AutoLayoutTool_dialog_layers.py" line="111"/>
+        <location filename="../AutoLayoutTool_dialog_layers.py" line="110"/>
         <source>Space added around the layers extent, as a percentage of its width and height, on each side</source>
         <translation type="unfinished"></translation>
     </message>
