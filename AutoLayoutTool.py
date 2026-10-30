@@ -430,7 +430,8 @@ class AutoLayoutTool:
     def run_from_layers(self):
         """
         Opens the layer selection dialog, then creates a layout covering the extent of the checked layers.
-        Only the checked layers are displayed in the map and in the legend.
+        Checked layers are only used to compute the extent: as in the other modes, the map and the legend
+        show the layers visible in the map canvas (a checked hidden layer frames the map but is not shown).
         """
         project = QgsProject.instance()
         all_layers = list(project.mapLayers().values())
@@ -449,7 +450,7 @@ class AutoLayoutTool:
         if extent is None:
             self.notify(self.tr(u'Could not compute an extent for the selected layers'), Qgis.Warning)
             return
-        self.draw_layout_from_extent(extent, layers)
+        self.draw_layout_from_extent(extent)
 
     def layers_extent(self, layers, buffer_percent):
         """
@@ -500,22 +501,21 @@ class AutoLayoutTool:
         return QgsRectangle(center.x() - half_width, center.y() - half_height,
                             center.x() + half_width, center.y() + half_height)
 
-    def draw_layout_from_extent(self, extent, layers=None):
+    def draw_layout_from_extent(self, extent):
         """
         Creates the layout, then adds map, legend, scalebar and north arrow
         :param extent: QgsRectangle, map extent to display
         """
         try:
-            self._draw_layout_from_extent(extent, layers)
+            self._draw_layout_from_extent(extent)
         except Exception as e:
             # Unexpected error: tell the user instead of failing silently in the python console
             self.notify(self.tr(u'Layout creation failed: %s') % e, Qgis.Critical, duration=0)
             self.log(traceback.format_exc(), Qgis.Critical)
 
-    def _draw_layout_from_extent(self, extent, layers=None):
+    def _draw_layout_from_extent(self, extent):
         """
         :param extent: QgsRectangle
-        :param layers: list of QgsMapLayer to display (map and legend), or None for visible layers
         """
         if not self.params_from_dialog:
             self.param_from_file()
@@ -545,11 +545,11 @@ class AutoLayoutTool:
         # Add map
         map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
                                                                            layout_height, layout_width, map_height,
-                                                                           map_width, self.margin, my_map, layers)
+                                                                           map_width, self.margin, my_map)
         if self.legend_placement != 4:
             # Add legend
             self.add_legend(layout, map_real_height, map_real_width, x_offset, y_offset, self.legend_title,
-                            self.legend_placement, layers)
+                            self.legend_placement)
         if self.scalebar_placement != 4:
             # Add scale bar
             self.add_scalebar(layout, map_real_height, map_real_width, my_map, x_offset, y_offset,
@@ -755,7 +755,7 @@ class AutoLayoutTool:
 
         return map_height, map_width, my_map
 
-    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map, layers=None):
+    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map):
         """
         Add map to the layout
         :param e: iface.mapCanvas().extent()
@@ -772,12 +772,6 @@ class AutoLayoutTool:
         map_width = map_width - 2 * margin
         map_height = map_height - 2 * margin
         my_map.setRect(0, 0, map_width, map_height)
-        if layers:
-            # Display only these layers, in the project rendering order, whatever their visibility
-            ids = {l.id() for l in layers}
-            ordered = [l for l in QgsProject.instance().layerTreeRoot().layerOrder() if l.id() in ids]
-            my_map.setLayers(ordered or layers)
-            my_map.setKeepLayerSet(True)
         my_map.setExtent(e)
         my_map.refresh()
         map_real_width = my_map.rect().size().width()
@@ -792,8 +786,7 @@ class AutoLayoutTool:
         layout.addLayoutItem(my_map)
         return map_real_height, map_real_width, x_offset, y_offset
 
-    def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement,
-                   layers=None):
+    def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement):
         """
         Add legend to the layout
         :param layout: QgsLayout
@@ -808,8 +801,7 @@ class AutoLayoutTool:
         legend.setAutoUpdateModel(False)
         group = legend.model().rootGroup()
         group.clear()
-        layer_ids = {l.id() for l in layers} if layers else None
-        self.fill_legend_group(group, QgsProject.instance().layerTreeRoot(), layer_ids)
+        self.fill_legend_group(group, QgsProject.instance().layerTreeRoot())
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
@@ -879,27 +871,25 @@ class AutoLayoutTool:
                     legend.setReferencePoint(8)  # Qt5
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
-    def fill_legend_group(self, target, source, layer_ids=None):
+    def fill_legend_group(self, target, source):
         """
         Recursively copy visible groups and layers of the project layer tree into the legend tree.
         Uses QgsLayerTree.isGroup()/isLayer() instead of comparing nodeType() to ints,
         which does not work with PyQt6 enums (QGIS 4).
         :param target: QgsLayerTreeGroup, legend group to fill
         :param source: QgsLayerTreeGroup, project group to read
-        :param layer_ids: set of layer ids to keep whatever their visibility, or None to keep visible layers
         """
         for node in source.children():
-            if layer_ids is None and not node.itemVisibilityChecked():
+            if not node.itemVisibilityChecked():
                 continue
             if QgsLayerTree.isGroup(node):
                 subgroup = target.addGroup(node.name())
-                self.fill_legend_group(subgroup, node, layer_ids)
+                self.fill_legend_group(subgroup, node)
                 if not subgroup.children():
                     # No visible layer in this group: do not show an empty group title
                     target.removeChildNode(subgroup)
             elif QgsLayerTree.isLayer(node) and node.layer() is not None:
-                if layer_ids is None or node.layer().id() in layer_ids:
-                    target.addLayer(node.layer())
+                target.addLayer(node.layer())
 
     def add_scalebar(self, layout, map_real_height, map_real_width, my_map, x_offset, y_offset, scalebar_placement):
         """

@@ -56,6 +56,28 @@ def layer_has_extent(layer):
             and not layer.extent().isNull())
 
 
+# Data providers of online services and tiles (WMS / WMTS / XYZ tiles all use the 'wms' provider)
+ONLINE_PROVIDERS = {'wms', 'arcgismapserver', 'arcgisfeatureserver', 'wcs', 'wfs', 'oapif',
+                    'xyzvectortiles', 'arcgisvectortileservice', 'mbtilesvectortiles', 'vtpkvectortiles'}
+
+
+def is_online_or_tiles(layer):
+    """
+    :return: True for online services and tiled layers (basemaps), which usually cover a much larger area
+             than the data and should not drive the layout extent by default
+    """
+    try:
+        if layer.providerType() in ONLINE_PROVIDERS:
+            return True
+    except AttributeError:
+        pass
+    try:
+        from qgis.core import QgsVectorTileLayer  # QGIS >= 3.14
+        return isinstance(layer, QgsVectorTileLayer)
+    except ImportError:
+        return False
+
+
 def layer_icon(layer):
     """
     Icon of a layer, as in the QGIS Layers panel (QgsIconUtils exists since QGIS 3.20)
@@ -69,8 +91,9 @@ def layer_icon(layer):
 
 class AutoLayoutToolDialogLayers(QDialog):
     """
-    Shows the project layer tree (groups and spatial layers) with checkboxes,
-    and a buffer percentage. Layers visible in the QGIS Layers panel are pre-checked.
+    Shows the project layer tree (groups and spatial layers) with checkboxes, and a buffer percentage.
+    Checked layers are only used to compute the layout extent.
+    Visible layers are pre-checked, except online services and tiles (basemaps).
     """
 
     def __init__(self, parent=None):
@@ -79,7 +102,7 @@ class AutoLayoutToolDialogLayers(QDialog):
         self.resize(420, 520)
 
         main_layout = QVBoxLayout(self)
-        main_layout.addWidget(QLabel(self.tr(u'Layers to include in the layout:')))
+        main_layout.addWidget(QLabel(self.tr(u'Layers used to compute the layout extent:')))
 
         # Layer tree
         self.tree = QTreeWidget()
@@ -151,8 +174,12 @@ class AutoLayoutToolDialogLayers(QDialog):
                 item.setData(0, USER_ROLE, layer.id())
                 if layer_has_extent(layer):
                     item.setFlags(ITEM_ENABLED | ITEM_USER_CHECKABLE)
-                    # Pre-check layers visible on the map (layer and all its parent groups checked)
-                    item.setCheckState(0, CHECKED if node.isVisible() else UNCHECKED)
+                    # Pre-check layers visible on the map (layer and all its parent groups checked),
+                    # except basemaps (online services, tiles) whose extent is often the whole world
+                    online = is_online_or_tiles(layer)
+                    item.setCheckState(0, CHECKED if node.isVisible() and not online else UNCHECKED)
+                    if online:
+                        item.setToolTip(0, self.tr(u'Online service or tiles: not used for the extent by default'))
                 else:
                     # Invalid or empty layer: listed for information, not selectable
                     item.setFlags(ITEM_USER_CHECKABLE)
