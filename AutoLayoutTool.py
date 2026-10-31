@@ -684,9 +684,11 @@ class AutoLayoutTool:
         """
         self.log('Adding map')
         my_map = QgsLayoutItemMap(layout)
-        # setExtent() keeps the width and recomputes the height from the extent proportions,
-        # which are already those of (map_width, map_height)
-        my_map.setRect(0, 0, map_width, map_height)
+        # Use attemptResize(), not setRect(): QGIS stores the item size internally and only attemptResize()
+        # updates it. With setRect(), the stored size stays at 0 x 0 and refresh() shrinks the map to nothing
+        # (setExtent() does not resize the map when its proportions already match the extent, as here).
+        my_map.attemptResize(QgsLayoutSize(map_width, map_height, LAYOUT_MM))
+        # setExtent() keeps the width and recomputes the height from the extent proportions
         my_map.setExtent(e)
         my_map.refresh()
         map_real_width = my_map.rect().size().width()
