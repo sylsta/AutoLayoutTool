@@ -532,20 +532,17 @@ class AutoLayoutTool:
             self.log(self.tr(u'Cancelled by user'))
             return
         # Determine and set best layout orientation
-        landscape, layout_height, layout_width, map_height, map_width, scale_ratio = self.compute_layout_orientation(
-            extent, layout)
-        # Calculate scale
-        map_height, map_width, my_map = self.calculate_map_scale(landscape, layout, layout_height, layout_width,
-                                                                 map_height, map_width, scale_ratio)
-        # Margin must leave room for the map
-        if map_width - 2 * self.margin <= 0 or map_height - 2 * self.margin <= 0:
+        landscape, layout_height, layout_width = self.compute_layout_orientation(extent, layout)
+        # Map size: largest size with the extent proportions fitting in the page minus the margins
+        map_size = self.fit_map_size(extent.width(), extent.height(), layout_width, layout_height, self.margin)
+        if map_size is None:
             self.notify(self.tr(u'Margin (%s mm) is too large for the page size - aborting') % self.margin,
                         Qgis.Warning, duration=10)
             return
+        map_width, map_height = map_size
         # Add map
-        map_real_height, map_real_width, x_offset, y_offset = self.add_map(extent, layout,
-                                                                           layout_height, layout_width, map_height,
-                                                                           map_width, self.margin, my_map)
+        map_real_height, map_real_width, x_offset, y_offset, my_map = self.add_map(
+            extent, layout, layout_height, layout_width, map_height, map_width)
         if self.legend_placement != 4:
             # Add legend
             self.add_legend(layout, map_real_height, map_real_width, x_offset, y_offset, self.legend_title,
@@ -665,10 +662,11 @@ class AutoLayoutTool:
 
     def compute_layout_orientation(self, extent, layout):
         """
-        Determine and set thebest layout orientation
-        :param extent: iface.mapCanvas().extent()
+        Determine and set the best page orientation (landscape if the extent is wider than high)
+        :param extent: QgsRectangle
         :param layout: QgsLayout
-        :rtype: bool, float, float, float, float, float
+        :return: landscape, page height, page width (mm)
+        :rtype: bool, float, float
         """
 
         self.log('Creating layout')
@@ -693,86 +691,51 @@ class AutoLayoutTool:
                 page.setPageSize(QgsLayoutSize(long_side, short_side, size.units()))
             else:
                 page.setPageSize(QgsLayoutSize(short_side, long_side, size.units()))
-        # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
-        if landscape:
-            scale_ratio = (layout_width / map_width)
-            if map_height * scale_ratio > layout_height:
-                scale_ratio = layout_height / map_height
-        else:
-            scale_ratio = layout_height / map_height
-            if map_width * scale_ratio > layout_width:
-                scale_ratio = layout_width / map_width
-        return landscape, layout_height, layout_width, map_height, map_width, scale_ratio
+        return landscape, layout_height, layout_width
 
-    def calculate_map_scale(self, landscape, layout, layout_height, layout_width, map_height, map_width, scale_ratio):
+    @staticmethod
+    def fit_map_size(extent_width, extent_height, page_width, page_height, margin):
         """
-        Calculate map scale
-        :param landscape: boolean
+        Largest map size with the proportions of the extent that fits in the page minus the margins.
+        The margin is exact on the limiting axis and larger on the other one (the map is centred).
+        :param extent_width: float, map units
+        :param extent_height: float, map units
+        :param page_width: float, mm
+        :param page_height: float, mm
+        :param margin: float, mm on each side
+        :return: (map_width, map_height) in mm, or None if the margins leave no room for the map
+        :rtype: tuple or None
+        """
+        available_width = page_width - 2 * margin
+        available_height = page_height - 2 * margin
+        if available_width <= 0 or available_height <= 0 or extent_width <= 0 or extent_height <= 0:
+            return None
+        ratio = extent_width / extent_height
+        map_width = available_width
+        map_height = map_width / ratio
+        if map_height > available_height:
+            map_height = available_height
+            map_width = map_height * ratio
+        return map_width, map_height
+
+    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width):
+        """
+        Add map to the layout, centred on the page
+        :param e: QgsRectangle, map extent
         :param layout: QgsLayout
-        :param layout_height: float
-        :param layout_width: float
-        :param map_height: float
-        :param map_width: float
-        :param scale_ratio: float
-        :rtype: float, float, QgsLayoutItemMap
-        """
-        self.log(self.tr(u'Calculating scale'))
-        my_map = QgsLayoutItemMap(layout)
-        if self.debug: print("mapw: %r / maph: %r" % (map_width, map_height))
-        if self.debug: print("scale ratio: %r" % scale_ratio)
-        previous_height = map_height
-        previous_width = map_width
-        if landscape:
-            if self.debug: print("Landscape")
-            # Calculate extent ratio
-            extent_ratio = previous_width / previous_height  # width/height ratio of extent
-
-            # Try fitting width to layout_width
-            map_width = layout_width
-            map_height = round(map_width / extent_ratio, 3)  # height from width
-
-            # If height doesn't fit, recalculate from height
-            if map_height > layout_height:
-                map_height = layout_height
-                map_width = round(map_height * extent_ratio, 3)  # width from height
-
-            if self.debug: print("final landscape - mapw: %r / maph: %r" % (map_width, map_height))
-        else:
-            if self.debug: print("Portrait")
-            # Calculate extent ratio
-            extent_ratio = previous_height / previous_width  # height/width ratio of extent
-
-            # Try fitting height to layout_height
-            map_height = layout_height
-            map_width = round(map_height / extent_ratio, 3)  # width from height
-
-            # If width doesn't fit, recalculate from width
-            if map_width > layout_width:
-                map_width = layout_width
-                map_height = round(map_width * extent_ratio, 3)  # height from width
-
-            if self.debug: print("final portrait - mapw: %r / maph: %r" % (map_width, map_height))
-
-        return map_height, map_width, my_map
-
-    def add_map(self, e, layout, layout_height, layout_width, map_height, map_width, margin, my_map):
-        """
-        Add map to the layout
-        :param e: iface.mapCanvas().extent()
-        :param layout: QgsLayout
-        :param layout_height: float
-        :param layout_width: float
-        :param map_height: float
-        :param map_width: float
-        :param margin: float
-        :param my_map: QgsLayoutItemMap
-        :rtype: float, float, float, float
+        :param layout_height: float, page height (mm)
+        :param layout_width: float, page width (mm)
+        :param map_height: float, map height (mm), margins already removed
+        :param map_width: float, map width (mm), margins already removed
+        :return: map height, map width, x offset, y offset (mm), map item
+        :rtype: float, float, float, float, QgsLayoutItemMap
         """
         self.log('Adding map')
-        map_width = map_width - 2 * margin
-        map_height = map_height - 2 * margin
+        my_map = QgsLayoutItemMap(layout)
+        # setExtent() keeps the width and recomputes the height from the extent proportions,
+        # which are already those of (map_width, map_height)
         my_map.setRect(0, 0, map_width, map_height)
         my_map.setExtent(e)
         my_map.refresh()
@@ -786,7 +749,7 @@ class AutoLayoutTool:
         my_map.setFrameEnabled(True)
         my_map.attemptMove(QgsLayoutPoint(x_offset, y_offset, LAYOUT_MM))
         layout.addLayoutItem(my_map)
-        return map_real_height, map_real_width, x_offset, y_offset
+        return map_real_height, map_real_width, x_offset, y_offset, my_map
 
     def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement):
         """
