@@ -81,6 +81,7 @@ DISTANCE_M = _first(lambda: Qgis.DistanceUnit.Meters, lambda: qgis_core.QgsUnitT
 POLYGON_GEOMETRY = _first(lambda: Qgis.GeometryType.Polygon, lambda: qgis_core.QgsWkbTypes.PolygonGeometry)
 
 # Layout item reference points (used to anchor the legend by one of its corners)
+REF_UPPER_LEFT = _first(lambda: QgsLayoutItem.ReferencePoint.UpperLeft, lambda: QgsLayoutItem.UpperLeft)
 REF_UPPER_RIGHT = _first(lambda: QgsLayoutItem.ReferencePoint.UpperRight, lambda: QgsLayoutItem.UpperRight)
 REF_LOWER_LEFT = _first(lambda: QgsLayoutItem.ReferencePoint.LowerLeft, lambda: QgsLayoutItem.LowerLeft)
 REF_LOWER_RIGHT = _first(lambda: QgsLayoutItem.ReferencePoint.LowerRight, lambda: QgsLayoutItem.LowerRight)

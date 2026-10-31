@@ -60,7 +60,7 @@ from .rectangleAreaTool import RectangleAreaTool
 from . import settings
 
 from .compat import (LAYOUT_MM, DISTANCE_M, APPLICATION_MODAL, MSGBOX_ROLE_DESTRUCTIVE, MSGBOX_ROLE_ACCEPT,
-                     MSGBOX_CANCEL, REF_UPPER_RIGHT, REF_LOWER_LEFT, REF_LOWER_RIGHT)
+                     MSGBOX_CANCEL, REF_UPPER_LEFT, REF_UPPER_RIGHT, REF_LOWER_LEFT, REF_LOWER_RIGHT)
 
 # Half size (in metres) of the extent used when the selected layers have a zero-size extent (e.g. a single point)
 MIN_HALF_EXTENT_M = 500
@@ -703,10 +703,14 @@ class AutoLayoutTool:
 
     def add_legend(self, layout, map_real_height, map_real_width, x_offset, y_offset, legend_title, legend_placement):
         """
-        Add legend to the layout
+        Add legend to the layout, in a corner of the map
         :param layout: QgsLayout
-        :param x_offset: float
-        :param y_offset: float
+        :param map_real_height: float, map height (mm)
+        :param map_real_width: float, map width (mm)
+        :param x_offset: float, map left position (mm)
+        :param y_offset: float, map top position (mm)
+        :param legend_title: str
+        :param legend_placement: int, 0 top left, 1 top right, 2 bottom left, 3 bottom right
         :return: None
         """
         self.log(self.tr(u"Adding legend"))
@@ -720,62 +724,22 @@ class AutoLayoutTool:
         layout.addItem(legend)
         legend.adjustBoxSize()
         legend.setFrameEnabled(True)
-        layout.refresh()  # Force layout update
+
+        # The legend size is often not known yet at this point (sizeWithUnits() returns 0), so it can not be
+        # used to compute the position. Instead, anchor the legend by the corner matching its placement:
+        # attemptMove() places this reference point, and it stays fixed when the legend is resized later.
+        left, top = x_offset, y_offset
+        right, bottom = x_offset + map_real_width, y_offset + map_real_height
+        corners = {
+            0: (REF_UPPER_LEFT, left, top),
+            1: (REF_UPPER_RIGHT, right, top),
+            2: (REF_LOWER_LEFT, left, bottom),
+            3: (REF_LOWER_RIGHT, right, bottom),
+        }
+        reference, x, y = corners.get(legend_placement, corners[0])
+        legend.setReferencePoint(reference)
+        legend.attemptMove(QgsLayoutPoint(x, y, LAYOUT_MM))
         legend.refresh()
-
-        # Unfortunatly, there is an issue with the code bellow
-        # values are always equal to zero
-        # See :
-        # https://gis.stackexchange.com/questions/431566/pyqgis-moving-legend-with-changed-reference-point/431705#431705
-        # https://gis.stackexchange.com/questions/371225/getting-the-size-of-a-qgslayoutitem
-        # https://gist.github.com/ThomasG77/d15771bb30c231166701cf31788f8a6b#file-pyqgis-371225-py-L26
-        legend_width = legend.sizeWithUnits().width()
-        legend_height = legend.sizeWithUnits().height()
-
-        if legend_placement == 0:
-            if self.debug: print("top left")
-            legend.attemptMove(QgsLayoutPoint(x_offset, y_offset, LAYOUT_MM))
-
-        elif legend_placement == 1:
-            if self.debug: print("top right")
-            if self.debug: print(f"lh={legend.boundingRect().size().width()} mrw={map_real_width}")
-            if self.debug: print(f"lsw={legend.rect().size().width()} mrw={map_real_width}")
-
-            legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset, y_offset,
-                                              LAYOUT_MM))
-
-            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
-            if legend_width == 0 and legend_height == 0:
-                x = legend.x()
-                y = legend.y()
-                legend.setReferencePoint(REF_UPPER_RIGHT)
-                legend.attemptMove(QgsLayoutPoint(x, y))
-
-        elif legend_placement == 2:
-            if self.debug: print("bottom left")
-            legend.attemptMove(QgsLayoutPoint(x_offset, map_real_height + y_offset - legend_height,
-                                              LAYOUT_MM))
-
-            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
-            if legend_width == 0 and legend_height == 0:
-                x = legend.x()
-                y = legend.y()
-                legend.setReferencePoint(REF_LOWER_LEFT)
-                legend.attemptMove(QgsLayoutPoint(x, y))
-
-        elif legend_placement == 3:
-            if self.debug: print("bottom right")
-            legend.attemptMove(QgsLayoutPoint(map_real_width - legend_width + x_offset,
-                                              map_real_height + y_offset - legend_height,
-                                              LAYOUT_MM))
-
-            # Since there is an issue with legend.sizeWithUnits() (see above), we use the following workaround
-            if legend_width == 0 and legend_height == 0:
-                # legend.setReferencePoint(0)
-                x = legend.x()
-                y = legend.y()
-                legend.setReferencePoint(REF_LOWER_RIGHT)
-                legend.attemptMove(QgsLayoutPoint(x, y))
 
     def fill_legend_group(self, target, source):
         """
