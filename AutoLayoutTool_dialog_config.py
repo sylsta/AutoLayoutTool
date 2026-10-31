@@ -58,6 +58,8 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
 
         # Display the (translatable) display name, but keep the registry name as item data:
         # QgsLayoutItemPage.setPageSize() expects the registry name.
+        # First entry: QGIS default page size (empty name), showing the actual format
+        self.cbb_page_format_name.addItem(self.qgis_default_page_label(), '')
         for entry in QgsApplication.pageSizeRegistry().entries():
             self.cbb_page_format_name.addItem(entry.displayName, entry.name)
         self.cbb_page_format_name.currentTextChanged.connect(self.items_changed)
@@ -77,12 +79,27 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
 
         self.set_form_values(False)
 
+    def qgis_default_page_label(self):
+        """
+        :return: label of the 'QGIS default' entry, e.g. 'QGIS default (A4)'
+        """
+        label = self.tr(u'QGIS default')
+        tmp_layout = QgsPrintLayout(QgsProject.instance())
+        tmp_layout.initializeDefaults()
+        size = tmp_layout.pageCollection().page(0).pageSize()
+        registry = QgsApplication.pageSizeRegistry()
+        name = registry.find(size)
+        if name:
+            matches = registry.find(name)
+            return f'{label} ({matches[0].displayName if matches else name})'
+        return f'{label} ({size.width():g} × {size.height():g})'
+
     def page_size_name(self):
         """
-        :return: page size registry name of the selected format (e.g. 'A4')
+        :return: page size registry name of the selected format (e.g. 'A4'), '' for QGIS default
         """
         data = self.cbb_page_format_name.currentData()
-        return data if data else self.cbb_page_format_name.currentText()
+        return data if data is not None else self.cbb_page_format_name.currentText()
 
     def write_custom_values(self):
         """
@@ -131,7 +148,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
     def set_page_format(self, page_format):
         """
         Select page format in combobox, from its registry name (or legacy display name).
-        Fall back to QGIS default page size.
+        Empty or unknown value: 'QGIS default' entry.
         :param page_format: str
         """
         index = -1
@@ -144,13 +161,8 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
                     match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
                 index = self.cbb_page_format_name.findText(page_format, match_fixed_string)
         if index < 0:
-            # Use QGIS default page size
-            tmp_layout = QgsPrintLayout(QgsProject.instance())
-            tmp_layout.initializeDefaults()
-            name = QgsApplication.pageSizeRegistry().find(tmp_layout.pageCollection().page(0).pageSize())
-            index = self.cbb_page_format_name.findData(name)
-        if index >= 0:
-            self.cbb_page_format_name.setCurrentIndex(index)
+            index = 0  # 'QGIS default' entry
+        self.cbb_page_format_name.setCurrentIndex(index)
 
     def set_form_values(self, default):
         """

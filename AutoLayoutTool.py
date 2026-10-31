@@ -674,23 +674,25 @@ class AutoLayoutTool:
         self.log('Creating layout')
         map_width = extent.xMaximum() - extent.xMinimum()
         map_height = extent.yMaximum() - extent.yMinimum()
-        if self.page_size == '':
-            page_size_name = QgsApplication.pageSizeRegistry().find(
-                layout.pageCollection().page(0).pageSize())  # eg. 'A4' str
-        else:
-            page_size_name = self.page_size
-
         landscape = map_width > map_height
         if self.debug: print("Landscape" if landscape else "Portrait")
         orientation = QgsLayoutItemPage.Orientation.Landscape if landscape \
             else QgsLayoutItemPage.Orientation.Portrait
         page = layout.pageCollection().page(0)
-        if not page.setPageSize(page_size_name, orientation):
-            # Unknown page size name: keep QGIS default page size, but still apply orientation
-            self.notify(self.tr(u"Unknown page size '%s' - using QGIS default page size") % page_size_name,
+        # Empty page size = keep the size QGIS gives to new layouts (initializeDefaults())
+        use_default = not self.page_size
+        if not use_default and not page.setPageSize(self.page_size, orientation):
+            self.notify(self.tr(u"Unknown page size '%s' - using QGIS default page size") % self.page_size,
                         Qgis.Warning)
-            default_name = QgsApplication.pageSizeRegistry().find(page.pageSize())
-            page.setPageSize(default_name, orientation)
+            use_default = True
+        if use_default:
+            # Apply orientation to the default page size itself, which may have no name in the registry
+            size = page.pageSize()
+            short_side, long_side = sorted((size.width(), size.height()))
+            if landscape:
+                page.setPageSize(QgsLayoutSize(long_side, short_side, size.units()))
+            else:
+                page.setPageSize(QgsLayoutSize(short_side, long_side, size.units()))
         # Calculate scale ratio between layout size and map size
         layout_width = layout.pageCollection().page(0).pageSize().width()
         layout_height = layout.pageCollection().page(0).pageSize().height()
