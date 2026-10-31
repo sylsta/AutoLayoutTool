@@ -19,30 +19,12 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QTreeWidget, QTreeWidgetItem,
                                  QSpinBox, QDialogButtonBox, QPushButton)
 from qgis.core import QgsProject, QgsLayerTree, QgsSettings, QgsApplication
 
-# PyQt5 / PyQt6 compatibility
-try:
-    CHECKED = Qt.CheckState.Checked
-    UNCHECKED = Qt.CheckState.Unchecked
-    ITEM_USER_CHECKABLE = Qt.ItemFlag.ItemIsUserCheckable
-    ITEM_AUTO_TRISTATE = Qt.ItemFlag.ItemIsAutoTristate
-    ITEM_ENABLED = Qt.ItemFlag.ItemIsEnabled
-    USER_ROLE = Qt.ItemDataRole.UserRole
-    BTN_OK = QDialogButtonBox.StandardButton.Ok
-    BTN_CANCEL = QDialogButtonBox.StandardButton.Cancel
-except AttributeError:
-    CHECKED = Qt.Checked
-    UNCHECKED = Qt.Unchecked
-    ITEM_USER_CHECKABLE = Qt.ItemIsUserCheckable
-    ITEM_AUTO_TRISTATE = Qt.ItemIsAutoTristate
-    ITEM_ENABLED = Qt.ItemIsEnabled
-    USER_ROLE = Qt.UserRole
-    BTN_OK = QDialogButtonBox.Ok
-    BTN_CANCEL = QDialogButtonBox.Cancel
+from .compat import (CHECKED, UNCHECKED, ITEM_USER_CHECKABLE, ITEM_AUTO_TRISTATE, ITEM_ENABLED, USER_ROLE,
+                     BUTTONBOX_OK as BTN_OK, BUTTONBOX_CANCEL as BTN_CANCEL)
 
 BUFFER_SETTINGS_KEY = 'AutoLayoutTool/LAYERS_DIALOG/buffer_percent'
 DEFAULT_BUFFER_PERCENT = 5

@@ -25,9 +25,11 @@
 import os
 
 from qgis.PyQt import QtWidgets
-from qgis.PyQt.QtCore import (Qt, QByteArray)
-from qgis.PyQt.QtGui import (QMovie)
-from qgis.PyQt.QtWidgets import (QWidget, QSizePolicy, QVBoxLayout, QLabel, QDialogButtonBox)
+from qgis.PyQt.QtCore import QByteArray
+from qgis.PyQt.QtGui import QMovie
+from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout, QLabel, QDialogButtonBox
+
+from .compat import SIZE_POLICY_EXPANDING, ALIGN_CENTER, BUTTONBOX_CLOSE, MOVIE_CACHE_ALL
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 # FORM_CLASS, _ = uic.loadUiType(os.path.join(
 #     os.path.dirname(__file__), 'AutoLayoutTool_visual_help.ui'))
@@ -47,27 +49,13 @@ class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
 
         self.movie_screen = QLabel()
         # Make label fit the gif
-        try:
-            expanding = QSizePolicy.Policy.Expanding  # Compatible PyQt6
-        except AttributeError:
-            expanding = QSizePolicy.Expanding  # Compatible PyQt5
-
-        self.movie_screen.setSizePolicy(expanding, expanding)
-        try:
-            align_center = Qt.AlignmentFlag.AlignCenter  # PyQt6
-        except AttributeError:
-            align_center = Qt.AlignCenter  # PyQt5
-
-        self.movie_screen.setAlignment(align_center)
+        self.movie_screen.setSizePolicy(SIZE_POLICY_EXPANDING, SIZE_POLICY_EXPANDING)
+        self.movie_screen.setAlignment(ALIGN_CENTER)
 
         # Create the layout
         main_layout = QVBoxLayout()
 
-        try:
-            close_button = QDialogButtonBox.StandardButton.Close  # PyQt6
-        except AttributeError:
-            close_button = QDialogButtonBox.Close  # PyQt5
-
+        close_button = BUTTONBOX_CLOSE
         self.button_box = QDialogButtonBox(close_button)
 
         self.button_box.rejected.connect(self.close)
@@ -81,12 +69,7 @@ class AutoLayoutToolDialogVisualHelp(QtWidgets.QDialog):
         self.setLayout(main_layout)
 
         # Add the QMovie object to the label
-        try:
-            cache_all = QMovie.CacheMode.CacheAll  # PyQt6
-        except AttributeError:
-            cache_all = QMovie.CacheAll  # PyQt5
-
-        self.movie.setCacheMode(cache_all)
+        self.movie.setCacheMode(MOVIE_CACHE_ALL)
         self.movie.setSpeed(100)
         self.movie_screen.setMovie(self.movie)
         self.movie.start()

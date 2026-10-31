@@ -43,7 +43,7 @@ import os.path
 import traceback
 from configparser import ConfigParser
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QFile
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QFile
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 from qgis.core import QgsProject, QgsPrintLayout, QgsLayoutItemMap, QgsLayoutItemLegend, QgsLayoutPoint, \
@@ -59,16 +59,8 @@ from .AutoLayoutTool_dialog_layers import AutoLayoutToolDialogLayers, layer_has_
 from .rectangleAreaTool import RectangleAreaTool
 from . import settings
 
-# Layout units: Qgis.LayoutUnit (QGIS >= 3.30, required for QGIS 4),
-# QgsUnitTypes member for older QGIS 3 versions
-try:
-    LAYOUT_MM = Qgis.LayoutUnit.Millimeters
-except AttributeError:
-    LAYOUT_MM = QgsUnitTypes.LayoutMillimeters
-try:
-    DISTANCE_M = Qgis.DistanceUnit.Meters
-except AttributeError:
-    DISTANCE_M = QgsUnitTypes.DistanceMeters
+from .compat import (LAYOUT_MM, DISTANCE_M, APPLICATION_MODAL, MSGBOX_ROLE_DESTRUCTIVE, MSGBOX_ROLE_ACCEPT,
+                     MSGBOX_CANCEL, REF_UPPER_RIGHT, REF_LOWER_LEFT, REF_LOWER_RIGHT)
 
 # Half size (in metres) of the extent used when the selected layers have a zero-size extent (e.g. a single point)
 MIN_HALF_EXTENT_M = 500
@@ -364,11 +356,7 @@ class AutoLayoutTool:
         :return:
         """
         self.dlg_visual_help = AutoLayoutToolDialogVisualHelp()
-        try:
-            modality = Qt.WindowModality.ApplicationModal  # PyQt6
-        except AttributeError:
-            modality = Qt.ApplicationModal  # PyQt5
-        self.dlg_visual_help.setWindowModality(modality)
+        self.dlg_visual_help.setWindowModality(APPLICATION_MODAL)
         # show the dialog
         self.dlg_visual_help.show()
         # Run the dialog event loop
@@ -380,11 +368,7 @@ class AutoLayoutTool:
         :return:
         """
         dlg_config = AutoLayoutToolDialogConfig()
-        try:
-            modality = Qt.WindowModality.ApplicationModal  # PyQt6
-        except AttributeError:
-            modality = Qt.ApplicationModal  # PyQt5
-        dlg_config.setWindowModality(modality)
+        dlg_config.setWindowModality(APPLICATION_MODAL)
         # show the dialog
         dlg_config.show()
         # Run the dialog event loop
@@ -575,71 +559,33 @@ class AutoLayoutTool:
         :return: name to use, or None if the user cancelled
         :rtype: str or None
         """
-        layouts_list = manager.printLayouts()
+        existing = manager.layoutByName(layout_name)
+        if existing is None:
+            return layout_name
 
-        final_name = layout_name
+        # Next available incremented name, shown on the button
+        next_name = self.get_unique_layout_name(manager, layout_name)
 
-        for layout in layouts_list:
-            if layout.name() == layout_name:
-                # Get the next available incremented name for display in dialog
-                next_name = self.get_unique_layout_name(manager, layout_name)
+        msg_box = QMessageBox(self.iface.mainWindow())
+        msg_box.setWindowTitle(self.tr(u'Layout already exists...'))
+        msg_box.setText(self.tr(u"There's already a layout named '%s'") % layout_name)
+        msg_box.setInformativeText(self.tr(u"What would you like to do?"))
+        delete_btn = msg_box.addButton(self.tr(u"Delete existing"), MSGBOX_ROLE_DESTRUCTIVE)
+        new_btn = msg_box.addButton(self.tr(u"Create '%s'") % next_name, MSGBOX_ROLE_ACCEPT)
+        cancel_btn = msg_box.addButton(MSGBOX_CANCEL)
+        msg_box.setDefaultButton(cancel_btn)
+        msg_box.exec()
 
-                try:
-                    # Qt6
-                    msg_box = QMessageBox()
-                    msg_box.setWindowTitle(self.tr(u'Layout already exists...'))
-                    msg_box.setText(self.tr(u"There's already a layout named '%s'") % layout_name)
-                    msg_box.setInformativeText(self.tr(u"What would you like to do?"))
-
-                    delete_btn = msg_box.addButton(self.tr(u"Delete existing"), QMessageBox.ButtonRole.DestructiveRole)
-                    new_btn = msg_box.addButton(self.tr(u"Create '%s'") % next_name, QMessageBox.ButtonRole.AcceptRole)
-                    cancel_btn = msg_box.addButton(QMessageBox.StandardButton.Cancel)
-
-                    msg_box.setDefaultButton(cancel_btn)
-                    msg_box.exec()
-
-                    clicked = msg_box.clickedButton()
-
-                    if clicked == delete_btn:
-                        manager.removeLayout(layout)
-                        self.log(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
-                        final_name = layout_name
-                    elif clicked == new_btn:
-                        final_name = next_name
-                        self.log(self.tr(u"Creating new layout '%s'") % next_name)
-                    else:
-                        # Cancel was clicked or dialog was closed
-                        return None
-
-                except AttributeError:
-                    # Qt5
-                    msg_box = QMessageBox()
-                    msg_box.setWindowTitle(self.tr(u'Layout already exists...'))
-                    msg_box.setText(self.tr(u"There's already a layout named '%s'") % layout_name)
-                    msg_box.setInformativeText(self.tr(u"What would you like to do?"))
-
-                    delete_btn = msg_box.addButton(self.tr(u"Delete existing"), QMessageBox.DestructiveRole)
-                    new_btn = msg_box.addButton(self.tr(u"Create '%s'") % next_name, QMessageBox.AcceptRole)
-                    cancel_btn = msg_box.addButton(QMessageBox.Cancel)
-
-                    msg_box.setDefaultButton(cancel_btn)
-                    msg_box.exec_()
-
-                    clicked = msg_box.clickedButton()
-
-                    if clicked == delete_btn:
-                        manager.removeLayout(layout)
-                        self.log(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
-                        final_name = layout_name
-                    elif clicked == new_btn:
-                        final_name = next_name
-                        self.log(self.tr(u"Creating new layout '%s'") % next_name)
-                    else:
-                        # Cancel was clicked or dialog was closed
-                        return None
-                break
-
-        return final_name
+        clicked = msg_box.clickedButton()
+        if clicked == delete_btn:
+            manager.removeLayout(existing)
+            self.log(self.tr(u"Previous layout named '%s' removed... ") % layout_name)
+            return layout_name
+        if clicked == new_btn:
+            self.log(self.tr(u"Creating new layout '%s'") % next_name)
+            return next_name
+        # Cancel was clicked or dialog was closed
+        return None
 
     def get_unique_layout_name(self, manager, base_name):
         """
@@ -649,8 +595,8 @@ class AutoLayoutTool:
         :return: A unique layout name (e.g., 'Automatic Layout', 'Automatic Layout (1)', etc.)
         :rtype: str
         """
-        layouts_list = manager.printLayouts()
-        existing_names = [layout.name() for layout in layouts_list]
+        # All layouts (print layouts and reports): names must be unique among them
+        existing_names = [layout.name() for layout in manager.layouts()]
 
         # If base name doesn't exist, use it directly
         if base_name not in existing_names:
@@ -802,10 +748,7 @@ class AutoLayoutTool:
             if legend_width == 0 and legend_height == 0:
                 x = legend.x()
                 y = legend.y()
-                try:
-                    legend.setReferencePoint(legend.ReferencePoint.UpperRight)  # Qt6
-                except AttributeError:
-                    legend.setReferencePoint(2)  # Qt5
+                legend.setReferencePoint(REF_UPPER_RIGHT)
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 2:
@@ -817,10 +760,7 @@ class AutoLayoutTool:
             if legend_width == 0 and legend_height == 0:
                 x = legend.x()
                 y = legend.y()
-                try:
-                    legend.setReferencePoint(legend.ReferencePoint.LowerLeft)  # Qt6
-                except AttributeError:
-                    legend.setReferencePoint(6)  # Qt5
+                legend.setReferencePoint(REF_LOWER_LEFT)
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
         elif legend_placement == 3:
@@ -834,10 +774,7 @@ class AutoLayoutTool:
                 # legend.setReferencePoint(0)
                 x = legend.x()
                 y = legend.y()
-                try:
-                    legend.setReferencePoint(legend.ReferencePoint.LowerRight)  # Qt6
-                except AttributeError:
-                    legend.setReferencePoint(8)  # Qt5
+                legend.setReferencePoint(REF_LOWER_RIGHT)
                 legend.attemptMove(QgsLayoutPoint(x, y))
 
     def fill_legend_group(self, target, source):

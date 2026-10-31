@@ -24,12 +24,13 @@
 
 import os
 
-from qgis.PyQt import uic, QtCore
+from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
 from qgis.core import QgsApplication, QgsPrintLayout, QgsProject
 
 from . import settings
+from .compat import MATCH_FIXED_STRING
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -155,11 +156,7 @@ class AutoLayoutToolDialogConfig(QtWidgets.QDialog, FORM_CLASS):
         if page_format:
             index = self.cbb_page_format_name.findData(page_format)
             if index < 0:
-                try:
-                    match_fixed_string = QtCore.Qt.MatchFlag.MatchFixedString  # PyQt6
-                except AttributeError:
-                    match_fixed_string = QtCore.Qt.MatchFixedString  # PyQt5
-                index = self.cbb_page_format_name.findText(page_format, match_fixed_string)
+                index = self.cbb_page_format_name.findText(page_format, MATCH_FIXED_STRING)
         if index < 0:
             index = 0  # 'QGIS default' entry
         self.cbb_page_format_name.setCurrentIndex(index)

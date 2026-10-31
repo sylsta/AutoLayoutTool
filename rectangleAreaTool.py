@@ -21,16 +21,11 @@
  ***************************************************************************/
 """
 from qgis.gui import QgsMapTool, QgsRubberBand
-from qgis.core import QgsWkbTypes, QgsPointXY, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject
+from qgis.core import QgsPointXY, QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import pyqtSignal
 
-# Qgis.GeometryType (QGIS >= 3.30, required for QGIS 4), QgsWkbTypes for older QGIS 3 versions
-try:
-    from qgis.core import Qgis
-    POLYGON_GEOMETRY = Qgis.GeometryType.Polygon
-except AttributeError:
-    POLYGON_GEOMETRY = QgsWkbTypes.PolygonGeometry
+from .compat import POLYGON_GEOMETRY
 
 
 class RectangleAreaTool(QgsMapTool):
