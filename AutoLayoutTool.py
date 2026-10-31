@@ -525,21 +525,28 @@ class AutoLayoutTool:
         if (map_height == 0) or (map_width == 0):
             self.notify(self.tr(u'No loaded data - aborting'), Qgis.Warning)
             return
-        # Create layout
-        layout, manager = self.create_layout(self.layout_name)
-        if layout is None:
-            # User cancelled the operation
-            self.log(self.tr(u'Cancelled by user'))
-            return
+        # Create layout (not added to the project yet)
+        project = QgsProject.instance()
+        manager = project.layoutManager()
+        layout = QgsPrintLayout(project)
+        layout.initializeDefaults()
         # Determine and set best layout orientation
         landscape, layout_height, layout_width = self.compute_layout_orientation(extent, layout)
-        # Map size: largest size with the extent proportions fitting in the page minus the margins
+        # Map size: largest size with the extent proportions fitting in the page minus the margins.
+        # Checked before asking about an existing layout, so that nothing is deleted if we have to abort.
         map_size = self.fit_map_size(extent.width(), extent.height(), layout_width, layout_height, self.margin)
         if map_size is None:
             self.notify(self.tr(u'Margin (%s mm) is too large for the page size - aborting') % self.margin,
                         Qgis.Warning, duration=10)
             return
         map_width, map_height = map_size
+        # Layout name: ask what to do if a layout with the same name exists (may delete it)
+        layout_name = self.resolve_layout_name(manager, self.layout_name)
+        if layout_name is None:
+            # User cancelled the operation
+            self.log(self.tr(u'Cancelled by user'))
+            return
+        layout.setName(layout_name)
         # Add map
         map_real_height, map_real_width, x_offset, y_offset, my_map = self.add_map(
             extent, layout, layout_height, layout_width, map_height, map_width)
@@ -559,15 +566,15 @@ class AutoLayoutTool:
         self.iface.openLayoutDesigner(layout)
         self.log("♪♪ This is the end, my friend ♪♪")
 
-    def create_layout(self, layout_name):
+    def resolve_layout_name(self, manager, layout_name):
         """
-        Layout Management: creates new layout and optionally delete previous or create with incremented name
-        :param layout_name:
-        :return
-        :rtype:QgsLayout, QgsProject.instance().layoutManager()
+        Name of the new layout. If a layout with this name exists, ask the user to delete it
+        or to use an incremented name.
+        :param manager: QgsLayoutManager
+        :param layout_name: str
+        :return: name to use, or None if the user cancelled
+        :rtype: str or None
         """
-        project = QgsProject.instance()
-        manager = project.layoutManager()
         layouts_list = manager.printLayouts()
 
         final_name = layout_name
@@ -602,7 +609,7 @@ class AutoLayoutTool:
                         self.log(self.tr(u"Creating new layout '%s'") % next_name)
                     else:
                         # Cancel was clicked or dialog was closed
-                        return None, None
+                        return None
 
                 except AttributeError:
                     # Qt5
@@ -629,13 +636,10 @@ class AutoLayoutTool:
                         self.log(self.tr(u"Creating new layout '%s'") % next_name)
                     else:
                         # Cancel was clicked or dialog was closed
-                        return None, None
+                        return None
                 break
 
-        layout = QgsPrintLayout(project)
-        layout.initializeDefaults()
-        layout.setName(final_name)
-        return layout, manager
+        return final_name
 
     def get_unique_layout_name(self, manager, base_name):
         """
